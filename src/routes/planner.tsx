@@ -159,7 +159,7 @@ function PlannerPage() {
               <MissionCard
                 key={m.id}
                 mission={m}
-                chapterName={cRef ? chapterDisplayName(cRef, metaMap) : undefined}
+                chapterName={cRef ? chapterDisplayName(cRef, metaMap, customizations) : undefined}
                 onToggle={() =>
                   setMissions((prev) =>
                     prev.map((x) =>

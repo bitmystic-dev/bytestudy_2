@@ -178,7 +178,7 @@ function AnalyticsPage() {
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
                 <div
-                  className={cn("h-full rounded-full transition-all", meta.ring.replace("stroke-", "bg-"))}
+                  className={cn("h-full rounded-full transition-all", SUBJECT_BAR[s])}
                   style={{ width: `${pct}%` }}
                 />
               </div>

@@ -7,7 +7,7 @@ import { StatCard } from "@/components/StatCard";
 import { SubjectCard } from "@/components/SubjectCard";
 import { MissionCard } from "@/components/MissionCard";
 import { EmptyState } from "@/components/EmptyState";
-import { useProfile, useMissions, useSessions, useChapterMeta } from "@/hooks/useCloud";
+import { useProfile, useMissions, useSessions, useChapterMeta, useChapterCustomizations } from "@/hooks/useCloud";
 import type { FocusSession, Mission, SubjectId } from "@/lib/types";
 import { chapterDisplayName, getChapterMeta, getChaptersForProfile } from "@/lib/chapters";
 import { dayKey, formatDuration, greetingFor } from "@/lib/format";
@@ -27,10 +27,14 @@ function HomePage() {
   const navigate = useNavigate();
   const [profile] = useProfile();
   const [metaMap] = useChapterMeta();
+  const [customizations] = useChapterCustomizations();
   const [missions, setMissions] = useMissions();
   const [sessions] = useSessions();
 
-  const chapters = useMemo(() => (profile ? getChaptersForProfile(profile.classLevel) : []), [profile]);
+  const chapters = useMemo(
+    () => (profile ? getChaptersForProfile(profile.classLevel, customizations) : []),
+    [profile, customizations],
+  );
 
   const perSubject = useMemo(() => {
     const out: Record<SubjectId, { count: number; total: number }> = {

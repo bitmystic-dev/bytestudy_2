@@ -33,5 +33,15 @@ export function greetingFor(hour: number): string {
 }
 
 export function uid(): string {
-  return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+  // Must be a valid UUID because Supabase columns (missions.id, focus_sessions.id, ...)
+  // are `uuid`. A non-UUID string is silently rejected by the DB.
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  // Fallback: RFC4122 v4-ish
+  const s = [...crypto.getRandomValues(new Uint8Array(16))]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return `${s.slice(0, 8)}-${s.slice(8, 12)}-4${s.slice(13, 16)}-${((parseInt(s.slice(16, 17), 16) & 0x3) | 0x8).toString(16)}${s.slice(17, 20)}-${s.slice(20, 32)}`;
 }
+

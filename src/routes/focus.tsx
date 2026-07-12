@@ -5,14 +5,11 @@ import { AppShell } from "@/components/AppShell";
 import { ProgressRing } from "@/components/ProgressRing";
 import { SectionHeader } from "@/components/SectionHeader";
 import { EmptyState } from "@/components/EmptyState";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
+import { useSessions } from "@/hooks/useCloud";
 import type { FocusSession, SubjectId } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { dayKey, formatClock, formatDuration, uid } from "@/lib/format";
 import { cn } from "@/lib/utils";
-
-const EMPTY_SESSIONS: FocusSession[] = [];
 
 export const Route = createFileRoute("/focus")({
   head: () => ({
@@ -32,7 +29,7 @@ const PRESETS: Preset[] = [
 ];
 
 function FocusPage() {
-  const [sessions, setSessions] = useStore<FocusSession[]>(KEYS.sessions, EMPTY_SESSIONS);
+  const [sessions, setSessions] = useSessions();
 
   const [preset, setPreset] = useState<Preset>(PRESETS[0]);
   const [customMin, setCustomMin] = useState<number>(45);

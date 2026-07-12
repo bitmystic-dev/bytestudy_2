@@ -208,7 +208,7 @@ function EditWrapper({
   missions: Mission[];
   setMissions: (u: (p: Mission[]) => Mission[]) => void;
 }) {
-  const [profile] = useStore<Profile | null>(KEYS.profile, null);
+  const [profile] = useProfile();
   const [editing, setEditing] = useState<Mission | null>(null);
 
   useEffect(() => {
@@ -252,7 +252,7 @@ function MissionSheet({
   onDelete?: () => void;
   profileLevel?: Profile["classLevel"];
 }) {
-  const [metaMap] = useStore<Record<string, Partial<ChapterMeta>>>(KEYS.chapterMeta, EMPTY_META);
+  const [metaMap] = useChapterMeta();
   const chapters = useMemo(() => (profileLevel ? getChaptersForProfile(profileLevel) : []), [profileLevel]);
 
   const [title, setTitle] = useState(mission?.title ?? "");

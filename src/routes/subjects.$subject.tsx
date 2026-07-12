@@ -4,9 +4,8 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ProgressRing } from "@/components/ProgressRing";
 import { EmptyState } from "@/components/EmptyState";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
-import type { ChapterMeta, Profile, SubjectId } from "@/lib/types";
+import { useProfile, useChapterMeta } from "@/hooks/useCloud";
+import type { ChapterMeta, SubjectId } from "@/lib/types";
 import { DEFAULT_CHAPTER_META, SUBJECT_META } from "@/lib/types";
 import {
   chapterDisplayName,

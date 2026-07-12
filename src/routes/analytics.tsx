@@ -4,18 +4,13 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { StatCard } from "@/components/StatCard";
 import { EmptyState } from "@/components/EmptyState";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
-import type { ChapterMeta, FocusSession, Mission, Profile, SubjectId } from "@/lib/types";
+import { useProfile, useMissions, useSessions, useChapterMeta } from "@/hooks/useCloud";
+import type { SubjectId } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { dayKey, formatDuration } from "@/lib/format";
 import { getChaptersForProfile, getChapterMeta } from "@/lib/chapters";
 import { BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const EMPTY_SESSIONS: FocusSession[] = [];
-const EMPTY_MISSIONS: Mission[] = [];
-const EMPTY_META: Record<string, Partial<ChapterMeta>> = {};
 
 const SUBJECT_BAR: Record<SubjectId, string> = {
   physics: "bg-indigo-400",
@@ -34,10 +29,10 @@ export const Route = createFileRoute("/analytics")({
 });
 
 function AnalyticsPage() {
-  const [profile] = useStore<Profile | null>(KEYS.profile, null);
-  const [sessions] = useStore<FocusSession[]>(KEYS.sessions, EMPTY_SESSIONS);
-  const [missions] = useStore<Mission[]>(KEYS.missions, EMPTY_MISSIONS);
-  const [metaMap] = useStore<Record<string, Partial<ChapterMeta>>>(KEYS.chapterMeta, EMPTY_META);
+  const [profile] = useProfile();
+  const [sessions] = useSessions();
+  const [missions] = useMissions();
+  const [metaMap] = useChapterMeta();
 
   const chapters = useMemo(() => (profile ? getChaptersForProfile(profile.classLevel) : []), [profile]);
 

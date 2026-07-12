@@ -257,7 +257,11 @@ function MissionSheet({
   profileLevel?: Profile["classLevel"];
 }) {
   const [metaMap] = useChapterMeta();
-  const chapters = useMemo(() => (profileLevel ? getChaptersForProfile(profileLevel) : []), [profileLevel]);
+  const [customizations] = useChapterCustomizations();
+  const chapters = useMemo(
+    () => (profileLevel ? getChaptersForProfile(profileLevel, customizations) : []),
+    [profileLevel, customizations],
+  );
 
   const [title, setTitle] = useState(mission?.title ?? "");
   const [subject, setSubject] = useState<SubjectId>(mission?.subject ?? "physics");

@@ -623,3 +623,134 @@ export function useChapterCustomizations(): [
 
   return [map, set, loading];
 }
+
+// ---------- TESTS (institute test schedule) ----------
+
+interface TestRow {
+  id: string;
+  name: string;
+  test_date: string;
+  subjects: string[];
+  syllabus: string;
+  status: string;
+  score: number | null;
+  max_score: number | null;
+  notes: string;
+  source: string;
+  created_at: string;
+  updated_at: string;
+}
+
+function rowToTest(r: TestRow): Test {
+  return {
+    id: r.id,
+    name: r.name,
+    testDate: r.test_date,
+    subjects: r.subjects as SubjectId[],
+    syllabus: r.syllabus,
+    status: (r.status as TestStatus) ?? "upcoming",
+    score: r.score ?? undefined,
+    maxScore: r.max_score ?? undefined,
+    notes: r.notes,
+    source: (r.source as Test["source"]) ?? "manual",
+    createdAt: new Date(r.created_at).getTime(),
+    updatedAt: new Date(r.updated_at).getTime(),
+  };
+}
+
+function testToRow(t: Test, userId: string) {
+  return {
+    id: t.id,
+    user_id: userId,
+    name: t.name,
+    test_date: t.testDate,
+    subjects: t.subjects,
+    syllabus: t.syllabus,
+    status: t.status,
+    score: t.score ?? null,
+    max_score: t.maxScore ?? null,
+    notes: t.notes,
+    source: t.source,
+  };
+}
+
+export function useTests(): [Test[], Setter<Test[]>, boolean] {
+  const { user, status } = useAuth();
+  const [tests, setTests] = useState<Test[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !user) {
+      setTests([]);
+      setLoading(status === "loading");
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    supabase
+      .from("tests")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("test_date", { ascending: true })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) console.error("[tests] load", error);
+        setTests((data ?? []).map((r) => rowToTest(r as TestRow)));
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, status]);
+
+  const set: Setter<Test[]> = useCallback(
+    (updater) => {
+      if (!user) return;
+      setTests((prev) => {
+        const next = resolve(updater, prev);
+        const prevMap = new Map(prev.map((t) => [t.id, t]));
+        const nextMap = new Map(next.map((t) => [t.id, t]));
+        const toInsert: Test[] = [];
+        const toUpdate: Test[] = [];
+        const toDelete: string[] = [];
+        for (const t of next) {
+          const old = prevMap.get(t.id);
+          if (!old) toInsert.push(t);
+          else if (JSON.stringify(old) !== JSON.stringify(t)) toUpdate.push(t);
+        }
+        for (const t of prev) if (!nextMap.has(t.id)) toDelete.push(t.id);
+
+        for (const t of toInsert) {
+          supabase
+            .from("tests")
+            .insert(testToRow(t, user.id))
+            .then(({ error }) => error && console.error("[tests] insert", error));
+        }
+        for (const t of toUpdate) {
+          const row = testToRow(t, user.id);
+          const { user_id: _u, id: _id, ...patch } = row;
+          void _u;
+          void _id;
+          supabase
+            .from("tests")
+            .update(patch)
+            .eq("id", t.id)
+            .eq("user_id", user.id)
+            .then(({ error }) => error && console.error("[tests] update", error));
+        }
+        if (toDelete.length) {
+          supabase
+            .from("tests")
+            .delete()
+            .in("id", toDelete)
+            .eq("user_id", user.id)
+            .then(({ error }) => error && console.error("[tests] delete", error));
+        }
+        return next;
+      });
+    },
+    [user],
+  );
+
+  return [tests, set, loading];
+}

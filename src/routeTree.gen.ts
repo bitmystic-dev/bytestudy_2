@@ -9,12 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as FocusRouteImport } from './routes/focus'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SubjectsSubjectRouteImport } from './routes/subjects.$subject'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlannerRoute = PlannerRouteImport.update({
   id: '/planner',
   path: '/planner',
@@ -40,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubjectsSubjectRoute = SubjectsSubjectRouteImport.update({
+  id: '/subjects/$subject',
+  path: '/subjects/$subject',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +65,9 @@ export interface FileRoutesByFullPath {
   '/focus': typeof FocusRoute
   '/onboarding': typeof OnboardingRoute
   '/planner': typeof PlannerRoute
+  '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +75,9 @@ export interface FileRoutesByTo {
   '/focus': typeof FocusRoute
   '/onboarding': typeof OnboardingRoute
   '/planner': typeof PlannerRoute
+  '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +86,41 @@ export interface FileRoutesById {
   '/focus': typeof FocusRoute
   '/onboarding': typeof OnboardingRoute
   '/planner': typeof PlannerRoute
+  '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analytics' | '/focus' | '/onboarding' | '/planner'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/focus'
+    | '/onboarding'
+    | '/planner'
+    | '/profile'
+    | '/settings'
+    | '/subjects/$subject'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analytics' | '/focus' | '/onboarding' | '/planner'
-  id: '__root__' | '/' | '/analytics' | '/focus' | '/onboarding' | '/planner'
+  to:
+    | '/'
+    | '/analytics'
+    | '/focus'
+    | '/onboarding'
+    | '/planner'
+    | '/profile'
+    | '/settings'
+    | '/subjects/$subject'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/focus'
+    | '/onboarding'
+    | '/planner'
+    | '/profile'
+    | '/settings'
+    | '/subjects/$subject'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,10 +129,27 @@ export interface RootRouteChildren {
   FocusRoute: typeof FocusRoute
   OnboardingRoute: typeof OnboardingRoute
   PlannerRoute: typeof PlannerRoute
+  ProfileRoute: typeof ProfileRoute
+  SettingsRoute: typeof SettingsRoute
+  SubjectsSubjectRoute: typeof SubjectsSubjectRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/planner': {
       id: '/planner'
       path: '/planner'
@@ -116,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/subjects/$subject': {
+      id: '/subjects/$subject'
+      path: '/subjects/$subject'
+      fullPath: '/subjects/$subject'
+      preLoaderRoute: typeof SubjectsSubjectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +201,9 @@ const rootRouteChildren: RootRouteChildren = {
   FocusRoute: FocusRoute,
   OnboardingRoute: OnboardingRoute,
   PlannerRoute: PlannerRoute,
+  ProfileRoute: ProfileRoute,
+  SettingsRoute: SettingsRoute,
+  SubjectsSubjectRoute: SubjectsSubjectRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -342,21 +342,18 @@ function MissionSheet({
           {subjectChapters.length > 0 && (
             <div>
               <div className="mb-2 text-xs font-medium text-muted-foreground">Chapter (optional)</div>
-              <select
-                value={chapterKey ?? ""}
-                onChange={(e) => setChapterKey(e.target.value || undefined)}
-                className="w-full rounded-2xl bg-white/[0.04] px-4 py-3 text-[14px] outline-none ring-1 ring-white/10"
-              >
-                <option value="">— None —</option>
-                {subjectChapters.map((c) => (
-                  <option key={c.key} value={c.key}>
-                    {chapterDisplayName(c, metaMap, customizations)}
-                    {profileLevel === "dropper" ? ` (Class ${c.classLevel})` : ""}
-                  </option>
-                ))}
-              </select>
+              <ChapterPicker
+                value={chapterKey}
+                onChange={setChapterKey}
+                chapters={subjectChapters}
+                metaMap={metaMap}
+                customizations={customizations}
+                placeholder="Select a chapter"
+                showClassPrefix={profileLevel === "dropper"}
+              />
             </div>
           )}
+
 
           <div className="grid grid-cols-2 gap-3">
             <div>

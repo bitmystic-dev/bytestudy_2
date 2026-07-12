@@ -368,6 +368,7 @@ interface ChapterMetaRow {
   next_revision: string | null;
   bookmarked: boolean;
   pinned: boolean;
+  checkpoints: Record<string, boolean> | null;
 }
 
 function rowToMeta(r: ChapterMetaRow): Partial<ChapterMeta> {
@@ -386,6 +387,7 @@ function rowToMeta(r: ChapterMetaRow): Partial<ChapterMeta> {
     nextRevision: r.next_revision ? new Date(r.next_revision).getTime() : undefined,
     bookmarked: r.bookmarked,
     pinned: r.pinned,
+    checkpoints: (r.checkpoints ?? {}) as ChapterMeta["checkpoints"],
   };
 }
 
@@ -407,8 +409,10 @@ function metaToRow(key: string, m: Partial<ChapterMeta>, userId: string) {
     next_revision: m.nextRevision ? new Date(m.nextRevision).toISOString() : null,
     bookmarked: m.bookmarked ?? false,
     pinned: m.pinned ?? false,
+    checkpoints: m.checkpoints ?? {},
   };
 }
+
 
 type MetaMap = Record<string, Partial<ChapterMeta>>;
 

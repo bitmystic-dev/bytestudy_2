@@ -185,7 +185,7 @@ function HomePage() {
               <MissionCard
                 key={m.id}
                 mission={m}
-                chapterName={cn ? chapterDisplayName(cn, metaMap) : undefined}
+                chapterName={cn ? chapterDisplayName(cn, metaMap, customizations) : undefined}
                 onToggle={() =>
                   setMissions((prev) =>
                     prev.map((x) =>

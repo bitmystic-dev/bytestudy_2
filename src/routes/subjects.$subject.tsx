@@ -4,7 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ProgressRing } from "@/components/ProgressRing";
 import { EmptyState } from "@/components/EmptyState";
-import { useProfile, useChapterMeta } from "@/hooks/useCloud";
+import { useProfile, useChapterMeta, useChapterCustomizations } from "@/hooks/useCloud";
 import type { CheckpointId, ChapterMeta, SubjectId } from "@/lib/types";
 import { CHECKPOINTS, DEFAULT_CHAPTER_META, SUBJECT_META, checkpointCompletion } from "@/lib/types";
 import {

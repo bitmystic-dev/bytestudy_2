@@ -38,6 +38,18 @@ function SettingsPage() {
         </Link>
       </div>
 
+      <SectionHeader title="Tests" />
+      <div className="card-surface divide-y divide-white/5">
+        <Link
+          to="/tests"
+          className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]"
+        >
+          <Tile icon={Calendar} label="Test schedule" hint="Track upcoming tests & results" />
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+        </Link>
+      </div>
+
+
       <SectionHeader title="Data" />
       <div className="card-surface divide-y divide-white/5">
         <DisabledTile icon={Bell} label="Notifications" hint="Coming soon" />

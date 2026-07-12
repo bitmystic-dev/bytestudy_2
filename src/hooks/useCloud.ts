@@ -542,7 +542,7 @@ export function useChapterCustomizations(): [
         if (cancelled) return;
         if (error) console.error("[chapter_customizations] load", error);
         const next: CustomizationMap = {};
-        for (const r of (data ?? []) as CustomizationRow[]) {
+        for (const r of (data ?? []) as unknown as CustomizationRow[]) {
           const cls = r.class_level as 11 | 12;
           next[customizationKey(cls, r.subject)] = {
             items: Array.isArray(r.items) ? (r.items as CustomItem[]) : [],

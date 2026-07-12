@@ -64,7 +64,7 @@ function SubjectPage() {
     });
   }, [chapters, metaMap, q]);
 
-  const meta = SUBJECT_META[subject];
+  const meta = SUBJECT_META[subject as SubjectId];
   const totalCompletion =
     chapters.length > 0
       ? chapters.reduce((s, c) => s + getChapterMeta(c.key, metaMap).completion, 0) / chapters.length

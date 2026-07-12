@@ -17,6 +17,12 @@ const EMPTY_SESSIONS: FocusSession[] = [];
 const EMPTY_MISSIONS: Mission[] = [];
 const EMPTY_META: Record<string, Partial<ChapterMeta>> = {};
 
+const SUBJECT_BAR: Record<SubjectId, string> = {
+  physics: "bg-indigo-400",
+  chemistry: "bg-emerald-400",
+  mathematics: "bg-amber-400",
+};
+
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [

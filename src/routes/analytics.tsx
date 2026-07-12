@@ -33,8 +33,12 @@ function AnalyticsPage() {
   const [sessions] = useSessions();
   const [missions] = useMissions();
   const [metaMap] = useChapterMeta();
+  const [customizations] = useChapterCustomizations();
 
-  const chapters = useMemo(() => (profile ? getChaptersForProfile(profile.classLevel) : []), [profile]);
+  const chapters = useMemo(
+    () => (profile ? getChaptersForProfile(profile.classLevel, customizations) : []),
+    [profile, customizations],
+  );
 
   // Last 7 days daily totals
   const days = useMemo(() => {

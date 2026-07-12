@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as ManageChaptersRouteImport } from './routes/manage-chapters'
 import { Route as FocusRouteImport } from './routes/focus'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
@@ -43,6 +44,11 @@ const PlannerRoute = PlannerRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageChaptersRoute = ManageChaptersRouteImport.update({
+  id: '/manage-chapters',
+  path: '/manage-chapters',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FocusRoute = FocusRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/manage-chapters': typeof ManageChaptersRoute
   '/onboarding': typeof OnboardingRoute
   '/planner': typeof PlannerRoute
   '/profile': typeof ProfileRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/manage-chapters': typeof ManageChaptersRoute
   '/onboarding': typeof OnboardingRoute
   '/planner': typeof PlannerRoute
   '/profile': typeof ProfileRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/manage-chapters': typeof ManageChaptersRoute
   '/onboarding': typeof OnboardingRoute
   '/planner': typeof PlannerRoute
   '/profile': typeof ProfileRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/auth'
     | '/focus'
+    | '/manage-chapters'
     | '/onboarding'
     | '/planner'
     | '/profile'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/auth'
     | '/focus'
+    | '/manage-chapters'
     | '/onboarding'
     | '/planner'
     | '/profile'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/auth'
     | '/focus'
+    | '/manage-chapters'
     | '/onboarding'
     | '/planner'
     | '/profile'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
   FocusRoute: typeof FocusRoute
+  ManageChaptersRoute: typeof ManageChaptersRoute
   OnboardingRoute: typeof OnboardingRoute
   PlannerRoute: typeof PlannerRoute
   ProfileRoute: typeof ProfileRoute
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/manage-chapters': {
+      id: '/manage-chapters'
+      path: '/manage-chapters'
+      fullPath: '/manage-chapters'
+      preLoaderRoute: typeof ManageChaptersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/focus': {
       id: '/focus'
       path: '/focus'
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
   FocusRoute: FocusRoute,
+  ManageChaptersRoute: ManageChaptersRoute,
   OnboardingRoute: OnboardingRoute,
   PlannerRoute: PlannerRoute,
   ProfileRoute: ProfileRoute,

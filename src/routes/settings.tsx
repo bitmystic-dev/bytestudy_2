@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
-import { useChapterMeta } from "@/hooks/useCloud";
-import type { ChapterMeta } from "@/lib/types";
-import { ChevronLeft, RotateCcw, Bell, Download, Upload, Shield, Info, HardDrive } from "lucide-react";
+import { ChevronLeft, Bell, Download, Upload, Shield, Info, ListTree, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -16,24 +14,6 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const [metaMap, setMetaMap] = useChapterMeta();
-
-  const overrideCount = Object.values(metaMap).filter((v) => v?.overrideName?.trim()).length;
-
-  const resetAllNames = () => {
-    if (!confirm(`Reset ${overrideCount} chapter name${overrideCount === 1 ? "" : "s"} to defaults?`)) return;
-    setMetaMap((prev) => {
-      const next: Record<string, Partial<ChapterMeta>> = {};
-      for (const [k, v] of Object.entries(prev)) {
-        // Strip overrideName, keep everything else
-        const { overrideName: _drop, ...rest } = v;
-        void _drop;
-        if (Object.keys(rest).length > 0) next[k] = rest;
-      }
-      return next;
-    });
-  };
-
   return (
     <AppShell hideNav>
       <header className="mb-6 flex items-center gap-3">
@@ -50,19 +30,12 @@ function SettingsPage() {
       <SectionHeader title="Chapters" />
       <div className="card-surface divide-y divide-white/5">
         <Link
-          to="/subjects/$subject"
-          params={{ subject: "physics" }}
+          to="/manage-chapters"
           className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]"
         >
-          <Tile icon={HardDrive} label="Rename chapter names" hint="Per-chapter overrides" />
+          <Tile icon={ListTree} label="Manage chapters" hint="Rename, add, delete, reorder" />
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
         </Link>
-        <button
-          disabled={overrideCount === 0}
-          onClick={resetAllNames}
-          className="flex w-full items-center gap-3 px-4 py-3.5 text-left active:bg-white/[0.03] disabled:opacity-40"
-        >
-          <Tile icon={RotateCcw} label="Reset chapter names" hint={`${overrideCount} custom name${overrideCount === 1 ? "" : "s"}`} />
-        </button>
       </div>
 
       <SectionHeader title="Data" />

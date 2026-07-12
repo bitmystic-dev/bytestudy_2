@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { MissionCard } from "@/components/MissionCard";
 import { EmptyState } from "@/components/EmptyState";
-import { useProfile, useMissions, useChapterMeta } from "@/hooks/useCloud";
+import { useProfile, useMissions, useChapterMeta, useChapterCustomizations } from "@/hooks/useCloud";
 import type { Mission, Priority, Profile, SubjectId } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { chapterDisplayName, getChaptersForProfile } from "@/lib/chapters";
@@ -28,12 +28,16 @@ function PlannerPage() {
   const [profile] = useProfile();
   const [missions, setMissions] = useMissions();
   const [metaMap] = useChapterMeta();
+  const [customizations] = useChapterCustomizations();
 
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<FilterId>("all");
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const chapters = useMemo(() => (profile ? getChaptersForProfile(profile.classLevel) : []), [profile]);
+  const chapters = useMemo(
+    () => (profile ? getChaptersForProfile(profile.classLevel, customizations) : []),
+    [profile, customizations],
+  );
 
   const filtered = useMemo(() => {
     let list = [...missions];
@@ -155,7 +159,7 @@ function PlannerPage() {
               <MissionCard
                 key={m.id}
                 mission={m}
-                chapterName={cRef ? chapterDisplayName(cRef, metaMap) : undefined}
+                chapterName={cRef ? chapterDisplayName(cRef, metaMap, customizations) : undefined}
                 onToggle={() =>
                   setMissions((prev) =>
                     prev.map((x) =>
@@ -253,7 +257,11 @@ function MissionSheet({
   profileLevel?: Profile["classLevel"];
 }) {
   const [metaMap] = useChapterMeta();
-  const chapters = useMemo(() => (profileLevel ? getChaptersForProfile(profileLevel) : []), [profileLevel]);
+  const [customizations] = useChapterCustomizations();
+  const chapters = useMemo(
+    () => (profileLevel ? getChaptersForProfile(profileLevel, customizations) : []),
+    [profileLevel, customizations],
+  );
 
   const [title, setTitle] = useState(mission?.title ?? "");
   const [subject, setSubject] = useState<SubjectId>(mission?.subject ?? "physics");
@@ -341,7 +349,7 @@ function MissionSheet({
                 <option value="">— None —</option>
                 {subjectChapters.map((c) => (
                   <option key={c.key} value={c.key}>
-                    {chapterDisplayName(c, metaMap)}
+                    {chapterDisplayName(c, metaMap, customizations)}
                     {profileLevel === "dropper" ? ` (Class ${c.classLevel})` : ""}
                   </option>
                 ))}

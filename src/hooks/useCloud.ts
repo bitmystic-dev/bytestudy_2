@@ -493,6 +493,7 @@ export async function eraseAllUserData(userId: string) {
     supabase.from("missions").delete().eq("user_id", userId),
     supabase.from("focus_sessions").delete().eq("user_id", userId),
     supabase.from("chapter_meta").delete().eq("user_id", userId),
+    supabase.from("chapter_customizations").delete().eq("user_id", userId),
     supabase
       .from("profiles")
       .update({ onboarded: false, class_level: null, target_year: null, name: "" })
@@ -504,3 +505,94 @@ export async function eraseAllUserData(userId: string) {
 export const EMPTY_META: MetaMap = {};
 export const EMPTY_MISSIONS: Mission[] = [];
 export const EMPTY_SESSIONS: FocusSession[] = [];
+
+// ---------- CHAPTER CUSTOMIZATIONS (custom chapter lists per subject) ----------
+
+import type { CustomItem, CustomizationMap, SubjectCustomization } from "@/lib/chapters";
+import { customizationKey } from "@/lib/chapters";
+
+interface CustomizationRow {
+  class_level: number;
+  subject: SubjectId;
+  items: CustomItem[];
+}
+
+export function useChapterCustomizations(): [
+  CustomizationMap,
+  Setter<CustomizationMap>,
+  boolean,
+] {
+  const { user, status } = useAuth();
+  const [map, setMap] = useState<CustomizationMap>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !user) {
+      setMap({});
+      setLoading(status === "loading");
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    supabase
+      .from("chapter_customizations")
+      .select("*")
+      .eq("user_id", user.id)
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) console.error("[chapter_customizations] load", error);
+        const next: CustomizationMap = {};
+        for (const r of (data ?? []) as unknown as CustomizationRow[]) {
+          const cls = r.class_level as 11 | 12;
+          next[customizationKey(cls, r.subject)] = {
+            items: Array.isArray(r.items) ? (r.items as CustomItem[]) : [],
+          };
+        }
+        setMap(next);
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, status]);
+
+  const set: Setter<CustomizationMap> = useCallback(
+    (updater) => {
+      if (!user) return;
+      setMap((prev) => {
+        const next = resolve(updater, prev);
+        const allKeys = new Set([...Object.keys(prev), ...Object.keys(next)]);
+        for (const k of allKeys) {
+          const before: SubjectCustomization | undefined = prev[k];
+          const after: SubjectCustomization | undefined = next[k];
+          if (JSON.stringify(before ?? null) === JSON.stringify(after ?? null)) continue;
+          const [clsStr, subject] = k.split(":");
+          const cls = Number(clsStr) as 11 | 12;
+          if (!after) {
+            supabase
+              .from("chapter_customizations")
+              .delete()
+              .eq("user_id", user.id)
+              .eq("class_level", cls)
+              .eq("subject", subject)
+              .then(({ error }) => error && console.error("[custom] delete", error));
+          } else {
+            supabase
+              .from("chapter_customizations")
+              .upsert({
+                user_id: user.id,
+                class_level: cls,
+                subject,
+                items: after.items as unknown as import("@/integrations/supabase/types").Json,
+              })
+              .then(({ error }) => error && console.error("[custom] upsert", error));
+          }
+        }
+        return next;
+      });
+    },
+    [user],
+  );
+
+  return [map, set, loading];
+}

@@ -4,7 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ProgressRing } from "@/components/ProgressRing";
 import { EmptyState } from "@/components/EmptyState";
-import { useProfile, useChapterMeta } from "@/hooks/useCloud";
+import { useProfile, useChapterMeta, useChapterCustomizations } from "@/hooks/useCloud";
 import type { CheckpointId, ChapterMeta, SubjectId } from "@/lib/types";
 import { CHECKPOINTS, DEFAULT_CHAPTER_META, SUBJECT_META, checkpointCompletion } from "@/lib/types";
 import {
@@ -81,19 +81,20 @@ function SubjectPage() {
   const { subject } = Route.useParams();
   const [profile] = useProfile();
   const [metaMap, setMetaMap] = useChapterMeta();
+  const [customizations] = useChapterCustomizations();
   const [q, setQ] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
   const [editing, setEditing] = useState<ChapterRef | null>(null);
 
   const chapters = useMemo(() => {
     if (!profile) return [];
-    return getChaptersForProfile(profile.classLevel).filter((c) => c.subject === subject);
-  }, [profile, subject]);
+    return getChaptersForProfile(profile.classLevel, customizations).filter((c) => c.subject === subject);
+  }, [profile, subject, customizations]);
 
   const filtered = useMemo(() => {
     const ql = q.trim().toLowerCase();
     const list = chapters.filter((c) => {
-      const name = chapterDisplayName(c, metaMap).toLowerCase();
+      const name = chapterDisplayName(c, metaMap, customizations).toLowerCase();
       return !ql || name.includes(ql);
     });
     return list.sort((a, b) => {
@@ -101,7 +102,7 @@ function SubjectPage() {
       const bp = getChapterMeta(b.key, metaMap).pinned ? 1 : 0;
       return bp - ap;
     });
-  }, [chapters, metaMap, q]);
+  }, [chapters, metaMap, customizations, q]);
 
   const meta = SUBJECT_META[subject as SubjectId];
   const totalCompletion =
@@ -166,7 +167,7 @@ function SubjectPage() {
             const cp = m.checkpoints ?? {};
             const done = CHECKPOINTS.reduce((n, x) => n + (cp[x.id] ? 1 : 0), 0);
             const pct = checkpointCompletion(cp);
-            const name = chapterDisplayName(c, metaMap);
+            const name = chapterDisplayName(c, metaMap, customizations);
             const isOpen = expanded === c.key;
             return (
               <div key={c.key} className="card-surface overflow-hidden">

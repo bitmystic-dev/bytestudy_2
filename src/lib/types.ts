@@ -40,21 +40,46 @@ export interface FocusSession {
   mode: "pomodoro" | "custom";
 }
 
+export type CheckpointId =
+  | "learned"
+  | "revised"
+  | "pyqs"
+  | "notes"
+  | "tests"
+  | "shortNotes";
+
+export const CHECKPOINTS: {
+  id: CheckpointId;
+  label: string;
+  hint: string;
+  icon: "book" | "refresh" | "clipboard" | "notebook" | "puzzle" | "zap";
+}[] = [
+  { id: "learned", label: "Learned / Covered", hint: "Chapter fully studied", icon: "book" },
+  { id: "revised", label: "Revised", hint: "1st revision done", icon: "refresh" },
+  { id: "pyqs", label: "PYQs Done", hint: "Previous year questions", icon: "clipboard" },
+  { id: "notes", label: "Notes Made", hint: "Written / digital notes", icon: "notebook" },
+  { id: "tests", label: "Test Given", hint: "Chapter test attempted", icon: "puzzle" },
+  { id: "shortNotes", label: "Short Notes / Flashcards", hint: "Quick revision ready", icon: "zap" },
+];
+
+export type CheckpointMap = Partial<Record<CheckpointId, boolean>>;
+
 export interface ChapterMeta {
   overrideName?: string;
-  completion: number; // 0-100
+  completion: number; // 0-100 (derived from checkpoints)
   revisionCount: number;
   notes: string;
   confidence: Confidence;
-  moduleProgress: number; // 0-100
-  dppProgress: number; // 0-100
-  pyqProgress: number; // 0-100
+  moduleProgress: number;
+  dppProgress: number;
+  pyqProgress: number;
   estimatedHours: number;
   actualHours: number;
   lastStudied?: number;
   nextRevision?: number;
   bookmarked: boolean;
   pinned: boolean;
+  checkpoints: CheckpointMap;
 }
 
 export const DEFAULT_CHAPTER_META: ChapterMeta = {
@@ -69,7 +94,15 @@ export const DEFAULT_CHAPTER_META: ChapterMeta = {
   actualHours: 0,
   bookmarked: false,
   pinned: false,
+  checkpoints: {},
 };
+
+export function checkpointCompletion(cp: CheckpointMap | undefined): number {
+  if (!cp) return 0;
+  const done = CHECKPOINTS.reduce((n, c) => n + (cp[c.id] ? 1 : 0), 0);
+  return Math.round((done / CHECKPOINTS.length) * 100);
+}
+
 
 export const SUBJECT_META: Record<
   SubjectId,

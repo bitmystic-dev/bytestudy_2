@@ -19,6 +19,7 @@ export type Database = {
           actual_hours: number
           bookmarked: boolean
           chapter_key: string
+          checkpoints: Json
           completion: number
           confidence: number
           dpp_progress: number
@@ -38,6 +39,7 @@ export type Database = {
           actual_hours?: number
           bookmarked?: boolean
           chapter_key: string
+          checkpoints?: Json
           completion?: number
           confidence?: number
           dpp_progress?: number
@@ -57,6 +59,7 @@ export type Database = {
           actual_hours?: number
           bookmarked?: boolean
           chapter_key?: string
+          checkpoints?: Json
           completion?: number
           confidence?: number
           dpp_progress?: number

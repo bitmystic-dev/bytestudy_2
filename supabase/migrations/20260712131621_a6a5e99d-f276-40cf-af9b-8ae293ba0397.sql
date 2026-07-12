@@ -1,0 +1,1 @@
+ALTER TABLE public.chapter_meta ADD COLUMN IF NOT EXISTS checkpoints jsonb NOT NULL DEFAULT '{}'::jsonb;

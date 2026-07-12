@@ -14,7 +14,28 @@ export interface Profile {
   sleepTime: string; // "23:00"
   weeklyOffDay: number; // 0-6, Sun=0
   createdAt: number;
+  /** Free-text description of how the user's institute conducts tests.
+   *  Used by AI recommendations. */
+  instituteTestsPattern: string;
 }
+
+export type TestStatus = "upcoming" | "completed" | "missed";
+
+export interface Test {
+  id: string;
+  name: string;
+  testDate: string; // ISO datetime
+  subjects: SubjectId[];
+  syllabus: string;
+  status: TestStatus;
+  score?: number;
+  maxScore?: number;
+  notes: string;
+  source: "manual" | "pdf" | "ai";
+  createdAt: number;
+  updatedAt: number;
+}
+
 
 export interface Mission {
   id: string;

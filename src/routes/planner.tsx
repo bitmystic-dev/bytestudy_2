@@ -28,12 +28,16 @@ function PlannerPage() {
   const [profile] = useProfile();
   const [missions, setMissions] = useMissions();
   const [metaMap] = useChapterMeta();
+  const [customizations] = useChapterCustomizations();
 
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<FilterId>("all");
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const chapters = useMemo(() => (profile ? getChaptersForProfile(profile.classLevel) : []), [profile]);
+  const chapters = useMemo(
+    () => (profile ? getChaptersForProfile(profile.classLevel, customizations) : []),
+    [profile, customizations],
+  );
 
   const filtered = useMemo(() => {
     let list = [...missions];

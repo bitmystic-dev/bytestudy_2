@@ -167,7 +167,7 @@ function SubjectPage() {
             const cp = m.checkpoints ?? {};
             const done = CHECKPOINTS.reduce((n, x) => n + (cp[x.id] ? 1 : 0), 0);
             const pct = checkpointCompletion(cp);
-            const name = chapterDisplayName(c, metaMap);
+            const name = chapterDisplayName(c, metaMap, customizations);
             const isOpen = expanded === c.key;
             return (
               <div key={c.key} className="card-surface overflow-hidden">

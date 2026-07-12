@@ -5,8 +5,8 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { ProgressRing } from "@/components/ProgressRing";
 import { EmptyState } from "@/components/EmptyState";
 import { useProfile, useChapterMeta } from "@/hooks/useCloud";
-import type { ChapterMeta, SubjectId } from "@/lib/types";
-import { DEFAULT_CHAPTER_META, SUBJECT_META } from "@/lib/types";
+import type { CheckpointId, ChapterMeta, SubjectId } from "@/lib/types";
+import { CHECKPOINTS, DEFAULT_CHAPTER_META, SUBJECT_META, checkpointCompletion } from "@/lib/types";
 import {
   chapterDisplayName,
   getChapterMeta,
@@ -14,11 +14,54 @@ import {
   type ChapterRef,
 } from "@/lib/chapters";
 import { SubjectIcon } from "@/components/SubjectIcon";
-import { ChevronLeft, Search, Pin, Bookmark, RotateCcw, Pencil, X, Minus, Plus } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronDown,
+  Search,
+  Pin,
+  Bookmark,
+  RotateCcw,
+  Pencil,
+  X,
+  BookOpen,
+  RefreshCcw,
+  ClipboardList,
+  NotebookPen,
+  Puzzle,
+  Zap,
+  Check,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SUBJECTS = new Set<SubjectId>(["physics", "chemistry", "mathematics"]);
 
+const CHECKPOINT_ICON = {
+  book: BookOpen,
+  refresh: RefreshCcw,
+  clipboard: ClipboardList,
+  notebook: NotebookPen,
+  puzzle: Puzzle,
+  zap: Zap,
+} as const;
+
+// Subject-specific checkpoint tint (bg + text) for the icon tile.
+const CHECKPOINT_TINT: Record<SubjectId, string> = {
+  physics: "bg-indigo-500/15 text-indigo-300 ring-indigo-400/20",
+  chemistry: "bg-emerald-500/15 text-emerald-300 ring-emerald-400/20",
+  mathematics: "bg-amber-500/15 text-amber-300 ring-amber-400/20",
+};
+
+const CHECKBOX_ACTIVE: Record<SubjectId, string> = {
+  physics: "bg-indigo-400 border-indigo-300 text-slate-900",
+  chemistry: "bg-emerald-400 border-emerald-300 text-slate-900",
+  mathematics: "bg-amber-400 border-amber-300 text-slate-900",
+};
+
+const PROGRESS_BAR: Record<SubjectId, string> = {
+  physics: "bg-indigo-400",
+  chemistry: "bg-emerald-400",
+  mathematics: "bg-amber-400",
+};
 
 export const Route = createFileRoute("/subjects/$subject")({
   parseParams: ({ subject }) => {
@@ -39,6 +82,7 @@ function SubjectPage() {
   const [profile] = useProfile();
   const [metaMap, setMetaMap] = useChapterMeta();
   const [q, setQ] = useState("");
+  const [expanded, setExpanded] = useState<string | null>(null);
   const [editing, setEditing] = useState<ChapterRef | null>(null);
 
   const chapters = useMemo(() => {
@@ -52,7 +96,6 @@ function SubjectPage() {
       const name = chapterDisplayName(c, metaMap).toLowerCase();
       return !ql || name.includes(ql);
     });
-    // Pinned first
     return list.sort((a, b) => {
       const ap = getChapterMeta(a.key, metaMap).pinned ? 1 : 0;
       const bp = getChapterMeta(b.key, metaMap).pinned ? 1 : 0;
@@ -63,11 +106,20 @@ function SubjectPage() {
   const meta = SUBJECT_META[subject as SubjectId];
   const totalCompletion =
     chapters.length > 0
-      ? chapters.reduce((s, c) => s + getChapterMeta(c.key, metaMap).completion, 0) / chapters.length
+      ? chapters.reduce(
+          (s, c) => s + checkpointCompletion(getChapterMeta(c.key, metaMap).checkpoints),
+          0,
+        ) / chapters.length
       : 0;
 
   const patch = (key: string, next: Partial<ChapterMeta>) =>
     setMetaMap((prev) => ({ ...prev, [key]: { ...prev[key], ...next } }));
+
+  const toggleCheckpoint = (key: string, id: CheckpointId) => {
+    const current = getChapterMeta(key, metaMap).checkpoints ?? {};
+    const nextCp = { ...current, [id]: !current[id] };
+    patch(key, { checkpoints: nextCp, completion: checkpointCompletion(nextCp) });
+  };
 
   if (!profile) return <AppShell><div /></AppShell>;
 
@@ -108,66 +160,146 @@ function SubjectPage() {
       {filtered.length === 0 ? (
         <EmptyState title="No chapters" description="Add chapters via class11.json / class12.json." />
       ) : (
-        <div className="space-y-2">
-          {filtered.map((c) => {
+        <div className="space-y-3">
+          {filtered.map((c, idx) => {
             const m = getChapterMeta(c.key, metaMap);
+            const cp = m.checkpoints ?? {};
+            const done = CHECKPOINTS.reduce((n, x) => n + (cp[x.id] ? 1 : 0), 0);
+            const pct = checkpointCompletion(cp);
             const name = chapterDisplayName(c, metaMap);
+            const isOpen = expanded === c.key;
             return (
-              <div key={c.key} className="card-surface p-4">
-                <div className="flex items-start gap-3">
-                  <ProgressRing value={m.completion} size={44} stroke={5} ringClassName={meta.ring}>
-                    <span className="text-[10px] font-semibold tabular-nums">{Math.round(m.completion)}</span>
-                  </ProgressRing>
+              <div key={c.key} className="card-surface overflow-hidden">
+                <button
+                  onClick={() => setExpanded(isOpen ? null : c.key)}
+                  className="flex w-full items-center gap-3 p-4 text-left"
+                >
+                  <span
+                    className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-semibold ring-1",
+                      CHECKPOINT_TINT[subject as SubjectId],
+                    )}
+                  >
+                    {idx + 1}
+                  </span>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        <div className="truncate text-[15px] font-medium">{name}</div>
-                        <div className="mt-0.5 text-[11px] text-muted-foreground">
-                          {profile.classLevel === "dropper" ? `Class ${c.classLevel} · ` : ""}
-                          Revisions {m.revisionCount} · Confidence {m.confidence}/5
-                        </div>
+                    <div className="truncate text-[15px] font-medium">{name}</div>
+                    <div className="mt-1 flex items-center gap-1.5">
+                      {CHECKPOINTS.map((x) => (
+                        <span
+                          key={x.id}
+                          className={cn(
+                            "flex h-4 w-4 items-center justify-center rounded text-[9px] font-bold ring-1",
+                            cp[x.id]
+                              ? CHECKBOX_ACTIVE[subject as SubjectId]
+                              : "bg-white/5 text-muted-foreground ring-white/10",
+                          )}
+                          title={x.label}
+                        >
+                          {x.label[0]}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                    {done}/{CHECKPOINTS.length}
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+                      isOpen && "rotate-180",
+                    )}
+                  />
+                </button>
+
+                {isOpen && (
+                  <div className="border-t border-white/5 px-4 pb-4 pt-2">
+                    <ul className="divide-y divide-white/5">
+                      {CHECKPOINTS.map((x) => {
+                        const Icon = CHECKPOINT_ICON[x.icon];
+                        const checked = !!cp[x.id];
+                        return (
+                          <li key={x.id}>
+                            <button
+                              onClick={() => toggleCheckpoint(c.key, x.id)}
+                              className="flex w-full items-center gap-3 py-3 text-left active:opacity-70"
+                            >
+                              <span
+                                className={cn(
+                                  "flex h-9 w-9 items-center justify-center rounded-xl ring-1",
+                                  CHECKPOINT_TINT[subject as SubjectId],
+                                )}
+                              >
+                                <Icon className="h-4 w-4" />
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <div
+                                  className={cn(
+                                    "text-[14px] font-medium",
+                                    checked ? "text-foreground" : "text-foreground/90",
+                                  )}
+                                >
+                                  {x.label}
+                                </div>
+                                <div className="text-[11px] text-muted-foreground">{x.hint}</div>
+                              </div>
+                              <span
+                                className={cn(
+                                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 transition-colors",
+                                  checked
+                                    ? CHECKBOX_ACTIVE[subject as SubjectId]
+                                    : "border-white/15 bg-transparent",
+                                )}
+                              >
+                                {checked && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+
+                    <div className="mt-3 flex items-center gap-3">
+                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/5">
+                        <div
+                          className={cn("h-full transition-all", PROGRESS_BAR[subject as SubjectId])}
+                          style={{ width: `${pct}%` }}
+                        />
                       </div>
-                      <button
-                        onClick={() => setEditing(c)}
-                        className="rounded-full p-1.5 text-muted-foreground active:scale-90"
-                        aria-label="Edit"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
+                      <span className="text-[11px] tabular-nums text-muted-foreground">{pct}%</span>
                     </div>
 
                     <div className="mt-3 flex items-center gap-2">
-                      <Stepper
-                        value={m.completion}
-                        onChange={(v) => patch(c.key, { completion: Math.max(0, Math.min(100, v)) })}
-                        step={10}
-                        suffix="%"
-                        min={0}
-                        max={100}
-                      />
                       <button
                         onClick={() => patch(c.key, { pinned: !m.pinned })}
                         className={cn(
-                          "flex h-8 w-8 items-center justify-center rounded-full",
+                          "flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-medium",
                           m.pinned ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground",
                         )}
-                        aria-label="Pin"
                       >
-                        <Pin className={cn("h-3.5 w-3.5", m.pinned && "fill-current")} />
+                        <Pin className={cn("h-3 w-3", m.pinned && "fill-current")} />
+                        {m.pinned ? "Pinned" : "Pin"}
                       </button>
                       <button
                         onClick={() => patch(c.key, { bookmarked: !m.bookmarked })}
                         className={cn(
-                          "flex h-8 w-8 items-center justify-center rounded-full",
+                          "flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-medium",
                           m.bookmarked ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground",
                         )}
-                        aria-label="Bookmark"
                       >
-                        <Bookmark className={cn("h-3.5 w-3.5", m.bookmarked && "fill-current")} />
+                        <Bookmark className={cn("h-3 w-3", m.bookmarked && "fill-current")} />
+                        {m.bookmarked ? "Saved" : "Save"}
+                      </button>
+                      <button
+                        onClick={() => setEditing(c)}
+                        className="ml-auto flex h-8 items-center gap-1.5 rounded-full bg-white/5 px-3 text-[11px] font-medium text-muted-foreground"
+                      >
+                        <Pencil className="h-3 w-3" />
+                        Rename
                       </button>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             );
           })}
@@ -184,45 +316,6 @@ function SubjectPage() {
         />
       )}
     </AppShell>
-  );
-}
-
-function Stepper({
-  value,
-  onChange,
-  step,
-  min = 0,
-  max = 100,
-  suffix,
-}: {
-  value: number;
-  onChange: (v: number) => void;
-  step: number;
-  min?: number;
-  max?: number;
-  suffix?: string;
-}) {
-  return (
-    <div className="flex flex-1 items-center justify-between rounded-full bg-white/5 px-1 py-0.5 ring-1 ring-white/10">
-      <button
-        onClick={() => onChange(Math.max(min, value - step))}
-        className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground active:scale-90"
-        aria-label="Decrease"
-      >
-        <Minus className="h-3.5 w-3.5" />
-      </button>
-      <span className="text-xs font-medium tabular-nums">
-        {Math.round(value)}
-        {suffix}
-      </span>
-      <button
-        onClick={() => onChange(Math.min(max, value + step))}
-        className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground active:scale-90"
-        aria-label="Increase"
-      >
-        <Plus className="h-3.5 w-3.5" />
-      </button>
-    </div>
   );
 }
 
@@ -290,48 +383,6 @@ function ChapterSheet({
             </p>
           </div>
 
-          <SliderRow label="Completion" value={m.completion} onChange={(v) => onChange({ completion: v })} />
-          <SliderRow label="Module" value={m.moduleProgress} onChange={(v) => onChange({ moduleProgress: v })} />
-          <SliderRow label="DPP" value={m.dppProgress} onChange={(v) => onChange({ dppProgress: v })} />
-          <SliderRow label="PYQ" value={m.pyqProgress} onChange={(v) => onChange({ pyqProgress: v })} />
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-white/[0.04] p-3 ring-1 ring-white/10">
-              <div className="text-[11px] text-muted-foreground">Revisions</div>
-              <div className="mt-1 flex items-center justify-between">
-                <button
-                  onClick={() => onChange({ revisionCount: Math.max(0, m.revisionCount - 1) })}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5"
-                >
-                  <Minus className="h-3.5 w-3.5" />
-                </button>
-                <span className="text-lg font-semibold tabular-nums">{m.revisionCount}</span>
-                <button
-                  onClick={() => onChange({ revisionCount: m.revisionCount + 1 })}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-white/[0.04] p-3 ring-1 ring-white/10">
-              <div className="text-[11px] text-muted-foreground">Confidence</div>
-              <div className="mt-2 flex gap-1">
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <button
-                    key={n}
-                    onClick={() => onChange({ confidence: (n as 1 | 2 | 3 | 4 | 5) === m.confidence ? 0 : (n as 1 | 2 | 3 | 4 | 5) })}
-                    className={cn(
-                      "h-6 flex-1 rounded",
-                      n <= m.confidence ? "bg-primary" : "bg-white/10",
-                    )}
-                    aria-label={`Confidence ${n}`}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
           <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/10">
             <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Notes
@@ -354,33 +405,6 @@ function ChapterSheet({
           Done
         </button>
       </div>
-    </div>
-  );
-}
-
-function SliderRow({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: number;
-  onChange: (v: number) => void;
-}) {
-  return (
-    <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/10">
-      <div className="mb-1 flex items-center justify-between text-xs">
-        <span className="font-medium text-muted-foreground">{label}</span>
-        <span className="text-foreground tabular-nums">{Math.round(value)}%</span>
-      </div>
-      <input
-        type="range"
-        min={0}
-        max={100}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-primary"
-      />
     </div>
   );
 }

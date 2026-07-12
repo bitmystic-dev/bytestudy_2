@@ -7,16 +7,11 @@ import { StatCard } from "@/components/StatCard";
 import { SubjectCard } from "@/components/SubjectCard";
 import { MissionCard } from "@/components/MissionCard";
 import { EmptyState } from "@/components/EmptyState";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
-import type { ChapterMeta, FocusSession, Mission, Profile, SubjectId } from "@/lib/types";
+import { useProfile, useMissions, useSessions, useChapterMeta } from "@/hooks/useCloud";
+import type { FocusSession, Mission, SubjectId } from "@/lib/types";
 import { chapterDisplayName, getChapterMeta, getChaptersForProfile } from "@/lib/chapters";
 import { dayKey, formatDuration, greetingFor } from "@/lib/format";
 import { useMemo } from "react";
-
-const EMPTY_META: Record<string, Partial<ChapterMeta>> = {};
-const EMPTY_MISSIONS: Mission[] = [];
-const EMPTY_SESSIONS: FocusSession[] = [];
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,10 +25,10 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const navigate = useNavigate();
-  const [profile] = useStore<Profile | null>(KEYS.profile, null);
-  const [metaMap] = useStore<Record<string, Partial<ChapterMeta>>>(KEYS.chapterMeta, EMPTY_META);
-  const [missions, setMissions] = useStore<Mission[]>(KEYS.missions, EMPTY_MISSIONS);
-  const [sessions] = useStore<FocusSession[]>(KEYS.sessions, EMPTY_SESSIONS);
+  const [profile] = useProfile();
+  const [metaMap] = useChapterMeta();
+  const [missions, setMissions] = useMissions();
+  const [sessions] = useSessions();
 
   const chapters = useMemo(() => (profile ? getChaptersForProfile(profile.classLevel) : []), [profile]);
 

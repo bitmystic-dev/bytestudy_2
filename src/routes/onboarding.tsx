@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, ArrowLeft, GraduationCap, Target, Clock, Building2, Moon, Sun } from "lucide-react";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
+import { useProfile } from "@/hooks/useCloud";
 import type { ClassLevel, Profile } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +40,7 @@ const emptyDraft: Draft = {
 };
 
 function OnboardingPage() {
-  const [, setProfile] = useStore<Profile | null>(KEYS.profile, null);
+  const [, setProfile] = useProfile();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Draft>(emptyDraft);

@@ -1,6 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, ArrowLeft, GraduationCap, Target, Clock, Building2, Moon, Sun } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowLeft,
+  GraduationCap,
+  Target,
+  Clock,
+  Building2,
+  Moon,
+  Sun,
+  Sparkles,
+} from "lucide-react";
 import { useProfile } from "@/hooks/useCloud";
 import type { ClassLevel, Profile } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -26,6 +36,7 @@ interface Draft {
   wakeTime: string;
   sleepTime: string;
   weeklyOffDay: number;
+  instituteTestsPattern: string;
 }
 
 const emptyDraft: Draft = {
@@ -37,7 +48,15 @@ const emptyDraft: Draft = {
   wakeTime: "06:30",
   sleepTime: "23:00",
   weeklyOffDay: 0,
+  instituteTestsPattern: "",
 };
+
+const TEST_CADENCE_PRESETS = [
+  "Weekly minor tests, monthly major tests covering full syllabus.",
+  "Fortnightly minor tests, monthly major tests, quarterly full-length tests.",
+  "Two minor tests every week, one full-length test each Sunday.",
+  "Only monthly major tests — no minor tests.",
+];
 
 function OnboardingPage() {
   const [, setProfile] = useProfile();
@@ -45,7 +64,7 @@ function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
 
-  const totalSteps = 6;
+  const totalSteps = 7;
 
   const update = <K extends keyof Draft>(k: K, v: Draft[K]) =>
     setDraft((d) => ({ ...d, [k]: v }));
@@ -64,6 +83,8 @@ function OnboardingPage() {
         return draft.dailyGoalMinutes >= 30;
       case 5:
         return !!draft.wakeTime && !!draft.sleepTime;
+      case 6:
+        return draft.instituteTestsPattern.trim().length >= 10;
       default:
         return true;
     }
@@ -71,7 +92,6 @@ function OnboardingPage() {
 
   const next = () => {
     if (step < totalSteps - 1) return setStep((s) => s + 1);
-    // finish
     if (draft.classLevel === "") return;
     const profile: Profile = {
       name: draft.name.trim(),
@@ -84,6 +104,7 @@ function OnboardingPage() {
       sleepTime: draft.sleepTime,
       weeklyOffDay: draft.weeklyOffDay,
       createdAt: Date.now(),
+      instituteTestsPattern: draft.instituteTestsPattern.trim(),
     };
     setProfile(profile);
     navigate({ to: "/", replace: true });
@@ -93,7 +114,6 @@ function OnboardingPage() {
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-[480px] flex-col px-6 pb-8 pt-[max(env(safe-area-inset-top),1.25rem)]">
-      {/* Progress */}
       <div className="mb-8 mt-4 flex items-center gap-2">
         {Array.from({ length: totalSteps }).map((_, i) => (
           <div
@@ -224,9 +244,44 @@ function OnboardingPage() {
             </div>
           </Step>
         )}
+
+        {step === 6 && (
+          <Step
+            title="How does your institute test?"
+            subtitle="Describe the rhythm of your minor and major tests. BytePrep AI uses this to personalise recommendations."
+            icon={Sparkles}
+          >
+            <textarea
+              autoFocus
+              rows={5}
+              value={draft.instituteTestsPattern}
+              onChange={(e) => update("instituteTestsPattern", e.target.value)}
+              placeholder="e.g. Every alternate Monday we have minor tests. Monthly major tests cover the entire syllabus."
+              className="mt-2 w-full resize-none rounded-2xl bg-white/5 px-5 py-4 text-[15px] leading-relaxed outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+            />
+            <div className="mt-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              Or pick a preset
+            </div>
+            <div className="mt-2 space-y-2">
+              {TEST_CADENCE_PRESETS.map((p) => (
+                <button
+                  key={p}
+                  onClick={() => update("instituteTestsPattern", p)}
+                  className={cn(
+                    "w-full rounded-2xl border px-4 py-3 text-left text-[13px] leading-snug transition-all",
+                    draft.instituteTestsPattern === p
+                      ? "border-primary/60 bg-primary/10 text-foreground"
+                      : "border-white/10 bg-white/[0.03] text-muted-foreground",
+                  )}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </Step>
+        )}
       </div>
 
-      {/* Footer nav */}
       <div className="mt-6 flex items-center gap-3">
         {step > 0 && (
           <button
@@ -247,7 +302,7 @@ function OnboardingPage() {
               : "bg-white/5 text-muted-foreground",
           )}
         >
-          {step === 5 ? "Finish" : "Continue"}
+          {step === totalSteps - 1 ? "Let's study" : "Continue"}
           <ArrowRight className="h-5 w-5" />
         </button>
       </div>

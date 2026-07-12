@@ -192,6 +192,7 @@ export type Database = {
           created_at: string
           daily_goal_minutes: number
           exam: string
+          institute_tests_pattern: string
           name: string
           onboarded: boolean
           sleep_time: string
@@ -207,6 +208,7 @@ export type Database = {
           created_at?: string
           daily_goal_minutes?: number
           exam?: string
+          institute_tests_pattern?: string
           name?: string
           onboarded?: boolean
           sleep_time?: string
@@ -222,6 +224,7 @@ export type Database = {
           created_at?: string
           daily_goal_minutes?: number
           exam?: string
+          institute_tests_pattern?: string
           name?: string
           onboarded?: boolean
           sleep_time?: string
@@ -230,6 +233,54 @@ export type Database = {
           user_id?: string
           wake_time?: string
           weekly_off_day?: number
+        }
+        Relationships: []
+      }
+      tests: {
+        Row: {
+          created_at: string
+          id: string
+          max_score: number | null
+          name: string
+          notes: string
+          score: number | null
+          source: string
+          status: string
+          subjects: string[]
+          syllabus: string
+          test_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          max_score?: number | null
+          name: string
+          notes?: string
+          score?: number | null
+          source?: string
+          status?: string
+          subjects?: string[]
+          syllabus?: string
+          test_date: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          max_score?: number | null
+          name?: string
+          notes?: string
+          score?: number | null
+          source?: string
+          status?: string
+          subjects?: string[]
+          syllabus?: string
+          test_date?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

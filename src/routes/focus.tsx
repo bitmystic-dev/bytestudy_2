@@ -234,7 +234,7 @@ function FocusPage() {
                 : "border-white/10 bg-white/[0.03] text-muted-foreground",
             )}
           >
-            {SUBJECT_META[s].label.slice(0, 5)}
+            {SUBJECT_META[s].label.slice(0, 4)}
           </button>
         ))}
       </div>

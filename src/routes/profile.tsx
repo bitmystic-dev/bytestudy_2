@@ -2,8 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
-import { useStore } from "@/hooks/useStore";
-import { KEYS, storage } from "@/lib/storage";
+import { useProfile, eraseAllUserData } from "@/hooks/useCloud";
+import { useAuth } from "@/lib/auth-context";
 import type { Profile } from "@/lib/types";
 import {
   ChevronRight,
@@ -13,6 +13,7 @@ import {
   Pencil,
   LogOut,
   BookOpen,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -27,31 +28,43 @@ export const Route = createFileRoute("/profile")({
 });
 
 function ProfilePage() {
-  const [profile, setProfile] = useStore<Profile | null>(KEYS.profile, null);
+  const [profile, setProfile] = useProfile();
+  const { user, signOut } = useAuth();
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
 
   if (!profile) return <AppShell><div /></AppShell>;
 
-  const reset = () => {
-    if (!confirm("Reset your profile? Your data will be cleared.")) return;
-    for (const k of Object.values(KEYS)) storage.remove(k);
+  const handleSignOut = async () => {
+    await signOut();
+    navigate({ to: "/auth", replace: true });
+  };
+
+  const handleErase = async () => {
+    if (!user) return;
+    if (!confirm("Erase ALL your BytePrep data (missions, sessions, chapters, profile)? This cannot be undone.")) return;
+    await eraseAllUserData(user.id);
     navigate({ to: "/onboarding", replace: true });
+    // Force reload so hooks re-fetch cleanly.
+    setTimeout(() => window.location.reload(), 200);
   };
 
   return (
     <AppShell>
       <header className="mb-6 flex items-center gap-4">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/20 text-primary text-xl font-semibold ring-1 ring-primary/30">
-          {profile.name.slice(0, 1).toUpperCase()}
+          {profile.name.slice(0, 1).toUpperCase() || "B"}
         </div>
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-xl font-semibold tracking-tight">{profile.name}</h1>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
             JEE {profile.targetYear} ·{" "}
             {profile.classLevel === "dropper" ? "Dropper" : `Class ${profile.classLevel}`}
             {profile.coaching ? ` · ${profile.coaching}` : ""}
           </p>
+          {user?.email && (
+            <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{user.email}</p>
+          )}
         </div>
         <button
           onClick={() => setEditing(true)}
@@ -101,13 +114,13 @@ function ProfilePage() {
           <div className="flex-1 text-sm font-medium">Settings</div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
-        <div className="flex items-center gap-3 px-4 py-3.5 opacity-60">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+        <div className="flex items-center gap-3 px-4 py-3.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-300">
             <Cloud className="h-4 w-4" />
           </div>
           <div className="flex-1">
             <div className="text-sm font-medium">Cloud sync</div>
-            <div className="text-[11px] text-muted-foreground">Coming soon</div>
+            <div className="text-[11px] text-muted-foreground">On · Data synced to your account</div>
           </div>
         </div>
         <div className="flex items-center gap-3 px-4 py-3.5">
@@ -121,12 +134,20 @@ function ProfilePage() {
         </div>
       </div>
 
-      <button
-        onClick={reset}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-destructive/10 py-3.5 text-sm font-medium text-destructive active:scale-[0.99]"
-      >
-        <LogOut className="h-4 w-4" /> Reset profile
-      </button>
+      <div className="mt-6 space-y-2">
+        <button
+          onClick={handleSignOut}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white/[0.04] py-3.5 text-sm font-medium ring-1 ring-white/10 active:scale-[0.99]"
+        >
+          <LogOut className="h-4 w-4" /> Sign out
+        </button>
+        <button
+          onClick={handleErase}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-destructive/10 py-3.5 text-sm font-medium text-destructive active:scale-[0.99]"
+        >
+          <Trash2 className="h-4 w-4" /> Erase all data
+        </button>
+      </div>
 
       {editing && (
         <EditProfileSheet

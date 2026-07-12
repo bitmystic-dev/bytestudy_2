@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import type {
@@ -496,8 +496,7 @@ export async function eraseAllUserData(userId: string) {
   ]);
 }
 
-// Memoized empty defaults for pages that want stable refs.
+// Stable empty defaults for pages that want reference equality.
 export const EMPTY_META: MetaMap = {};
 export const EMPTY_MISSIONS: Mission[] = [];
 export const EMPTY_SESSIONS: FocusSession[] = [];
-export const EMPTY_STABLE = useMemo; // keep useMemo import used

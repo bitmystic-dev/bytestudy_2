@@ -349,7 +349,7 @@ function MissionSheet({
                 <option value="">— None —</option>
                 {subjectChapters.map((c) => (
                   <option key={c.key} value={c.key}>
-                    {chapterDisplayName(c, metaMap)}
+                    {chapterDisplayName(c, metaMap, customizations)}
                     {profileLevel === "dropper" ? ` (Class ${c.classLevel})` : ""}
                   </option>
                 ))}

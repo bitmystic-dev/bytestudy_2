@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
-import { ChevronLeft, Bell, Download, Upload, Shield, Info, ListTree, ChevronRight } from "lucide-react";
+import { ChevronLeft, Bell, Download, Upload, Shield, Info, ListTree, ChevronRight, Calendar } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({

@@ -39,6 +39,7 @@ function rowToProfile(row: {
   weekly_off_day: number;
   onboarded: boolean;
   created_at: string;
+  institute_tests_pattern?: string | null;
 }): Profile | null {
   if (!row.onboarded || !row.class_level || !row.target_year) return null;
   return {
@@ -52,6 +53,7 @@ function rowToProfile(row: {
     sleepTime: row.sleep_time,
     weeklyOffDay: row.weekly_off_day,
     createdAt: new Date(row.created_at).getTime(),
+    instituteTestsPattern: row.institute_tests_pattern ?? "",
   };
 }
 
@@ -67,8 +69,10 @@ function profileToRow(p: Profile) {
     sleep_time: p.sleepTime,
     weekly_off_day: p.weeklyOffDay,
     onboarded: true,
+    institute_tests_pattern: p.instituteTestsPattern ?? "",
   };
 }
+
 
 // Shared module-level store so every useProfile() consumer sees the same
 // state — otherwise onboarding's local setProfile does not update the

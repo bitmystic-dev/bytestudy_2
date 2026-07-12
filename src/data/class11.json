@@ -3,9 +3,10 @@
   "subjects": {
     "physics": [
       "Units and Measurements",
-      "Motion in a Straight Line",
-      "Motion in a Plane",
-      "Laws of Motion",
+      "Rectilinear (1D) Motion",
+      "Projectile (2D) Motion",
+      "Relative Motion",
+      "Newton's Laws of Motion (NLM)", 
       "Work, Energy and Power",
       "System of Particles and Rotational Motion",
       "Gravitation",

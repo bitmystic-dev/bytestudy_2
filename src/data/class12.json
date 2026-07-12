@@ -1,0 +1,8 @@
+{
+  "class": 12,
+  "subjects": {
+    "physics": ["Demo Chapter"],
+    "chemistry": ["Demo Chapter"],
+    "mathematics": ["Demo Chapter"]
+  }
+}

@@ -70,19 +70,38 @@ function profileToRow(p: Profile) {
   };
 }
 
+// Shared module-level store so every useProfile() consumer sees the same
+// state — otherwise onboarding's local setProfile does not update the
+// AuthRouter's copy, and it redirects back to /onboarding on finish.
+type ProfileState = { profile: Profile | null; loading: boolean; userId: string | null };
+let profileState: ProfileState = { profile: null, loading: true, userId: null };
+const profileListeners = new Set<() => void>();
+function setProfileState(next: Partial<ProfileState>) {
+  profileState = { ...profileState, ...next };
+  profileListeners.forEach((l) => l());
+}
+
 export function useProfile(): [Profile | null, Setter<Profile | null>, boolean] {
   const { user, status } = useAuth();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [, force] = useState(0);
+
+  useEffect(() => {
+    const l = () => force((n) => n + 1);
+    profileListeners.add(l);
+    return () => {
+      profileListeners.delete(l);
+    };
+  }, []);
 
   useEffect(() => {
     if (status !== "authenticated" || !user) {
-      setProfile(null);
-      setLoading(status === "loading");
+      setProfileState({ profile: null, loading: status === "loading", userId: null });
       return;
     }
+    // Skip re-fetch if we already have this user's profile loaded.
+    if (profileState.userId === user.id && !profileState.loading) return;
     let cancelled = false;
-    setLoading(true);
+    setProfileState({ loading: true, userId: user.id });
     supabase
       .from("profiles")
       .select("*")
@@ -91,8 +110,11 @@ export function useProfile(): [Profile | null, Setter<Profile | null>, boolean] 
       .then(({ data, error }) => {
         if (cancelled) return;
         if (error) console.error("[profile] load", error);
-        setProfile(data ? rowToProfile(data) : null);
-        setLoading(false);
+        setProfileState({
+          profile: data ? rowToProfile(data) : null,
+          loading: false,
+          userId: user.id,
+        });
       });
     return () => {
       cancelled = true;
@@ -102,23 +124,21 @@ export function useProfile(): [Profile | null, Setter<Profile | null>, boolean] 
   const set: Setter<Profile | null> = useCallback(
     (updater) => {
       if (!user) return;
-      setProfile((prev) => {
-        const next = resolve(updater, prev);
-        if (next) {
-          supabase
-            .from("profiles")
-            .upsert({ user_id: user.id, ...profileToRow(next) })
-            .then(({ error }) => {
-              if (error) console.error("[profile] save", error);
-            });
-        }
-        return next;
-      });
+      const next = resolve(updater, profileState.profile);
+      setProfileState({ profile: next });
+      if (next) {
+        supabase
+          .from("profiles")
+          .upsert({ user_id: user.id, ...profileToRow(next) })
+          .then(({ error }) => {
+            if (error) console.error("[profile] save", error);
+          });
+      }
     },
     [user],
   );
 
-  return [profile, set, loading];
+  return [profileState.profile, set, profileState.loading];
 }
 
 // ---------- MISSIONS ----------

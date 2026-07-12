@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      chapter_customizations: {
+        Row: {
+          class_level: number
+          items: Json
+          subject: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          class_level: number
+          items?: Json
+          subject: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          class_level?: number
+          items?: Json
+          subject?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chapter_meta: {
         Row: {
           actual_hours: number

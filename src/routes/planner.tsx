@@ -2,15 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Search, ListTodo, X, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { SectionHeader } from "@/components/SectionHeader";
 import { MissionCard } from "@/components/MissionCard";
 import { EmptyState } from "@/components/EmptyState";
+import { ChapterPicker } from "@/components/ChapterPicker";
 import { useProfile, useMissions, useChapterMeta, useChapterCustomizations } from "@/hooks/useCloud";
 import type { Mission, Priority, Profile, SubjectId } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { chapterDisplayName, getChaptersForProfile } from "@/lib/chapters";
 import { uid } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+
 
 export const Route = createFileRoute("/planner")({
   head: () => ({
@@ -341,21 +343,18 @@ function MissionSheet({
           {subjectChapters.length > 0 && (
             <div>
               <div className="mb-2 text-xs font-medium text-muted-foreground">Chapter (optional)</div>
-              <select
-                value={chapterKey ?? ""}
-                onChange={(e) => setChapterKey(e.target.value || undefined)}
-                className="w-full rounded-2xl bg-white/[0.04] px-4 py-3 text-[14px] outline-none ring-1 ring-white/10"
-              >
-                <option value="">— None —</option>
-                {subjectChapters.map((c) => (
-                  <option key={c.key} value={c.key}>
-                    {chapterDisplayName(c, metaMap, customizations)}
-                    {profileLevel === "dropper" ? ` (Class ${c.classLevel})` : ""}
-                  </option>
-                ))}
-              </select>
+              <ChapterPicker
+                value={chapterKey}
+                onChange={setChapterKey}
+                chapters={subjectChapters}
+                metaMap={metaMap}
+                customizations={customizations}
+                placeholder="Select a chapter"
+                showClassPrefix={profileLevel === "dropper"}
+              />
             </div>
           )}
+
 
           <div className="grid grid-cols-2 gap-3">
             <div>

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
-import { ChevronLeft, Bell, Download, Upload, Shield, Info, ListTree, ChevronRight } from "lucide-react";
+import { ChevronLeft, Bell, Download, Upload, Shield, Info, ListTree, ChevronRight, Calendar } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -37,6 +37,18 @@ function SettingsPage() {
           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
         </Link>
       </div>
+
+      <SectionHeader title="Tests" />
+      <div className="card-surface divide-y divide-white/5">
+        <Link
+          to="/tests"
+          className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]"
+        >
+          <Tile icon={Calendar} label="Test schedule" hint="Track upcoming tests & results" />
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+        </Link>
+      </div>
+
 
       <SectionHeader title="Data" />
       <div className="card-surface divide-y divide-white/5">

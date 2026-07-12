@@ -5,16 +5,12 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { MissionCard } from "@/components/MissionCard";
 import { EmptyState } from "@/components/EmptyState";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
-import type { ChapterMeta, Mission, Priority, Profile, SubjectId } from "@/lib/types";
+import { useProfile, useMissions, useChapterMeta } from "@/hooks/useCloud";
+import type { Mission, Priority, Profile, SubjectId } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { chapterDisplayName, getChaptersForProfile } from "@/lib/chapters";
 import { uid } from "@/lib/format";
 import { cn } from "@/lib/utils";
-
-const EMPTY_MISSIONS: Mission[] = [];
-const EMPTY_META: Record<string, Partial<ChapterMeta>> = {};
 
 export const Route = createFileRoute("/planner")({
   head: () => ({
@@ -29,9 +25,9 @@ export const Route = createFileRoute("/planner")({
 type FilterId = "all" | "today" | "pending" | "done" | SubjectId;
 
 function PlannerPage() {
-  const [profile] = useStore<Profile | null>(KEYS.profile, null);
-  const [missions, setMissions] = useStore<Mission[]>(KEYS.missions, EMPTY_MISSIONS);
-  const [metaMap] = useStore<Record<string, Partial<ChapterMeta>>>(KEYS.chapterMeta, EMPTY_META);
+  const [profile] = useProfile();
+  const [missions, setMissions] = useMissions();
+  const [metaMap] = useChapterMeta();
 
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<FilterId>("all");
@@ -212,7 +208,7 @@ function EditWrapper({
   missions: Mission[];
   setMissions: (u: (p: Mission[]) => Mission[]) => void;
 }) {
-  const [profile] = useStore<Profile | null>(KEYS.profile, null);
+  const [profile] = useProfile();
   const [editing, setEditing] = useState<Mission | null>(null);
 
   useEffect(() => {
@@ -256,7 +252,7 @@ function MissionSheet({
   onDelete?: () => void;
   profileLevel?: Profile["classLevel"];
 }) {
-  const [metaMap] = useStore<Record<string, Partial<ChapterMeta>>>(KEYS.chapterMeta, EMPTY_META);
+  const [metaMap] = useChapterMeta();
   const chapters = useMemo(() => (profileLevel ? getChaptersForProfile(profileLevel) : []), [profileLevel]);
 
   const [title, setTitle] = useState(mission?.title ?? "");

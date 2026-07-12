@@ -1,12 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
+import { useChapterMeta } from "@/hooks/useCloud";
 import type { ChapterMeta } from "@/lib/types";
 import { ChevronLeft, RotateCcw, Bell, Download, Upload, Shield, Info, HardDrive } from "lucide-react";
-
-const EMPTY_META: Record<string, Partial<ChapterMeta>> = {};
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -19,10 +16,7 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const [metaMap, setMetaMap] = useStore<Record<string, Partial<ChapterMeta>>>(
-    KEYS.chapterMeta,
-    EMPTY_META,
-  );
+  const [metaMap, setMetaMap] = useChapterMeta();
 
   const overrideCount = Object.values(metaMap).filter((v) => v?.overrideName?.trim()).length;
 

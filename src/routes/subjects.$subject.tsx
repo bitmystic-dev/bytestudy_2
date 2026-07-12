@@ -4,9 +4,8 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ProgressRing } from "@/components/ProgressRing";
 import { EmptyState } from "@/components/EmptyState";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
-import type { ChapterMeta, Profile, SubjectId } from "@/lib/types";
+import { useProfile, useChapterMeta } from "@/hooks/useCloud";
+import type { ChapterMeta, SubjectId } from "@/lib/types";
 import { DEFAULT_CHAPTER_META, SUBJECT_META } from "@/lib/types";
 import {
   chapterDisplayName,
@@ -19,7 +18,7 @@ import { ChevronLeft, Search, Pin, Bookmark, RotateCcw, Pencil, X, Minus, Plus }
 import { cn } from "@/lib/utils";
 
 const SUBJECTS = new Set<SubjectId>(["physics", "chemistry", "mathematics"]);
-const EMPTY_META: Record<string, Partial<ChapterMeta>> = {};
+
 
 export const Route = createFileRoute("/subjects/$subject")({
   parseParams: ({ subject }) => {
@@ -37,11 +36,8 @@ export const Route = createFileRoute("/subjects/$subject")({
 
 function SubjectPage() {
   const { subject } = Route.useParams();
-  const [profile] = useStore<Profile | null>(KEYS.profile, null);
-  const [metaMap, setMetaMap] = useStore<Record<string, Partial<ChapterMeta>>>(
-    KEYS.chapterMeta,
-    EMPTY_META,
-  );
+  const [profile] = useProfile();
+  const [metaMap, setMetaMap] = useChapterMeta();
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<ChapterRef | null>(null);
 

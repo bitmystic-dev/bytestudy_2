@@ -13,9 +13,10 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { useStore } from "@/hooks/useStore";
-import { KEYS } from "@/lib/storage";
-import type { Profile } from "@/lib/types";
+import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { useProfile } from "@/hooks/useCloud";
+
+const PUBLIC_ROUTES = new Set(["/auth", "/reset-password"]);
 
 function NotFoundComponent() {
   return (
@@ -111,18 +112,56 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-function OnboardingGate() {
-  const [profile] = useStore<Profile | null>(KEYS.profile, null);
+function AuthRouter() {
+  const { status } = useAuth();
+  const [profile, , profileLoading] = useProfile();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  const isPublic = PUBLIC_ROUTES.has(pathname);
+
   useEffect(() => {
-    if (!profile && pathname !== "/onboarding") {
+    if (status === "loading") return;
+
+    if (status === "unauthenticated") {
+      if (!isPublic) navigate({ to: "/auth", replace: true });
+      return;
+    }
+
+    // authenticated
+    if (pathname === "/auth") {
+      navigate({ to: "/", replace: true });
+      return;
+    }
+
+    if (profileLoading) return;
+
+    if (!profile && pathname !== "/onboarding" && pathname !== "/reset-password") {
       navigate({ to: "/onboarding", replace: true });
     } else if (profile && pathname === "/onboarding") {
       navigate({ to: "/", replace: true });
     }
-  }, [profile, pathname, navigate]);
-  return null;
+  }, [status, profile, profileLoading, pathname, isPublic, navigate]);
+
+  // Splash while resolving initial session, but let public routes render immediately.
+  if (status === "loading" && !isPublic) return <SplashScreen />;
+  if (status === "authenticated" && profileLoading && pathname !== "/onboarding" && !isPublic) {
+    return <SplashScreen />;
+  }
+  return <Outlet />;
+}
+
+function SplashScreen() {
+  return (
+    <div className="mx-auto flex min-h-dvh max-w-[480px] items-center justify-center px-6">
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+        <span className="text-[11px] uppercase tracking-widest text-muted-foreground">
+          BytePrep
+        </span>
+      </div>
+    </div>
+  );
 }
 
 function RootComponent() {
@@ -130,8 +169,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <OnboardingGate />
-      <Outlet />
+      <AuthProvider>
+        <AuthRouter />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

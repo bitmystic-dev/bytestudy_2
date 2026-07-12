@@ -8,7 +8,10 @@ import type {
   Priority,
   Profile,
   SubjectId,
+  Test,
+  TestStatus,
 } from "@/lib/types";
+
 
 // ============================================================
 // Cloud-backed data hooks. Each hook returns `[value, setValue]`

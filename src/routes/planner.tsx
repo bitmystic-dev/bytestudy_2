@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { MissionCard } from "@/components/MissionCard";
 import { EmptyState } from "@/components/EmptyState";
-import { useProfile, useMissions, useChapterMeta } from "@/hooks/useCloud";
+import { useProfile, useMissions, useChapterMeta, useChapterCustomizations } from "@/hooks/useCloud";
 import type { Mission, Priority, Profile, SubjectId } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { chapterDisplayName, getChaptersForProfile } from "@/lib/chapters";

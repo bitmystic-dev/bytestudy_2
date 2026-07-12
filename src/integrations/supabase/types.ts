@@ -14,7 +14,198 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chapter_meta: {
+        Row: {
+          actual_hours: number
+          bookmarked: boolean
+          chapter_key: string
+          completion: number
+          confidence: number
+          dpp_progress: number
+          estimated_hours: number
+          last_studied: string | null
+          module_progress: number
+          next_revision: string | null
+          notes: string
+          override_name: string | null
+          pinned: boolean
+          pyq_progress: number
+          revision_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_hours?: number
+          bookmarked?: boolean
+          chapter_key: string
+          completion?: number
+          confidence?: number
+          dpp_progress?: number
+          estimated_hours?: number
+          last_studied?: string | null
+          module_progress?: number
+          next_revision?: string | null
+          notes?: string
+          override_name?: string | null
+          pinned?: boolean
+          pyq_progress?: number
+          revision_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_hours?: number
+          bookmarked?: boolean
+          chapter_key?: string
+          completion?: number
+          confidence?: number
+          dpp_progress?: number
+          estimated_hours?: number
+          last_studied?: string | null
+          module_progress?: number
+          next_revision?: string | null
+          notes?: string
+          override_name?: string | null
+          pinned?: boolean
+          pyq_progress?: number
+          revision_count?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      focus_sessions: {
+        Row: {
+          chapter_key: string | null
+          created_at: string
+          duration_sec: number
+          ended_at: string
+          id: string
+          mode: string
+          started_at: string
+          subject: string | null
+          user_id: string
+        }
+        Insert: {
+          chapter_key?: string | null
+          created_at?: string
+          duration_sec: number
+          ended_at: string
+          id?: string
+          mode?: string
+          started_at: string
+          subject?: string | null
+          user_id: string
+        }
+        Update: {
+          chapter_key?: string | null
+          created_at?: string
+          duration_sec?: number
+          ended_at?: string
+          id?: string
+          mode?: string
+          started_at?: string
+          subject?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      missions: {
+        Row: {
+          chapter_key: string | null
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          due_date: string | null
+          id: string
+          notes: string | null
+          pinned: boolean
+          priority: string
+          subject: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chapter_key?: string | null
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          pinned?: boolean
+          priority?: string
+          subject: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chapter_key?: string | null
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          pinned?: boolean
+          priority?: string
+          subject?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          class_level: string | null
+          coaching: string
+          created_at: string
+          daily_goal_minutes: number
+          exam: string
+          name: string
+          onboarded: boolean
+          sleep_time: string
+          target_year: number | null
+          updated_at: string
+          user_id: string
+          wake_time: string
+          weekly_off_day: number
+        }
+        Insert: {
+          class_level?: string | null
+          coaching?: string
+          created_at?: string
+          daily_goal_minutes?: number
+          exam?: string
+          name?: string
+          onboarded?: boolean
+          sleep_time?: string
+          target_year?: number | null
+          updated_at?: string
+          user_id: string
+          wake_time?: string
+          weekly_off_day?: number
+        }
+        Update: {
+          class_level?: string | null
+          coaching?: string
+          created_at?: string
+          daily_goal_minutes?: number
+          exam?: string
+          name?: string
+          onboarded?: boolean
+          sleep_time?: string
+          target_year?: number | null
+          updated_at?: string
+          user_id?: string
+          wake_time?: string
+          weekly_off_day?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

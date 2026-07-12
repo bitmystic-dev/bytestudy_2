@@ -4,7 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
 import { StatCard } from "@/components/StatCard";
 import { EmptyState } from "@/components/EmptyState";
-import { useProfile, useMissions, useSessions, useChapterMeta } from "@/hooks/useCloud";
+import { useProfile, useMissions, useSessions, useChapterMeta, useChapterCustomizations } from "@/hooks/useCloud";
 import type { SubjectId } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { dayKey, formatDuration } from "@/lib/format";

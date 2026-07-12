@@ -1,16 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, ListTodo, X, Trash2, Calendar, ChevronRight } from "lucide-react";
+import { Plus, Search, ListTodo, X, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { MissionCard } from "@/components/MissionCard";
 import { EmptyState } from "@/components/EmptyState";
 import { ChapterPicker } from "@/components/ChapterPicker";
-import { useProfile, useMissions, useChapterMeta, useChapterCustomizations, useTests } from "@/hooks/useCloud";
+import { useProfile, useMissions, useChapterMeta, useChapterCustomizations } from "@/hooks/useCloud";
 import type { Mission, Priority, Profile, SubjectId } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { chapterDisplayName, getChaptersForProfile } from "@/lib/chapters";
 import { uid } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
 
 
 export const Route = createFileRoute("/planner")({

@@ -17,6 +17,41 @@ export interface Profile {
   /** Free-text description of how the user's institute conducts tests.
    *  Used by AI recommendations. */
   instituteTestsPattern: string;
+  /** Server-controlled. True only for admin accounts. Never editable by the user. */
+  adminRights: boolean;
+}
+
+// ============================================================
+// AI Mentor Personalization — persisted server-side. All fields
+// optional so partial completions still store safely.
+// ============================================================
+
+export interface AiPersonalization {
+  // 1. How preparation has been going
+  prepFeeling?: string;
+  // 2. When they began preparing seriously
+  prepStarted?: string;
+  prepStartedHow?: string; // Coaching / Self-study / Both
+  // 3. Syllabus coverage
+  syllabusCovered?: string;
+  // 4. Biggest blockers (up to 2)
+  blockers?: string[];
+  // 5. Most productive time
+  productiveTime?: string;
+  // 6. Mentoring style
+  mentoringStyle?: string;
+  // 7. Weekdays
+  weekdayFreeSlots?: string[];
+  weekdayHours?: string;
+  // 8. Weekends
+  weekendFreeSlots?: string[];
+  weekendHours?: string;
+  // 9. Institute tests
+  testsPattern?: string; // canonical option
+  testsPatternCustom?: string; // free text if "Other"
+  // 10. Recent scores
+  recentScores?: string;
+  scoreRange?: string;
 }
 
 export type TestStatus = "upcoming" | "completed" | "missed";

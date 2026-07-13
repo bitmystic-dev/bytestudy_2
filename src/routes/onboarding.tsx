@@ -242,42 +242,6 @@ function OnboardingPage() {
             </div>
           </Step>
         )}
-
-        {step === 6 && (
-          <Step
-            title="How does your institute test?"
-            subtitle="Describe the rhythm of your minor and major tests. BytePrep AI uses this to personalise recommendations."
-            icon={Sparkles}
-          >
-            <textarea
-              autoFocus
-              rows={5}
-              value={draft.instituteTestsPattern}
-              onChange={(e) => update("instituteTestsPattern", e.target.value)}
-              placeholder="e.g. Every alternate Monday we have minor tests. Monthly major tests cover the entire syllabus."
-              className="mt-2 w-full resize-none rounded-2xl bg-white/5 px-5 py-4 text-[15px] leading-relaxed outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
-            />
-            <div className="mt-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              Or pick a preset
-            </div>
-            <div className="mt-2 space-y-2">
-              {TEST_CADENCE_PRESETS.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => update("instituteTestsPattern", p)}
-                  className={cn(
-                    "w-full rounded-2xl border px-4 py-3 text-left text-[13px] leading-snug transition-all",
-                    draft.instituteTestsPattern === p
-                      ? "border-primary/60 bg-primary/10 text-foreground"
-                      : "border-white/10 bg-white/[0.03] text-muted-foreground",
-                  )}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-          </Step>
-        )}
       </div>
 
       <div className="mt-6 flex items-center gap-3">

@@ -12,7 +12,10 @@ export interface ChapterRef {
   isCustom: boolean;
   customId?: string;
   defaultIndex?: number; // original index in the JSON list, only for defaults
+  important?: boolean; // JSON's `imp === "yes"`
 }
+
+type RawChapter = string | { name: string; imp?: string };
 
 const SUBJECTS: SubjectId[] = ["physics", "chemistry", "mathematics"];
 

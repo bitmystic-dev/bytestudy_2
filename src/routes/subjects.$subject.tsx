@@ -119,7 +119,21 @@ function SubjectPage() {
 
   const toggleCheckpoint = (key: string, id: CheckpointId) => {
     const current = getChapterMeta(key, metaMap).checkpoints ?? {};
-    const nextCp = { ...current, [id]: !current[id] };
+    const willBe = !current[id];
+    // P6: marking a chapter as "learned" cascades to fully-completed.
+    if (id === "learned" && willBe) {
+      const allDone: Record<CheckpointId, boolean> = {
+        learned: true,
+        revised: true,
+        pyqs: true,
+        notes: true,
+        tests: true,
+        shortNotes: true,
+      };
+      patch(key, { checkpoints: allDone, completion: 100 });
+      return;
+    }
+    const nextCp = { ...current, [id]: willBe };
     patch(key, { checkpoints: nextCp, completion: checkpointCompletion(nextCp) });
   };
 

@@ -50,12 +50,6 @@ const emptyDraft: Draft = {
   instituteTestsPattern: "",
 };
 
-const TEST_CADENCE_PRESETS = [
-  "Weekly minor tests, monthly major tests covering full syllabus.",
-  "Fortnightly minor tests, monthly major tests, quarterly full-length tests.",
-  "Two minor tests every week, one full-length test each Sunday.",
-  "Only monthly major tests — no minor tests.",
-];
 
 function OnboardingPage() {
   const [, setProfile] = useProfile();

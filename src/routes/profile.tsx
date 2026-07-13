@@ -109,6 +109,31 @@ function ProfilePage() {
         </Link>
       </div>
 
+      <SectionHeader title="Study tools" />
+      <div className="card-surface divide-y divide-white/5">
+        <Link to="/analytics" className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+            <BarChart3 className="h-4 w-4" />
+          </div>
+          <div className="flex-1 text-sm font-medium">Analytics</div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+        <Link to="/tests" className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+            <Calendar className="h-4 w-4" />
+          </div>
+          <div className="flex-1 text-sm font-medium">Test schedule</div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+        <Link to="/settings" className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+            <SettingsIcon className="h-4 w-4" />
+          </div>
+          <div className="flex-1 text-sm font-medium">Settings</div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
+      </div>
+
       <SectionHeader title="App" />
       <div className="card-surface divide-y divide-white/5">
         <div className="flex items-center gap-3 px-4 py-3.5">

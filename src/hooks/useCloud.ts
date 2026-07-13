@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import type {
+  AiPersonalization,
   ChapterMeta,
   FocusSession,
   Mission,
@@ -43,6 +44,7 @@ function rowToProfile(row: {
   onboarded: boolean;
   created_at: string;
   institute_tests_pattern?: string | null;
+  admin_rights?: boolean | null;
 }): Profile | null {
   if (!row.onboarded || !row.class_level || !row.target_year) return null;
   return {
@@ -57,6 +59,7 @@ function rowToProfile(row: {
     weeklyOffDay: row.weekly_off_day,
     createdAt: new Date(row.created_at).getTime(),
     instituteTestsPattern: row.institute_tests_pattern ?? "",
+    adminRights: row.admin_rights ?? false,
   };
 }
 
@@ -753,4 +756,206 @@ export function useTests(): [Test[], Setter<Test[]>, boolean] {
   );
 
   return [tests, set, loading];
+}
+
+// ---------- AI PERSONALIZATION ----------
+
+interface AiPersonalizationRow {
+  data: AiPersonalization;
+  completed_at: string | null;
+  skipped: boolean;
+}
+
+interface AiPersonalizationState {
+  data: AiPersonalization;
+  completedAt: number | null;
+  skipped: boolean;
+}
+
+const EMPTY_PERSONALIZATION: AiPersonalizationState = {
+  data: {},
+  completedAt: null,
+  skipped: false,
+};
+
+export function useAiPersonalization(): [
+  AiPersonalizationState,
+  Setter<AiPersonalizationState>,
+  boolean,
+] {
+  const { user, status } = useAuth();
+  const [state, setState] = useState<AiPersonalizationState>(EMPTY_PERSONALIZATION);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !user) {
+      setState(EMPTY_PERSONALIZATION);
+      setLoading(status === "loading");
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    supabase
+      .from("ai_personalization")
+      .select("data, completed_at, skipped")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) console.error("[ai_personalization] load", error);
+        if (data) {
+          const row = data as unknown as AiPersonalizationRow;
+          setState({
+            data: (row.data ?? {}) as AiPersonalization,
+            completedAt: row.completed_at ? new Date(row.completed_at).getTime() : null,
+            skipped: row.skipped ?? false,
+          });
+        } else {
+          setState(EMPTY_PERSONALIZATION);
+        }
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, status]);
+
+  const set: Setter<AiPersonalizationState> = useCallback(
+    (updater) => {
+      if (!user) return;
+      setState((prev) => {
+        const next = resolve(updater, prev);
+        supabase
+          .from("ai_personalization")
+          .upsert({
+            user_id: user.id,
+            data: next.data as unknown as import("@/integrations/supabase/types").Json,
+            completed_at: next.completedAt ? new Date(next.completedAt).toISOString() : null,
+            skipped: next.skipped,
+          })
+          .then(({ error }) => error && console.error("[ai_personalization] upsert", error));
+        return next;
+      });
+    },
+    [user],
+  );
+
+  return [state, set, loading];
+}
+
+// ---------- ALLEN CREDENTIALS (admin only) ----------
+
+export interface AllenCredentials {
+  formId: string;
+  password: string;
+  updatedAt: number;
+}
+
+export function useAllenCredentials(): [
+  AllenCredentials | null,
+  (creds: Omit<AllenCredentials, "updatedAt"> | null) => Promise<void>,
+  boolean,
+] {
+  const { user, status } = useAuth();
+  const [creds, setCreds] = useState<AllenCredentials | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !user) {
+      setCreds(null);
+      setLoading(status === "loading");
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    supabase
+      .from("allen_credentials")
+      .select("form_id, password, updated_at")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error && error.code !== "PGRST116") console.error("[allen_credentials] load", error);
+        if (data) {
+          setCreds({
+            formId: data.form_id,
+            password: data.password,
+            updatedAt: new Date(data.updated_at).getTime(),
+          });
+        } else {
+          setCreds(null);
+        }
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, status]);
+
+  const save = useCallback(
+    async (input: Omit<AllenCredentials, "updatedAt"> | null) => {
+      if (!user) return;
+      if (input === null) {
+        await supabase.from("allen_credentials").delete().eq("user_id", user.id);
+        setCreds(null);
+        return;
+      }
+      const { error } = await supabase.from("allen_credentials").upsert({
+        user_id: user.id,
+        form_id: input.formId,
+        password: input.password,
+      });
+      if (error) throw error;
+      setCreds({ ...input, updatedAt: Date.now() });
+    },
+    [user],
+  );
+
+  return [creds, save, loading];
+}
+
+// ---------- ALLEN SYNC STATE ----------
+
+export interface AllenSyncState {
+  lastSyncAt: number | null;
+  lastStatus: string | null;
+  lastError: string | null;
+}
+
+export function useAllenSyncState(): [AllenSyncState, () => Promise<void>, boolean] {
+  const { user, status } = useAuth();
+  const [state, setState] = useState<AllenSyncState>({
+    lastSyncAt: null,
+    lastStatus: null,
+    lastError: null,
+  });
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("allen_sync_state")
+      .select("last_sync_at, last_status, last_error")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (error && error.code !== "PGRST116") console.error("[allen_sync_state] load", error);
+    if (data) {
+      setState({
+        lastSyncAt: data.last_sync_at ? new Date(data.last_sync_at).getTime() : null,
+        lastStatus: data.last_status,
+        lastError: data.last_error,
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !user) {
+      setLoading(status === "loading");
+      return;
+    }
+    setLoading(true);
+    refresh().finally(() => setLoading(false));
+  }, [user, status, refresh]);
+
+  return [state, refresh, loading];
 }

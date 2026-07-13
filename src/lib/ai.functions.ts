@@ -119,12 +119,21 @@ const ChatInput = z.object({
     .optional(),
   personalization: z
     .object({
-      studyStyle: z.string().optional(),
-      biggestStruggle: z.string().optional(),
-      strongSubject: z.string().optional(),
-      weakSubject: z.string().optional(),
-      hoursPerDay: z.string().optional(),
-      motivationTrigger: z.string().optional(),
+      prepFeeling: z.string().optional(),
+      prepStarted: z.string().optional(),
+      prepStartedHow: z.string().optional(),
+      syllabusCovered: z.string().optional(),
+      blockers: z.array(z.string()).optional(),
+      productiveTime: z.string().optional(),
+      mentoringStyle: z.string().optional(),
+      weekdayFreeSlots: z.array(z.string()).optional(),
+      weekdayHours: z.string().optional(),
+      weekendFreeSlots: z.array(z.string()).optional(),
+      weekendHours: z.string().optional(),
+      testsPattern: z.string().optional(),
+      testsPatternCustom: z.string().optional(),
+      recentScores: z.string().optional(),
+      scoreRange: z.string().optional(),
     })
     .optional(),
 });
@@ -151,13 +160,30 @@ export const aiChat = createServerFn({ method: "POST" })
       .filter(Boolean)
       .join("\n");
 
+    const testsPattern =
+      per.testsPattern === "Other" && per.testsPatternCustom
+        ? per.testsPatternCustom
+        : per.testsPattern;
+
     const personalBlock = [
-      per.studyStyle ? `Study style: ${per.studyStyle}` : null,
-      per.biggestStruggle ? `Biggest struggle: ${per.biggestStruggle}` : null,
-      per.strongSubject ? `Strongest subject: ${per.strongSubject}` : null,
-      per.weakSubject ? `Weakest subject: ${per.weakSubject}` : null,
-      per.hoursPerDay ? `Time available per day: ${per.hoursPerDay}` : null,
-      per.motivationTrigger ? `Motivation trigger: ${per.motivationTrigger}` : null,
+      per.prepFeeling ? `Prep vibe: ${per.prepFeeling}` : null,
+      per.prepStarted ? `Started prep: ${per.prepStarted}` : null,
+      per.prepStartedHow ? `Prep mode: ${per.prepStartedHow}` : null,
+      per.syllabusCovered ? `Syllabus covered: ${per.syllabusCovered}` : null,
+      per.blockers?.length ? `Blockers: ${per.blockers.join(", ")}` : null,
+      per.productiveTime ? `Most productive: ${per.productiveTime}` : null,
+      per.mentoringStyle ? `Preferred mentoring style: ${per.mentoringStyle}` : null,
+      per.weekdayFreeSlots?.length
+        ? `Weekday free slots: ${per.weekdayFreeSlots.join(", ")}`
+        : null,
+      per.weekdayHours ? `Weekday hours/day: ${per.weekdayHours}` : null,
+      per.weekendFreeSlots?.length
+        ? `Weekend free slots: ${per.weekendFreeSlots.join(", ")}`
+        : null,
+      per.weekendHours ? `Weekend hours/day: ${per.weekendHours}` : null,
+      testsPattern ? `Institute tests: ${testsPattern}` : null,
+      per.recentScores ? `Recent test scores: ${per.recentScores}` : null,
+      per.scoreRange ? `Typical score range: ${per.scoreRange}` : null,
     ]
       .filter(Boolean)
       .join("\n");
@@ -169,6 +195,7 @@ export const aiChat = createServerFn({ method: "POST" })
       "Never re-ask information you already have. Use it directly.",
       "Prefer concrete, actionable advice: names of chapters, hours, techniques, timelines.",
       "When motivating, be genuine and specific — not corny.",
+      "Match the student's preferred mentoring style precisely: 'Short & direct' = terse; 'Detailed explanations' = explain the why; 'Step-by-step guidance' = numbered steps; 'Push me harder' = firm and challenging; 'Encourage me' = warm and affirming.",
       profileBlock ? `Student profile:\n${profileBlock}` : null,
       personalBlock ? `Personalization:\n${personalBlock}` : null,
     ]

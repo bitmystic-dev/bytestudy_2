@@ -20,6 +20,7 @@ import { Route as FocusRouteImport } from './routes/focus'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AiRouteImport } from './routes/ai'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SubjectsSubjectRouteImport } from './routes/subjects.$subject'
 
@@ -78,6 +79,11 @@ const AiRoute = AiRouteImport.update({
   path: '/ai',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -91,6 +97,7 @@ const SubjectsSubjectRoute = SubjectsSubjectRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
@@ -122,6 +130,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/ai'
     | '/analytics'
     | '/auth'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/ai'
     | '/analytics'
     | '/auth'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/ai'
     | '/analytics'
     | '/auth'
@@ -185,6 +197,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AiRoute: typeof AiRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
@@ -278,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -297,6 +317,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AiRoute: AiRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
@@ -313,13 +334,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

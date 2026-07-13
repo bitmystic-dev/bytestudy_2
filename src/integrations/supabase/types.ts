@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_personalization: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          data: Json
+          skipped: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          data?: Json
+          skipped?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          data?: Json
+          skipped?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      allen_credentials: {
+        Row: {
+          created_at: string
+          form_id: string
+          password: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          form_id: string
+          password: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          form_id?: string
+          password?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      allen_sync_state: {
+        Row: {
+          created_at: string
+          homework_cursor: Json
+          last_error: string | null
+          last_status: string | null
+          last_sync_at: string | null
+          tests_cursor: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          homework_cursor?: Json
+          last_error?: string | null
+          last_status?: string | null
+          last_sync_at?: string | null
+          tests_cursor?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          homework_cursor?: Json
+          last_error?: string | null
+          last_status?: string | null
+          last_sync_at?: string | null
+          tests_cursor?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chapter_customizations: {
         Row: {
           class_level: number
@@ -144,10 +228,12 @@ export type Database = {
           completed_at: string | null
           created_at: string
           due_date: string | null
+          external_id: string | null
           id: string
           notes: string | null
           pinned: boolean
           priority: string
+          source: string
           subject: string
           title: string
           updated_at: string
@@ -159,10 +245,12 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           due_date?: string | null
+          external_id?: string | null
           id?: string
           notes?: string | null
           pinned?: boolean
           priority?: string
+          source?: string
           subject: string
           title: string
           updated_at?: string
@@ -174,10 +262,12 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           due_date?: string | null
+          external_id?: string | null
           id?: string
           notes?: string | null
           pinned?: boolean
           priority?: string
+          source?: string
           subject?: string
           title?: string
           updated_at?: string
@@ -187,6 +277,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          admin_rights: boolean
           class_level: string | null
           coaching: string
           created_at: string
@@ -203,6 +294,7 @@ export type Database = {
           weekly_off_day: number
         }
         Insert: {
+          admin_rights?: boolean
           class_level?: string | null
           coaching?: string
           created_at?: string
@@ -219,6 +311,7 @@ export type Database = {
           weekly_off_day?: number
         }
         Update: {
+          admin_rights?: boolean
           class_level?: string | null
           coaching?: string
           created_at?: string
@@ -239,6 +332,7 @@ export type Database = {
       tests: {
         Row: {
           created_at: string
+          external_id: string | null
           id: string
           max_score: number | null
           name: string
@@ -254,6 +348,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          external_id?: string | null
           id?: string
           max_score?: number | null
           name: string
@@ -269,6 +364,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          external_id?: string | null
           id?: string
           max_score?: number | null
           name?: string
@@ -289,7 +385,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

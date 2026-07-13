@@ -83,11 +83,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AiRoute = AiRouteImport.update({
-  id: '/ai',
-  path: '/ai',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SubjectsSubjectRoute = SubjectsSubjectRouteImport.update({
   id: '/subjects/$subject',
   path: '/subjects/$subject',

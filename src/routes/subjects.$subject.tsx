@@ -199,7 +199,15 @@ function SubjectPage() {
                     {idx + 1}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[15px] font-medium">{name}</div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="truncate text-[15px] font-medium">{name}</div>
+                      {c.important && (
+                        <Star
+                          className="h-3.5 w-3.5 shrink-0 fill-amber-300 text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]"
+                          aria-label="Important chapter"
+                        />
+                      )}
+                    </div>
                     <div className="mt-1 flex items-center gap-1.5">
                       {CHECKPOINTS.map((x) => (
                         <span

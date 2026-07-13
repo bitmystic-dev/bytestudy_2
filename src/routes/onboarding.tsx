@@ -96,6 +96,7 @@ function OnboardingPage() {
       weeklyOffDay: draft.weeklyOffDay,
       createdAt: Date.now(),
       instituteTestsPattern: draft.instituteTestsPattern.trim(),
+      adminRights: false, // server trigger will override for the admin email
     };
     setProfile(profile);
     navigate({ to: "/", replace: true });

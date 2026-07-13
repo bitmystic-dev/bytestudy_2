@@ -64,7 +64,7 @@ function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
 
-  const totalSteps = 7;
+  const totalSteps = 6;
 
   const update = <K extends keyof Draft>(k: K, v: Draft[K]) =>
     setDraft((d) => ({ ...d, [k]: v }));

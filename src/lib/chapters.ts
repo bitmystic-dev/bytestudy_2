@@ -46,8 +46,28 @@ export function customChapterKey(classLevel: 11 | 12, subject: SubjectId, id: st
 
 // Default source-of-truth chapter names for a class+subject.
 export function getDefaultChapterNames(classLevel: 11 | 12, subject: SubjectId): string[] {
+  return getDefaultChapterEntries(classLevel, subject).map((e) => e.name);
+}
+
+export function getDefaultChapterEntries(
+  classLevel: 11 | 12,
+  subject: SubjectId,
+): { name: string; important: boolean }[] {
   const bucket = classLevel === 11 ? class11 : class12;
-  return ((bucket.subjects as Record<SubjectId, string[]>)[subject] ?? []).slice();
+  const raw = ((bucket.subjects as Record<SubjectId, RawChapter[]>)[subject] ?? []);
+  return raw.map((entry) =>
+    typeof entry === "string"
+      ? { name: entry, important: false }
+      : { name: entry.name, important: (entry.imp ?? "").toLowerCase() === "yes" },
+  );
+}
+
+export function isDefaultChapterImportant(
+  classLevel: 11 | 12,
+  subject: SubjectId,
+  defaultIndex: number,
+): boolean {
+  return getDefaultChapterEntries(classLevel, subject)[defaultIndex]?.important ?? false;
 }
 
 function subjectClasses(level: ClassLevel): (11 | 12)[] {

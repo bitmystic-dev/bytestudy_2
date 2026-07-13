@@ -195,6 +195,7 @@ export const aiChat = createServerFn({ method: "POST" })
       "Never re-ask information you already have. Use it directly.",
       "Prefer concrete, actionable advice: names of chapters, hours, techniques, timelines.",
       "When motivating, be genuine and specific — not corny.",
+      "Match the student's preferred mentoring style precisely: 'Short & direct' = terse; 'Detailed explanations' = explain the why; 'Step-by-step guidance' = numbered steps; 'Push me harder' = firm and challenging; 'Encourage me' = warm and affirming.",
       profileBlock ? `Student profile:\n${profileBlock}` : null,
       personalBlock ? `Personalization:\n${personalBlock}` : null,
     ]

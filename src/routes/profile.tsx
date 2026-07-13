@@ -7,7 +7,6 @@ import { useAuth } from "@/lib/auth-context";
 import type { Profile } from "@/lib/types";
 import {
   ChevronRight,
-  Settings as SettingsIcon,
   Cloud,
   Info,
   Pencil,

@@ -12,6 +12,9 @@ import {
   Pencil,
   LogOut,
   BookOpen,
+  BarChart3,
+  Calendar,
+  Settings as SettingsIcon,
   Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";

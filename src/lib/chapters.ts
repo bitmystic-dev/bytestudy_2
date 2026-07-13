@@ -12,7 +12,10 @@ export interface ChapterRef {
   isCustom: boolean;
   customId?: string;
   defaultIndex?: number; // original index in the JSON list, only for defaults
+  important?: boolean; // JSON's `imp === "yes"`
 }
+
+type RawChapter = string | { name: string; imp?: string };
 
 const SUBJECTS: SubjectId[] = ["physics", "chemistry", "mathematics"];
 
@@ -43,8 +46,28 @@ export function customChapterKey(classLevel: 11 | 12, subject: SubjectId, id: st
 
 // Default source-of-truth chapter names for a class+subject.
 export function getDefaultChapterNames(classLevel: 11 | 12, subject: SubjectId): string[] {
+  return getDefaultChapterEntries(classLevel, subject).map((e) => e.name);
+}
+
+export function getDefaultChapterEntries(
+  classLevel: 11 | 12,
+  subject: SubjectId,
+): { name: string; important: boolean }[] {
   const bucket = classLevel === 11 ? class11 : class12;
-  return ((bucket.subjects as Record<SubjectId, string[]>)[subject] ?? []).slice();
+  const raw = ((bucket.subjects as Record<SubjectId, RawChapter[]>)[subject] ?? []);
+  return raw.map((entry) =>
+    typeof entry === "string"
+      ? { name: entry, important: false }
+      : { name: entry.name, important: (entry.imp ?? "").toLowerCase() === "yes" },
+  );
+}
+
+export function isDefaultChapterImportant(
+  classLevel: 11 | 12,
+  subject: SubjectId,
+  defaultIndex: number,
+): boolean {
+  return getDefaultChapterEntries(classLevel, subject)[defaultIndex]?.important ?? false;
 }
 
 function subjectClasses(level: ClassLevel): (11 | 12)[] {
@@ -60,38 +83,34 @@ function buildMergedForSubject(
   subject: SubjectId,
   customizations?: CustomizationMap,
 ): ChapterRef[] {
-  const defaults = getDefaultChapterNames(classLevel, subject);
+  const entries = getDefaultChapterEntries(classLevel, subject);
   const custom = customizations?.[customizationKey(classLevel, subject)];
 
   if (!custom || custom.items.length === 0) {
-    // No customization -> raw defaults in original order.
-    // NOTE: If the user has explicitly emptied the list, we treat that as
-    // "empty" only when the row exists but items is []. Since we return early
-    // here when items.length === 0, we opt to fall back to defaults; the
-    // manage page should never persist an empty items array — it deletes the
-    // row instead when the user wants to reset.
-    return defaults.map((name, i) => ({
+    return entries.map((e, i) => ({
       key: defaultChapterKey(classLevel, subject, i),
       classLevel,
       subject,
       index: i,
-      defaultName: name,
+      defaultName: e.name,
       isCustom: false,
       defaultIndex: i,
+      important: e.important,
     }));
   }
 
   return custom.items.map((item, i) => {
     if (item.k === "d") {
-      const defName = defaults[item.i] ?? "";
+      const e = entries[item.i];
       return {
         key: defaultChapterKey(classLevel, subject, item.i),
         classLevel,
         subject,
         index: i,
-        defaultName: defName,
+        defaultName: e?.name ?? "",
         isCustom: false,
         defaultIndex: item.i,
+        important: e?.important ?? false,
       } satisfies ChapterRef;
     }
     return {
@@ -102,6 +121,7 @@ function buildMergedForSubject(
       defaultName: item.n,
       isCustom: true,
       customId: item.id,
+      important: false,
     } satisfies ChapterRef;
   });
 }

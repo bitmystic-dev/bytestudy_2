@@ -9,7 +9,6 @@ import {
   Building2,
   Moon,
   Sun,
-  Sparkles,
 } from "lucide-react";
 import { useProfile } from "@/hooks/useCloud";
 import type { ClassLevel, Profile } from "@/lib/types";
@@ -51,12 +50,6 @@ const emptyDraft: Draft = {
   instituteTestsPattern: "",
 };
 
-const TEST_CADENCE_PRESETS = [
-  "Weekly minor tests, monthly major tests covering full syllabus.",
-  "Fortnightly minor tests, monthly major tests, quarterly full-length tests.",
-  "Two minor tests every week, one full-length test each Sunday.",
-  "Only monthly major tests — no minor tests.",
-];
 
 function OnboardingPage() {
   const [, setProfile] = useProfile();
@@ -64,7 +57,7 @@ function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
 
-  const totalSteps = 7;
+  const totalSteps = 6;
 
   const update = <K extends keyof Draft>(k: K, v: Draft[K]) =>
     setDraft((d) => ({ ...d, [k]: v }));
@@ -83,8 +76,6 @@ function OnboardingPage() {
         return draft.dailyGoalMinutes >= 30;
       case 5:
         return !!draft.wakeTime && !!draft.sleepTime;
-      case 6:
-        return draft.instituteTestsPattern.trim().length >= 10;
       default:
         return true;
     }
@@ -241,42 +232,6 @@ function OnboardingPage() {
                   ))}
                 </div>
               </div>
-            </div>
-          </Step>
-        )}
-
-        {step === 6 && (
-          <Step
-            title="How does your institute test?"
-            subtitle="Describe the rhythm of your minor and major tests. BytePrep AI uses this to personalise recommendations."
-            icon={Sparkles}
-          >
-            <textarea
-              autoFocus
-              rows={5}
-              value={draft.instituteTestsPattern}
-              onChange={(e) => update("instituteTestsPattern", e.target.value)}
-              placeholder="e.g. Every alternate Monday we have minor tests. Monthly major tests cover the entire syllabus."
-              className="mt-2 w-full resize-none rounded-2xl bg-white/5 px-5 py-4 text-[15px] leading-relaxed outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
-            />
-            <div className="mt-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              Or pick a preset
-            </div>
-            <div className="mt-2 space-y-2">
-              {TEST_CADENCE_PRESETS.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => update("instituteTestsPattern", p)}
-                  className={cn(
-                    "w-full rounded-2xl border px-4 py-3 text-left text-[13px] leading-snug transition-all",
-                    draft.instituteTestsPattern === p
-                      ? "border-primary/60 bg-primary/10 text-foreground"
-                      : "border-white/10 bg-white/[0.03] text-muted-foreground",
-                  )}
-                >
-                  {p}
-                </button>
-              ))}
             </div>
           </Step>
         )}

@@ -89,3 +89,99 @@ export const aiSubjectInsights = createServerFn({ method: "POST" })
     });
     return { ready: true as const, ...result };
   });
+
+// ============================================================
+// AI Chat — free-form conversation with a JEE mentor persona.
+// The client passes the full prior message array on every call
+// so the model stays stateless. Profile context is stitched into
+// a system prompt server-side so we don't leak keys or prompts.
+// ============================================================
+
+const ChatInput = z.object({
+  messages: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().min(1).max(6000),
+      }),
+    )
+    .min(1)
+    .max(40),
+  profile: z
+    .object({
+      name: z.string().optional(),
+      classLevel: z.string().optional(),
+      targetYear: z.number().optional(),
+      coaching: z.string().optional(),
+      dailyGoalMinutes: z.number().optional(),
+      instituteTestsPattern: z.string().optional(),
+    })
+    .optional(),
+  personalization: z
+    .object({
+      studyStyle: z.string().optional(),
+      biggestStruggle: z.string().optional(),
+      strongSubject: z.string().optional(),
+      weakSubject: z.string().optional(),
+      hoursPerDay: z.string().optional(),
+      motivationTrigger: z.string().optional(),
+    })
+    .optional(),
+});
+
+export const aiChat = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((v: unknown) => ChatInput.parse(v))
+  .handler(async ({ data }) => {
+    const { aiComplete } = await import("@/lib/ai.server");
+
+    const p = data.profile ?? {};
+    const per = data.personalization ?? {};
+
+    const profileBlock = [
+      p.name ? `Name: ${p.name}` : null,
+      p.classLevel ? `Class: ${p.classLevel}` : null,
+      p.targetYear ? `Target JEE year: ${p.targetYear}` : null,
+      p.coaching ? `Coaching: ${p.coaching}` : null,
+      p.dailyGoalMinutes ? `Daily study goal: ${p.dailyGoalMinutes} min` : null,
+      p.instituteTestsPattern
+        ? `Institute test pattern: ${p.instituteTestsPattern}`
+        : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const personalBlock = [
+      per.studyStyle ? `Study style: ${per.studyStyle}` : null,
+      per.biggestStruggle ? `Biggest struggle: ${per.biggestStruggle}` : null,
+      per.strongSubject ? `Strongest subject: ${per.strongSubject}` : null,
+      per.weakSubject ? `Weakest subject: ${per.weakSubject}` : null,
+      per.hoursPerDay ? `Time available per day: ${per.hoursPerDay}` : null,
+      per.motivationTrigger ? `Motivation trigger: ${per.motivationTrigger}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const system = [
+      "You are BytePrep — a warm, sharp, personal JEE mentor.",
+      "You are NOT a generic chatbot. You speak like a senior who has cracked JEE and now coaches this student one-on-one.",
+      "Be concise (usually 2-5 short paragraphs or a compact list). Skip filler and disclaimers.",
+      "Never re-ask information you already have. Use it directly.",
+      "Prefer concrete, actionable advice: names of chapters, hours, techniques, timelines.",
+      "When motivating, be genuine and specific — not corny.",
+      profileBlock ? `Student profile:\n${profileBlock}` : null,
+      personalBlock ? `Personalization:\n${personalBlock}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+
+    const result = await aiComplete({
+      messages: [
+        { role: "system", content: system },
+        ...data.messages,
+      ],
+      temperature: 0.8,
+      maxTokens: 1200,
+    });
+    return { content: result.content };
+  });

@@ -30,6 +30,7 @@ import {
   Puzzle,
   Zap,
   Check,
+  Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -118,7 +119,21 @@ function SubjectPage() {
 
   const toggleCheckpoint = (key: string, id: CheckpointId) => {
     const current = getChapterMeta(key, metaMap).checkpoints ?? {};
-    const nextCp = { ...current, [id]: !current[id] };
+    const willBe = !current[id];
+    // P6: marking a chapter as "learned" cascades to fully-completed.
+    if (id === "learned" && willBe) {
+      const allDone: Record<CheckpointId, boolean> = {
+        learned: true,
+        revised: true,
+        pyqs: true,
+        notes: true,
+        tests: true,
+        shortNotes: true,
+      };
+      patch(key, { checkpoints: allDone, completion: 100 });
+      return;
+    }
+    const nextCp = { ...current, [id]: willBe };
     patch(key, { checkpoints: nextCp, completion: checkpointCompletion(nextCp) });
   };
 
@@ -184,7 +199,15 @@ function SubjectPage() {
                     {idx + 1}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[15px] font-medium">{name}</div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="truncate text-[15px] font-medium">{name}</div>
+                      {c.important && (
+                        <Star
+                          className="h-3.5 w-3.5 shrink-0 fill-amber-300 text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]"
+                          aria-label="Important chapter"
+                        />
+                      )}
+                    </div>
                     <div className="mt-1 flex items-center gap-1.5">
                       {CHECKPOINTS.map((x) => (
                         <span

@@ -86,7 +86,7 @@ function HomePage() {
   return (
     <AppShell>
       {/* Greeting */}
-      <header className="mb-4">
+      <header className="mb-5">
         <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
           {greetingFor(hour)}
         </p>
@@ -95,76 +95,30 @@ function HomePage() {
         </h1>
       </header>
 
-      {/* Today's Focus Ring */}
-      <section className="card-surface flex items-center gap-5 p-5">
-        <ProgressRing value={goalPct} size={104} stroke={10} ringClassName="stroke-primary">
-          <div className="text-center">
-            <div className="text-lg font-semibold leading-none">{Math.round(goalPct)}%</div>
-            <div className="mt-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">Today</div>
-          </div>
-        </ProgressRing>
-        <div className="min-w-0 flex-1">
-          <div className="text-xs text-muted-foreground">Today's focus</div>
-          <div className="mt-0.5 text-2xl font-semibold tracking-tight">
-            {formatDuration(todaySec)}
-          </div>
-          <div className="mt-1 text-xs text-muted-foreground">
-            Yesterday · {formatDuration(yesterdaySec)}
-          </div>
-          <div className="mt-2 text-[13px] font-medium text-primary/90">{trendCopy}</div>
-        </div>
-      </section>
-
-      {/* Stats row */}
-      <div className="mt-3 grid grid-cols-2 gap-3">
-        <StatCard
-          label="Streak"
-          value={
-            <span className="flex items-baseline gap-1">
-              {streak}
-              <span className="text-sm font-medium text-muted-foreground">days</span>
-            </span>
-          }
-          icon={<Flame className="h-4 w-4 text-amber-300" />}
-        />
-        <StatCard
-          label="Goal"
-          value={`${Math.floor(goalSec / 3600)}h ${(goalSec % 3600) / 60}m`.replace(" 0m", "")}
-          hint="Daily target"
-        />
-      </div>
-
-      {/* Quick actions */}
-      <div className="mt-3 grid grid-cols-2 gap-3">
-        <button
-          onClick={() => navigate({ to: "/focus" })}
-          className="card-surface flex items-center gap-3 p-4 text-left active:scale-[0.99]"
-        >
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-            <Play className="h-5 w-5 fill-current" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-sm font-semibold">Start focus</div>
-            <div className="text-xs text-muted-foreground">Pomodoro or custom</div>
-          </div>
-        </button>
-        <button
-          onClick={() => navigate({ to: "/planner" })}
-          className="card-surface flex items-center gap-3 p-4 text-left active:scale-[0.99]"
-        >
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-foreground">
-            <Plus className="h-5 w-5" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-sm font-semibold">New mission</div>
-            <div className="text-xs text-muted-foreground">Plan a chapter</div>
-          </div>
-        </button>
-      </div>
-
-      {/* Upcoming missions */}
+      {/* Chapter list — primary section */}
       <SectionHeader
-        title="Upcoming missions"
+        title="Continue studying"
+        subtitle={profile.classLevel === "dropper" ? "Class 11 + 12" : `Class ${profile.classLevel}`}
+      />
+      <div className="space-y-2.5">
+        {(["physics", "chemistry", "mathematics"] as SubjectId[]).map((s) => {
+          const info = perSubject[s];
+          const avg = info.count > 0 ? info.total / info.count : 0;
+          return (
+            <SubjectCard
+              key={s}
+              subject={s}
+              completion={avg}
+              chaptersCount={info.count}
+              onClick={() => navigate({ to: "/subjects/$subject", params: { subject: s } })}
+            />
+          );
+        })}
+      </div>
+
+      {/* Missions */}
+      <SectionHeader
+        title="Today's missions"
         action={
           <button onClick={() => navigate({ to: "/planner" })} className="active:text-foreground">
             See all
@@ -204,23 +158,89 @@ function HomePage() {
         </div>
       )}
 
-      {/* Subjects */}
-      <SectionHeader title="Subjects" subtitle={profile.classLevel === "dropper" ? "Class 11 + 12" : `Class ${profile.classLevel}`} />
-      <div className="space-y-2.5">
-        {(["physics", "chemistry", "mathematics"] as SubjectId[]).map((s) => {
-          const info = perSubject[s];
-          const avg = info.count > 0 ? info.total / info.count : 0;
-          return (
-            <SubjectCard
-              key={s}
-              subject={s}
-              completion={avg}
-              chaptersCount={info.count}
-              onClick={() => navigate({ to: "/subjects/$subject", params: { subject: s } })}
-            />
-          );
-        })}
+      {/* Pomodoro / new mission quick actions */}
+      <SectionHeader title="Focus" />
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          onClick={() => navigate({ to: "/focus" })}
+          className="card-surface flex items-center gap-3 p-4 text-left transition-transform active:scale-[0.98]"
+        >
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+            <Play className="h-5 w-5 fill-current" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm font-semibold">Start focus</div>
+            <div className="text-xs text-muted-foreground">Pomodoro or custom</div>
+          </div>
+        </button>
+        <button
+          onClick={() => navigate({ to: "/planner" })}
+          className="card-surface flex items-center gap-3 p-4 text-left transition-transform active:scale-[0.98]"
+        >
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-foreground">
+            <Plus className="h-5 w-5" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm font-semibold">New mission</div>
+            <div className="text-xs text-muted-foreground">Plan a chapter</div>
+          </div>
+        </button>
       </div>
+
+      {/* Progress summary */}
+      <SectionHeader title="Today" />
+      <section className="card-surface flex items-center gap-5 p-5">
+        <ProgressRing value={goalPct} size={104} stroke={10} ringClassName="stroke-primary">
+          <div className="text-center">
+            <div className="text-lg font-semibold leading-none">{Math.round(goalPct)}%</div>
+            <div className="mt-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">Today</div>
+          </div>
+        </ProgressRing>
+        <div className="min-w-0 flex-1">
+          <div className="text-xs text-muted-foreground">Today's focus</div>
+          <div className="mt-0.5 text-2xl font-semibold tracking-tight">
+            {formatDuration(todaySec)}
+          </div>
+          <div className="mt-1 text-xs text-muted-foreground">
+            Yesterday · {formatDuration(yesterdaySec)}
+          </div>
+          <div className="mt-2 text-[13px] font-medium text-primary/90">{trendCopy}</div>
+        </div>
+      </section>
+
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <StatCard
+          label="Streak"
+          value={
+            <span className="flex items-baseline gap-1">
+              {streak}
+              <span className="text-sm font-medium text-muted-foreground">days</span>
+            </span>
+          }
+          icon={<Flame className="h-4 w-4 text-amber-300" />}
+        />
+        <StatCard
+          label="Goal"
+          value={`${Math.floor(goalSec / 3600)}h ${(goalSec % 3600) / 60}m`.replace(" 0m", "")}
+          hint="Daily target"
+        />
+      </div>
+
+      {/* AI mentor entry */}
+      <button
+        onClick={() => navigate({ to: "/ai" })}
+        className="mt-5 flex w-full items-center gap-3 rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent p-4 text-left transition-transform active:scale-[0.99]"
+      >
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/20 text-primary ring-1 ring-primary/30">
+          <Sparkles className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-semibold">Ask your JEE mentor</div>
+          <div className="text-xs text-muted-foreground">
+            Personal strategies, doubts, motivation
+          </div>
+        </div>
+      </button>
     </AppShell>
   );
 }

@@ -43,6 +43,7 @@ function rowToProfile(row: {
   onboarded: boolean;
   created_at: string;
   institute_tests_pattern?: string | null;
+  admin_rights?: boolean | null;
 }): Profile | null {
   if (!row.onboarded || !row.class_level || !row.target_year) return null;
   return {
@@ -57,6 +58,7 @@ function rowToProfile(row: {
     weeklyOffDay: row.weekly_off_day,
     createdAt: new Date(row.created_at).getTime(),
     instituteTestsPattern: row.institute_tests_pattern ?? "",
+    adminRights: row.admin_rights ?? false,
   };
 }
 

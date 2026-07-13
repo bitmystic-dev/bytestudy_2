@@ -160,13 +160,30 @@ export const aiChat = createServerFn({ method: "POST" })
       .filter(Boolean)
       .join("\n");
 
+    const testsPattern =
+      per.testsPattern === "Other" && per.testsPatternCustom
+        ? per.testsPatternCustom
+        : per.testsPattern;
+
     const personalBlock = [
-      per.studyStyle ? `Study style: ${per.studyStyle}` : null,
-      per.biggestStruggle ? `Biggest struggle: ${per.biggestStruggle}` : null,
-      per.strongSubject ? `Strongest subject: ${per.strongSubject}` : null,
-      per.weakSubject ? `Weakest subject: ${per.weakSubject}` : null,
-      per.hoursPerDay ? `Time available per day: ${per.hoursPerDay}` : null,
-      per.motivationTrigger ? `Motivation trigger: ${per.motivationTrigger}` : null,
+      per.prepFeeling ? `Prep vibe: ${per.prepFeeling}` : null,
+      per.prepStarted ? `Started prep: ${per.prepStarted}` : null,
+      per.prepStartedHow ? `Prep mode: ${per.prepStartedHow}` : null,
+      per.syllabusCovered ? `Syllabus covered: ${per.syllabusCovered}` : null,
+      per.blockers?.length ? `Blockers: ${per.blockers.join(", ")}` : null,
+      per.productiveTime ? `Most productive: ${per.productiveTime}` : null,
+      per.mentoringStyle ? `Preferred mentoring style: ${per.mentoringStyle}` : null,
+      per.weekdayFreeSlots?.length
+        ? `Weekday free slots: ${per.weekdayFreeSlots.join(", ")}`
+        : null,
+      per.weekdayHours ? `Weekday hours/day: ${per.weekdayHours}` : null,
+      per.weekendFreeSlots?.length
+        ? `Weekend free slots: ${per.weekendFreeSlots.join(", ")}`
+        : null,
+      per.weekendHours ? `Weekend hours/day: ${per.weekendHours}` : null,
+      testsPattern ? `Institute tests: ${testsPattern}` : null,
+      per.recentScores ? `Recent test scores: ${per.recentScores}` : null,
+      per.scoreRange ? `Typical score range: ${per.scoreRange}` : null,
     ]
       .filter(Boolean)
       .join("\n");

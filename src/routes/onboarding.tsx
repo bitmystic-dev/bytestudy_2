@@ -9,7 +9,6 @@ import {
   Building2,
   Moon,
   Sun,
-  Sparkles,
 } from "lucide-react";
 import { useProfile } from "@/hooks/useCloud";
 import type { ClassLevel, Profile } from "@/lib/types";

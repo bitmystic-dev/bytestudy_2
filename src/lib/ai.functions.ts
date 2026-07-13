@@ -119,12 +119,21 @@ const ChatInput = z.object({
     .optional(),
   personalization: z
     .object({
-      studyStyle: z.string().optional(),
-      biggestStruggle: z.string().optional(),
-      strongSubject: z.string().optional(),
-      weakSubject: z.string().optional(),
-      hoursPerDay: z.string().optional(),
-      motivationTrigger: z.string().optional(),
+      prepFeeling: z.string().optional(),
+      prepStarted: z.string().optional(),
+      prepStartedHow: z.string().optional(),
+      syllabusCovered: z.string().optional(),
+      blockers: z.array(z.string()).optional(),
+      productiveTime: z.string().optional(),
+      mentoringStyle: z.string().optional(),
+      weekdayFreeSlots: z.array(z.string()).optional(),
+      weekdayHours: z.string().optional(),
+      weekendFreeSlots: z.array(z.string()).optional(),
+      weekendHours: z.string().optional(),
+      testsPattern: z.string().optional(),
+      testsPatternCustom: z.string().optional(),
+      recentScores: z.string().optional(),
+      scoreRange: z.string().optional(),
     })
     .optional(),
 });

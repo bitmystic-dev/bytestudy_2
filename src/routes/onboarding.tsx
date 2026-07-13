@@ -83,8 +83,6 @@ function OnboardingPage() {
         return draft.dailyGoalMinutes >= 30;
       case 5:
         return !!draft.wakeTime && !!draft.sleepTime;
-      case 6:
-        return draft.instituteTestsPattern.trim().length >= 10;
       default:
         return true;
     }

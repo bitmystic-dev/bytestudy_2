@@ -21,7 +21,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AiRouteImport } from './routes/ai'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AiRouteImport } from './routes/ai'
 import { Route as SubjectsSubjectRouteImport } from './routes/subjects.$subject'
 
 const TestsRoute = TestsRouteImport.update({
@@ -82,6 +81,11 @@ const AiRoute = AiRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiRoute = AiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SubjectsSubjectRoute = SubjectsSubjectRouteImport.update({

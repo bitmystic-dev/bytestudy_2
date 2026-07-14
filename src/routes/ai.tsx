@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Sparkles,
   Send,
@@ -343,7 +343,7 @@ function AiPage() {
 
 // ---------- Welcome ----------
 
-function Welcome({ onBegin, onSkip }: { onBegin: () => void; onSkip: () => void }) {
+function Welcome({ onBegin, onSkip, loading, error }: { onBegin: () => void; onSkip: () => void; loading?: boolean; error?: string }) {
   return (
     <div className="flex flex-1 flex-col justify-center px-6 pb-10 pt-6">
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-primary/40 to-primary/10 text-primary ring-1 ring-primary/40">

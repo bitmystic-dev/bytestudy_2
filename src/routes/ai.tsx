@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Sparkles,
   Send,
@@ -198,16 +198,53 @@ const EMPTY_MESSAGES: ChatMessage[] = [];
 
 function AiPage() {
   const [profile] = useProfile();
-  const [personalization, setPersonalization] = useAiPersonalization();
+  const [personalization, setPersonalization, personalizationLoading] = useAiPersonalization();
   const [messages, setMessages] = useStore<ChatMessage[]>(
     "byteprep:ai:messages:v2",
     EMPTY_MESSAGES,
   );
   const [editing, setEditing] = useState(false);
+  const [flowStarted, setFlowStarted] = useState(false);
+  const [beginning, setBeginning] = useState(false);
+  const [beginError, setBeginError] = useState<string | undefined>();
+
+  // Reset the "started" flag whenever cloud state transitions to a completed/skipped state
+  useEffect(() => {
+    if (personalization.completedAt || personalization.skipped) setFlowStarted(false);
+  }, [personalization.completedAt, personalization.skipped]);
 
   const showWelcome =
-    !personalization.completedAt && !personalization.skipped && !editing;
-  const showFlow = editing || (!showWelcome && !personalization.completedAt);
+    !flowStarted &&
+    !personalization.completedAt &&
+    !personalization.skipped &&
+    !editing;
+  const showFlow =
+    editing || flowStarted || (!showWelcome && !personalization.completedAt);
+
+  const handleBegin = useCallback(() => {
+    if (beginning || flowStarted) return;
+    setBeginError(undefined);
+    setBeginning(true);
+    try {
+      setFlowStarted(true);
+      // Also persist skipped:false in the background so future sessions
+      // don't get stuck at Welcome after a refresh.
+      setPersonalization((p) => ({ ...p, skipped: false }));
+    } catch (e) {
+      setFlowStarted(false);
+      setBeginError((e as Error)?.message ?? "Something went wrong. Try again.");
+    } finally {
+      setBeginning(false);
+    }
+  }, [beginning, flowStarted, setPersonalization]);
+
+  const handleSkip = useCallback(() => {
+    setPersonalization((p) => ({
+      ...p,
+      skipped: true,
+      completedAt: Date.now(),
+    }));
+  }, [setPersonalization]);
 
   return (
     <AppShell className="flex min-h-dvh flex-col px-0 pt-0 pb-[calc(6rem+env(safe-area-inset-bottom))]">
@@ -246,22 +283,25 @@ function AiPage() {
         </div>
       </header>
 
-      {showWelcome ? (
+      {personalizationLoading && !flowStarted && !personalization.completedAt ? (
+        <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+          Loading…
+        </div>
+      ) : showWelcome ? (
         <Welcome
-          onBegin={() => setPersonalization((p) => ({ ...p, skipped: false }))}
-          onSkip={() =>
-            setPersonalization((p) => ({
-              ...p,
-              skipped: true,
-              completedAt: Date.now(),
-            }))
-          }
+          onBegin={handleBegin}
+          onSkip={handleSkip}
+          loading={beginning}
+          error={beginError}
         />
       ) : showFlow ? (
         <PersonalizeFlow
           initial={personalization.data}
           isEdit={editing}
-          onCancel={() => setEditing(false)}
+          onCancel={() => {
+            setEditing(false);
+            setFlowStarted(false);
+          }}
           onDone={(data) => {
             setPersonalization({
               data,
@@ -269,6 +309,7 @@ function AiPage() {
               skipped: false,
             });
             setEditing(false);
+            setFlowStarted(false);
           }}
         />
       ) : (
@@ -288,9 +329,10 @@ function AiPage() {
                 }
               : undefined
           }
-          onStartPersonalize={() =>
-            setPersonalization((p) => ({ ...p, skipped: false, completedAt: null }))
-          }
+          onStartPersonalize={() => {
+            setFlowStarted(true);
+            setPersonalization((p) => ({ ...p, skipped: false, completedAt: null }));
+          }}
           wasSkipped={personalization.skipped}
         />
       )}
@@ -298,9 +340,10 @@ function AiPage() {
   );
 }
 
+
 // ---------- Welcome ----------
 
-function Welcome({ onBegin, onSkip }: { onBegin: () => void; onSkip: () => void }) {
+function Welcome({ onBegin, onSkip, loading, error }: { onBegin: () => void; onSkip: () => void; loading?: boolean; error?: string }) {
   return (
     <div className="flex flex-1 flex-col justify-center px-6 pb-10 pt-6">
       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-primary/40 to-primary/10 text-primary ring-1 ring-primary/40">
@@ -314,20 +357,29 @@ function Welcome({ onBegin, onSkip }: { onBegin: () => void; onSkip: () => void 
         actually know how to help you.
       </p>
 
+      {error && (
+        <div className="mx-auto mt-6 max-w-xs rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-center text-[13px] text-destructive">
+          {error}
+        </div>
+      )}
+
       <div className="mt-10 space-y-2.5">
         <button
           onClick={onBegin}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary text-[15px] font-semibold text-primary-foreground shadow-lg shadow-primary/20 active:scale-[0.98]"
+          disabled={loading}
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary text-[15px] font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-opacity active:scale-[0.98] disabled:opacity-60"
         >
-          Let's Begin <ArrowRight className="h-4 w-4" />
+          {loading ? "Starting…" : (<>Let's Begin <ArrowRight className="h-4 w-4" /></>)}
         </button>
         <button
           onClick={onSkip}
-          className="h-12 w-full rounded-full bg-white/[0.04] text-[14px] font-medium text-muted-foreground ring-1 ring-white/10 active:scale-[0.99]"
+          disabled={loading}
+          className="h-12 w-full rounded-full bg-white/[0.04] text-[14px] font-medium text-muted-foreground ring-1 ring-white/10 active:scale-[0.99] disabled:opacity-60"
         >
           Skip for Now
         </button>
       </div>
+
       <p className="mx-auto mt-4 max-w-xs text-center text-[11px] text-muted-foreground">
         You can complete this later — I'll ask before diving deeper.
       </p>

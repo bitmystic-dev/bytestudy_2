@@ -357,20 +357,29 @@ function Welcome({ onBegin, onSkip, loading, error }: { onBegin: () => void; onS
         actually know how to help you.
       </p>
 
+      {error && (
+        <div className="mx-auto mt-6 max-w-xs rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-center text-[13px] text-destructive">
+          {error}
+        </div>
+      )}
+
       <div className="mt-10 space-y-2.5">
         <button
           onClick={onBegin}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary text-[15px] font-semibold text-primary-foreground shadow-lg shadow-primary/20 active:scale-[0.98]"
+          disabled={loading}
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary text-[15px] font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-opacity active:scale-[0.98] disabled:opacity-60"
         >
-          Let's Begin <ArrowRight className="h-4 w-4" />
+          {loading ? "Starting…" : (<>Let's Begin <ArrowRight className="h-4 w-4" /></>)}
         </button>
         <button
           onClick={onSkip}
-          className="h-12 w-full rounded-full bg-white/[0.04] text-[14px] font-medium text-muted-foreground ring-1 ring-white/10 active:scale-[0.99]"
+          disabled={loading}
+          className="h-12 w-full rounded-full bg-white/[0.04] text-[14px] font-medium text-muted-foreground ring-1 ring-white/10 active:scale-[0.99] disabled:opacity-60"
         >
           Skip for Now
         </button>
       </div>
+
       <p className="mx-auto mt-4 max-w-xs text-center text-[11px] text-muted-foreground">
         You can complete this later — I'll ask before diving deeper.
       </p>

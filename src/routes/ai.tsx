@@ -198,16 +198,53 @@ const EMPTY_MESSAGES: ChatMessage[] = [];
 
 function AiPage() {
   const [profile] = useProfile();
-  const [personalization, setPersonalization] = useAiPersonalization();
+  const [personalization, setPersonalization, personalizationLoading] = useAiPersonalization();
   const [messages, setMessages] = useStore<ChatMessage[]>(
     "byteprep:ai:messages:v2",
     EMPTY_MESSAGES,
   );
   const [editing, setEditing] = useState(false);
+  const [flowStarted, setFlowStarted] = useState(false);
+  const [beginning, setBeginning] = useState(false);
+  const [beginError, setBeginError] = useState<string | undefined>();
+
+  // Reset the "started" flag whenever cloud state transitions to a completed/skipped state
+  useEffect(() => {
+    if (personalization.completedAt || personalization.skipped) setFlowStarted(false);
+  }, [personalization.completedAt, personalization.skipped]);
 
   const showWelcome =
-    !personalization.completedAt && !personalization.skipped && !editing;
-  const showFlow = editing || (!showWelcome && !personalization.completedAt);
+    !flowStarted &&
+    !personalization.completedAt &&
+    !personalization.skipped &&
+    !editing;
+  const showFlow =
+    editing || flowStarted || (!showWelcome && !personalization.completedAt);
+
+  const handleBegin = useCallback(() => {
+    if (beginning || flowStarted) return;
+    setBeginError(undefined);
+    setBeginning(true);
+    try {
+      setFlowStarted(true);
+      // Also persist skipped:false in the background so future sessions
+      // don't get stuck at Welcome after a refresh.
+      setPersonalization((p) => ({ ...p, skipped: false }));
+    } catch (e) {
+      setFlowStarted(false);
+      setBeginError((e as Error)?.message ?? "Something went wrong. Try again.");
+    } finally {
+      setBeginning(false);
+    }
+  }, [beginning, flowStarted, setPersonalization]);
+
+  const handleSkip = useCallback(() => {
+    setPersonalization((p) => ({
+      ...p,
+      skipped: true,
+      completedAt: Date.now(),
+    }));
+  }, [setPersonalization]);
 
   return (
     <AppShell className="flex min-h-dvh flex-col px-0 pt-0 pb-[calc(6rem+env(safe-area-inset-bottom))]">
@@ -246,22 +283,25 @@ function AiPage() {
         </div>
       </header>
 
-      {showWelcome ? (
+      {personalizationLoading && !flowStarted && !personalization.completedAt ? (
+        <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+          Loading…
+        </div>
+      ) : showWelcome ? (
         <Welcome
-          onBegin={() => setPersonalization((p) => ({ ...p, skipped: false }))}
-          onSkip={() =>
-            setPersonalization((p) => ({
-              ...p,
-              skipped: true,
-              completedAt: Date.now(),
-            }))
-          }
+          onBegin={handleBegin}
+          onSkip={handleSkip}
+          loading={beginning}
+          error={beginError}
         />
       ) : showFlow ? (
         <PersonalizeFlow
           initial={personalization.data}
           isEdit={editing}
-          onCancel={() => setEditing(false)}
+          onCancel={() => {
+            setEditing(false);
+            setFlowStarted(false);
+          }}
           onDone={(data) => {
             setPersonalization({
               data,
@@ -269,6 +309,7 @@ function AiPage() {
               skipped: false,
             });
             setEditing(false);
+            setFlowStarted(false);
           }}
         />
       ) : (
@@ -288,15 +329,17 @@ function AiPage() {
                 }
               : undefined
           }
-          onStartPersonalize={() =>
-            setPersonalization((p) => ({ ...p, skipped: false, completedAt: null }))
-          }
+          onStartPersonalize={() => {
+            setFlowStarted(true);
+            setPersonalization((p) => ({ ...p, skipped: false, completedAt: null }));
+          }}
           wasSkipped={personalization.skipped}
         />
       )}
     </AppShell>
   );
 }
+
 
 // ---------- Welcome ----------
 

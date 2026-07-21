@@ -212,3 +212,51 @@ export const aiChat = createServerFn({ method: "POST" })
     });
     return { content: result.content };
   });
+
+// ============================================================
+// AI Test-Schedule PDF parser. Client extracts raw text from the
+// PDF (pdfjs-dist) and posts it here; we ask the model to return
+// a strict JSON list of tests we can drop into the Test Schedule.
+// ============================================================
+
+const ParseScheduleInput = z.object({
+  text: z.string().min(20).max(60000),
+  hintYear: z.number().int().min(2024).max(2035).optional(),
+});
+
+export const aiParseTestSchedule = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((v: unknown) => ParseScheduleInput.parse(v))
+  .handler(async ({ data }) => {
+    const { aiCompleteJson } = await import("@/lib/ai.server");
+    const year = data.hintYear ?? new Date().getFullYear();
+    const result = await aiCompleteJson<{
+      tests: {
+        name: string;
+        date: string; // YYYY-MM-DD
+        time?: string; // HH:MM 24h
+        subjects: ("physics" | "chemistry" | "mathematics")[];
+        syllabus: string;
+      }[];
+    }>({
+      messages: [
+        {
+          role: "system",
+          content: [
+            "You extract JEE institute test schedules from raw PDF text.",
+            "Return ONLY JSON in the shape { \"tests\": [ ... ] }.",
+            "Each test: { name, date (YYYY-MM-DD), time (HH:MM 24h, optional), subjects (array of 'physics'|'chemistry'|'mathematics'), syllabus (concise chapter list) }.",
+            `If a year isn't printed, assume ${year}.`,
+            "If a test covers all three subjects, include all three. Never invent tests that aren't in the text.",
+          ].join(" "),
+        },
+        {
+          role: "user",
+          content: `Test schedule PDF text:\n\n${data.text}`,
+        },
+      ],
+      maxTokens: 4096,
+    });
+    return result;
+  });
+

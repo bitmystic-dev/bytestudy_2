@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import {
   ChevronLeft,
   Plus,
@@ -12,6 +13,7 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -21,6 +23,9 @@ import type { SubjectId, Test, TestStatus } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { uid } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { aiParseTestSchedule } from "@/lib/ai.functions";
+import { extractPdfText } from "@/lib/pdf-extract";
+
 
 export const Route = createFileRoute("/tests")({
   head: () => ({

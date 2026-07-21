@@ -162,20 +162,58 @@ function TestsPage() {
       </header>
 
       {/* PDF upload card */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf,.pdf"
+        className="hidden"
+        onChange={(e) => onPdfPicked(e.target.files?.[0])}
+      />
       <button
-        onClick={() => setPdfNotice(true)}
-        className="mb-5 flex w-full items-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-3.5 text-left transition-colors hover:bg-white/[0.05]"
+        onClick={() => {
+          if (pdfStatus.kind === "working") return;
+          setPdfStatus({ kind: "idle" });
+          fileInputRef.current?.click();
+        }}
+        disabled={pdfStatus.kind === "working"}
+        className="mb-3 flex w-full items-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-3.5 text-left transition-colors hover:bg-white/[0.05] disabled:opacity-70"
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary">
-          <Upload className="h-4 w-4" />
+          {pdfStatus.kind === "working" ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Upload className="h-4 w-4" />
+          )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-[13px] font-medium">Upload test schedule PDF</div>
+          <div className="text-[13px] font-medium">
+            {pdfStatus.kind === "working"
+              ? pdfStatus.step
+              : "Upload test schedule PDF"}
+          </div>
           <div className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
-            <Sparkles className="h-3 w-3" /> AI parsing — coming soon
+            <Sparkles className="h-3 w-3" />
+            {pdfStatus.kind === "working"
+              ? "Analyzing your schedule…"
+              : "AI reads your PDF and adds each test"}
           </div>
         </div>
       </button>
+
+      {pdfStatus.kind === "ok" && (
+        <div className="mb-5 flex items-start gap-2 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-[12px] text-emerald-200">
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>
+            Imported {pdfStatus.count} test{pdfStatus.count === 1 ? "" : "s"}. Review each below and edit if the AI got a date wrong.
+          </span>
+        </div>
+      )}
+      {pdfStatus.kind === "err" && (
+        <div className="mb-5 flex items-start gap-2 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-3 text-[12px] text-rose-200">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>{pdfStatus.message}</span>
+        </div>
+      )}
 
       {/* Countdown hero */}
       {nextTest && (

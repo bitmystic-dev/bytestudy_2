@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Play, Pause, Square, RotateCcw, Timer as TimerIcon } from "lucide-react";
+import { Play, Pause, Square, RotateCcw, Timer as TimerIcon, BookOpen, X } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { ProgressRing } from "@/components/ProgressRing";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -27,6 +27,13 @@ const PRESETS: Preset[] = [
   { label: "Deep", minutes: 50 },
   { label: "Sprint", minutes: 15 },
 ];
+
+// ALLEN homework benchmark: 75 questions in 180 minutes = 2.4 min per question.
+const MIN_PER_QUESTION = 180 / 75;
+function computeHomeworkMinutes(questions: number): number {
+  return Math.max(1, Math.ceil(questions * MIN_PER_QUESTION));
+}
+
 
 function FocusPage() {
   const [sessions, setSessions] = useSessions();

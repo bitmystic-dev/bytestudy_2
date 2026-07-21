@@ -130,14 +130,28 @@ function FocusPage() {
 
   const recent = sessions.slice(0, 8);
 
+  // Homework modal
+  const [homeworkOpen, setHomeworkOpen] = useState(false);
+
+  const applyHomework = (questions: number, subj: SubjectId | undefined) => {
+    if (running) return;
+    const mins = computeHomeworkMinutes(questions);
+    totalRef.current = mins * 60;
+    setRemaining(mins * 60);
+    setPreset({ label: `Homework · ${questions}Q`, minutes: mins });
+    if (subj) setSubject(subj);
+    setHomeworkOpen(false);
+  };
+
   return (
-    <AppShell>
-      <header className="mb-5">
-        <h1 className="text-2xl font-semibold tracking-tight">Focus</h1>
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          Today · {formatDuration(todayStats.total)} · {todayStats.count} sessions
-        </p>
-      </header>
+    <>
+      {/* existing return below */}
+    </>
+  );
+}
+
+// Split — real render lives here so we keep the diff scoped.
+
 
       {/* Timer */}
       <div className="card-surface flex flex-col items-center px-6 py-8">

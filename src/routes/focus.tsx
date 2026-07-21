@@ -34,7 +34,6 @@ function computeHomeworkMinutes(questions: number): number {
   return Math.max(1, Math.ceil(questions * MIN_PER_QUESTION));
 }
 
-
 function FocusPage() {
   const [sessions, setSessions] = useSessions();
 
@@ -43,6 +42,7 @@ function FocusPage() {
   const [subject, setSubject] = useState<SubjectId | undefined>(undefined);
   const [remaining, setRemaining] = useState<number>(preset.minutes * 60);
   const [running, setRunning] = useState(false);
+  const [homeworkOpen, setHomeworkOpen] = useState(false);
   const startedAtRef = useRef<number | null>(null);
   const totalRef = useRef<number>(preset.minutes * 60);
 
@@ -79,6 +79,16 @@ function FocusPage() {
     totalRef.current = clean * 60;
     setRemaining(clean * 60);
     setPreset({ label: "Custom", minutes: clean });
+  };
+
+  const applyHomework = (questions: number, subj: SubjectId | undefined) => {
+    if (running) return;
+    const mins = computeHomeworkMinutes(questions);
+    totalRef.current = mins * 60;
+    setRemaining(mins * 60);
+    setPreset({ label: `Homework · ${questions}Q`, minutes: mins });
+    if (subj !== undefined) setSubject(subj);
+    setHomeworkOpen(false);
   };
 
   const start = () => {
@@ -118,7 +128,6 @@ function FocusPage() {
     startedAtRef.current = null;
   };
 
-  // Daily stats
   const today = dayKey(Date.now());
   const todayStats = useMemo(() => {
     const list = sessions.filter((s) => dayKey(s.endedAt) === today);
@@ -129,29 +138,16 @@ function FocusPage() {
   }, [sessions, today]);
 
   const recent = sessions.slice(0, 8);
-
-  // Homework modal
-  const [homeworkOpen, setHomeworkOpen] = useState(false);
-
-  const applyHomework = (questions: number, subj: SubjectId | undefined) => {
-    if (running) return;
-    const mins = computeHomeworkMinutes(questions);
-    totalRef.current = mins * 60;
-    setRemaining(mins * 60);
-    setPreset({ label: `Homework · ${questions}Q`, minutes: mins });
-    if (subj) setSubject(subj);
-    setHomeworkOpen(false);
-  };
+  const isHomework = preset.label.startsWith("Homework");
 
   return (
-    <>
-      {/* existing return below */}
-    </>
-  );
-}
-
-// Split — real render lives here so we keep the diff scoped.
-
+    <AppShell>
+      <header className="mb-5">
+        <h1 className="text-2xl font-semibold tracking-tight">Focus</h1>
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          Today · {formatDuration(todayStats.total)} · {todayStats.count} sessions
+        </p>
+      </header>
 
       {/* Timer */}
       <div className="card-surface flex flex-col items-center px-6 py-8">
@@ -198,7 +194,7 @@ function FocusPage() {
 
       {/* Presets */}
       <SectionHeader title="Preset" />
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {PRESETS.map((p) => (
           <button
             key={p.label}
@@ -215,6 +211,24 @@ function FocusPage() {
             <div className="text-[11px] text-muted-foreground">{p.minutes} min</div>
           </button>
         ))}
+        <button
+          disabled={running}
+          onClick={() => setHomeworkOpen(true)}
+          className={cn(
+            "rounded-2xl border px-3 py-3 text-left transition-all disabled:opacity-50",
+            isHomework
+              ? "border-amber-400/50 bg-amber-500/10"
+              : "border-white/10 bg-white/[0.03]",
+          )}
+        >
+          <div className="flex items-center gap-1.5 text-sm font-semibold">
+            <BookOpen className="h-3.5 w-3.5" />
+            Homework
+          </div>
+          <div className="text-[11px] text-muted-foreground">
+            {isHomework ? `${preset.minutes} min` : "By question count"}
+          </div>
+        </button>
       </div>
 
       {/* Custom */}
@@ -294,6 +308,131 @@ function FocusPage() {
           ))}
         </div>
       )}
+
+      {homeworkOpen && (
+        <HomeworkSheet
+          initialSubject={subject}
+          onClose={() => setHomeworkOpen(false)}
+          onApply={applyHomework}
+        />
+      )}
     </AppShell>
+  );
+}
+
+function HomeworkSheet({
+  initialSubject,
+  onClose,
+  onApply,
+}: {
+  initialSubject: SubjectId | undefined;
+  onClose: () => void;
+  onApply: (questions: number, subject: SubjectId | undefined) => void;
+}) {
+  const [q, setQ] = useState<number>(30);
+  const [subj, setSubj] = useState<SubjectId | undefined>(initialSubject);
+  const mins = computeHomeworkMinutes(q);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10 animate-in slide-in-from-bottom">
+        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-amber-300" />
+            <h2 className="text-lg font-semibold tracking-tight">Homework timer</h2>
+          </div>
+          <button onClick={onClose} aria-label="Close" className="rounded-full p-1.5 text-muted-foreground">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          Enter how many questions you have. We use ALLEN's benchmark of 75 questions in 3 hours (2.4 min / Q).
+        </p>
+
+        <div className="mt-4 rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/10">
+          <div className="flex items-baseline justify-between">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              Questions
+            </span>
+            <span className="text-4xl font-semibold tabular-nums">{q}</span>
+          </div>
+          <input
+            type="range"
+            min={5}
+            max={150}
+            step={1}
+            value={q}
+            onChange={(e) => setQ(Number(e.target.value))}
+            className="mt-3 w-full accent-amber-400"
+          />
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            {[15, 30, 50, 75].map((n) => (
+              <button
+                key={n}
+                onClick={() => setQ(n)}
+                className={cn(
+                  "rounded-lg px-2 py-1.5 text-xs font-medium ring-1",
+                  q === n
+                    ? "bg-amber-500/15 text-amber-200 ring-amber-400/30"
+                    : "bg-white/5 text-muted-foreground ring-white/10",
+                )}
+              >
+                {n} Q
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between rounded-2xl bg-amber-500/10 px-4 py-3 ring-1 ring-amber-400/20">
+          <span className="text-xs font-medium text-amber-200">Recommended time</span>
+          <span className="text-lg font-semibold text-amber-100 tabular-nums">
+            {mins} min
+          </span>
+        </div>
+
+        <div className="mt-4">
+          <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+            Subject <span className="normal-case text-muted-foreground/70">(optional)</span>
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            <button
+              onClick={() => setSubj(undefined)}
+              className={cn(
+                "rounded-xl border px-2 py-2.5 text-[11px] font-medium transition-all",
+                !subj
+                  ? "border-primary/50 bg-primary/15 text-primary"
+                  : "border-white/10 bg-white/[0.03] text-muted-foreground",
+              )}
+            >
+              None
+            </button>
+            {(Object.keys(SUBJECT_META) as SubjectId[]).map((s) => (
+              <button
+                key={s}
+                onClick={() => setSubj(s)}
+                className={cn(
+                  "rounded-xl border px-2 py-2.5 text-[11px] font-medium transition-all",
+                  subj === s
+                    ? cn("border-primary/50", SUBJECT_META[s].soft)
+                    : "border-white/10 bg-white/[0.03] text-muted-foreground",
+                )}
+              >
+                {SUBJECT_META[s].label.slice(0, 4)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button
+          onClick={() => onApply(q, subj)}
+          className="mt-5 flex h-12 w-full items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground active:scale-[0.99]"
+        >
+          Set timer to {mins} min
+        </button>
+      </div>
+    </div>
   );
 }

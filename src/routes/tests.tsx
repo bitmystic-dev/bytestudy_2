@@ -45,7 +45,56 @@ const ALL_SUBJECTS: SubjectId[] = ["physics", "chemistry", "mathematics"];
 function TestsPage() {
   const [tests, setTests] = useTests();
   const [sheetOpen, setSheetOpen] = useState<Test | "new" | null>(null);
-  const [pdfNotice, setPdfNotice] = useState(false);
+  const parseSchedule = useServerFn(aiParseTestSchedule);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pdfStatus, setPdfStatus] = useState<
+    | { kind: "idle" }
+    | { kind: "working"; step: string }
+    | { kind: "ok"; count: number }
+    | { kind: "err"; message: string }
+  >({ kind: "idle" });
+
+  const onPdfPicked = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      setPdfStatus({ kind: "working", step: "Reading PDF…" });
+      const text = await extractPdfText(file);
+      if (!text.trim()) throw new Error("Couldn't read any text from that PDF.");
+      setPdfStatus({ kind: "working", step: "Analyzing with AI…" });
+      const res = await parseSchedule({
+        data: { text: text.slice(0, 55000), hintYear: new Date().getFullYear() },
+      });
+      const parsed = res.tests ?? [];
+      if (parsed.length === 0) throw new Error("AI didn't find any tests in that PDF.");
+      const now = Date.now();
+      const newTests: Test[] = parsed.map((t) => {
+        const time = t.time && /^\d{2}:\d{2}$/.test(t.time) ? t.time : "09:00";
+        const iso = new Date(`${t.date}T${time}:00`).toISOString();
+        return {
+          id: uid(),
+          name: t.name.slice(0, 120),
+          testDate: iso,
+          subjects: t.subjects ?? [],
+          syllabus: t.syllabus ?? "",
+          status: "upcoming" as TestStatus,
+          notes: "",
+          source: "pdf" as const,
+          createdAt: now,
+          updatedAt: now,
+        };
+      });
+      setTests((prev) => [...prev, ...newTests]);
+      setPdfStatus({ kind: "ok", count: newTests.length });
+    } catch (e) {
+      setPdfStatus({
+        kind: "err",
+        message: e instanceof Error ? e.message : "Something went wrong.",
+      });
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
 
   const now = Date.now();
   const upcoming = useMemo(

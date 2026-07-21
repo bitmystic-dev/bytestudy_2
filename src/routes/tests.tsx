@@ -274,37 +274,6 @@ function TestsPage() {
         />
       )}
 
-      {pdfNotice && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setPdfNotice(false)}
-          />
-          <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10">
-            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <h2 className="text-lg font-semibold tracking-tight">
-                AI PDF parsing — coming soon
-              </h2>
-            </div>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Once enabled, upload your institute's test schedule PDF and BytePrep AI
-              will extract each test's name, date, subjects, and syllabus for you.
-              For now, please add tests manually.
-            </p>
-            <button
-              onClick={() => {
-                setPdfNotice(false);
-                setSheetOpen("new");
-              }}
-              className="mt-5 flex h-11 w-full items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground"
-            >
-              Add test manually
-            </button>
-          </div>
-        </div>
-      )}
     </AppShell>
   );
 }

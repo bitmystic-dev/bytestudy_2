@@ -51,19 +51,6 @@ export function MissionCard({
         >
           {mission.title}
         </div>
-        {mission.notes && mission.notes.trim() && (
-          <p
-            className="mt-1 text-[12.5px] leading-snug text-muted-foreground/90"
-            style={{
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {mission.notes.trim()}
-          </p>
-        )}
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11px]">
           <span className={cn("inline-flex items-center gap-1 rounded-full border px-2 py-0.5", meta.soft)}>
             <SubjectIcon subject={mission.subject} className="h-3 w-3" />
@@ -85,7 +72,6 @@ export function MissionCard({
           )}
         </div>
       </button>
-
       <button
         onClick={onPin}
         aria-label={mission.pinned ? "Unpin" : "Pin"}

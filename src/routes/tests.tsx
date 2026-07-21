@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
+import { useMemo, useState } from "react";
 import {
   ChevronLeft,
   Plus,
@@ -13,7 +12,6 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
-  Loader2,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -23,9 +21,6 @@ import type { SubjectId, Test, TestStatus } from "@/lib/types";
 import { SUBJECT_META } from "@/lib/types";
 import { uid } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { aiParseTestSchedule } from "@/lib/ai.functions";
-import { extractPdfText } from "@/lib/pdf-extract";
-
 
 export const Route = createFileRoute("/tests")({
   head: () => ({
@@ -45,56 +40,7 @@ const ALL_SUBJECTS: SubjectId[] = ["physics", "chemistry", "mathematics"];
 function TestsPage() {
   const [tests, setTests] = useTests();
   const [sheetOpen, setSheetOpen] = useState<Test | "new" | null>(null);
-  const parseSchedule = useServerFn(aiParseTestSchedule);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [pdfStatus, setPdfStatus] = useState<
-    | { kind: "idle" }
-    | { kind: "working"; step: string }
-    | { kind: "ok"; count: number }
-    | { kind: "err"; message: string }
-  >({ kind: "idle" });
-
-  const onPdfPicked = async (file: File | undefined) => {
-    if (!file) return;
-    try {
-      setPdfStatus({ kind: "working", step: "Reading PDF…" });
-      const text = await extractPdfText(file);
-      if (!text.trim()) throw new Error("Couldn't read any text from that PDF.");
-      setPdfStatus({ kind: "working", step: "Analyzing with AI…" });
-      const res = await parseSchedule({
-        data: { text: text.slice(0, 55000), hintYear: new Date().getFullYear() },
-      });
-      const parsed = res.tests ?? [];
-      if (parsed.length === 0) throw new Error("AI didn't find any tests in that PDF.");
-      const now = Date.now();
-      const newTests: Test[] = parsed.map((t) => {
-        const time = t.time && /^\d{2}:\d{2}$/.test(t.time) ? t.time : "09:00";
-        const iso = new Date(`${t.date}T${time}:00`).toISOString();
-        return {
-          id: uid(),
-          name: t.name.slice(0, 120),
-          testDate: iso,
-          subjects: t.subjects ?? [],
-          syllabus: t.syllabus ?? "",
-          status: "upcoming" as TestStatus,
-          notes: "",
-          source: "pdf" as const,
-          createdAt: now,
-          updatedAt: now,
-        };
-      });
-      setTests((prev) => [...prev, ...newTests]);
-      setPdfStatus({ kind: "ok", count: newTests.length });
-    } catch (e) {
-      setPdfStatus({
-        kind: "err",
-        message: e instanceof Error ? e.message : "Something went wrong.",
-      });
-    } finally {
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  };
-
+  const [pdfNotice, setPdfNotice] = useState(false);
 
   const now = Date.now();
   const upcoming = useMemo(
@@ -162,58 +108,20 @@ function TestsPage() {
       </header>
 
       {/* PDF upload card */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="application/pdf,.pdf"
-        className="hidden"
-        onChange={(e) => onPdfPicked(e.target.files?.[0])}
-      />
       <button
-        onClick={() => {
-          if (pdfStatus.kind === "working") return;
-          setPdfStatus({ kind: "idle" });
-          fileInputRef.current?.click();
-        }}
-        disabled={pdfStatus.kind === "working"}
-        className="mb-3 flex w-full items-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-3.5 text-left transition-colors hover:bg-white/[0.05] disabled:opacity-70"
+        onClick={() => setPdfNotice(true)}
+        className="mb-5 flex w-full items-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-3.5 text-left transition-colors hover:bg-white/[0.05]"
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary">
-          {pdfStatus.kind === "working" ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Upload className="h-4 w-4" />
-          )}
+          <Upload className="h-4 w-4" />
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-[13px] font-medium">
-            {pdfStatus.kind === "working"
-              ? pdfStatus.step
-              : "Upload test schedule PDF"}
-          </div>
+          <div className="text-[13px] font-medium">Upload test schedule PDF</div>
           <div className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
-            <Sparkles className="h-3 w-3" />
-            {pdfStatus.kind === "working"
-              ? "Analyzing your schedule…"
-              : "AI reads your PDF and adds each test"}
+            <Sparkles className="h-3 w-3" /> AI parsing — coming soon
           </div>
         </div>
       </button>
-
-      {pdfStatus.kind === "ok" && (
-        <div className="mb-5 flex items-start gap-2 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-[12px] text-emerald-200">
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
-          <span>
-            Imported {pdfStatus.count} test{pdfStatus.count === 1 ? "" : "s"}. Review each below and edit if the AI got a date wrong.
-          </span>
-        </div>
-      )}
-      {pdfStatus.kind === "err" && (
-        <div className="mb-5 flex items-start gap-2 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-3 text-[12px] text-rose-200">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-          <span>{pdfStatus.message}</span>
-        </div>
-      )}
 
       {/* Countdown hero */}
       {nextTest && (
@@ -274,6 +182,37 @@ function TestsPage() {
         />
       )}
 
+      {pdfNotice && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setPdfNotice(false)}
+          />
+          <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10">
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-semibold tracking-tight">
+                AI PDF parsing — coming soon
+              </h2>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Once enabled, upload your institute's test schedule PDF and BytePrep AI
+              will extract each test's name, date, subjects, and syllabus for you.
+              For now, please add tests manually.
+            </p>
+            <button
+              onClick={() => {
+                setPdfNotice(false);
+                setSheetOpen("new");
+              }}
+              className="mt-5 flex h-11 w-full items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground"
+            >
+              Add test manually
+            </button>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }

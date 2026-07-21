@@ -7,38 +7,16 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import {
-  GoogleAuthProvider,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut as fbSignOut,
-  updateProfile,
-  updatePassword as fbUpdatePassword,
-  type User as FirebaseUser,
-} from "firebase/auth";
-import { auth } from "@/integrations/firebase/client";
+import type { Session, User, AuthError } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 
 export type AuthStatus = "loading" | "authenticated" | "unauthenticated";
 
-// Compatibility shape: existing code reads `user.id`; Firebase exposes `uid`.
-// We expose both so downstream consumers don't need to change in this turn.
-export interface AuthUser {
-  id: string;
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-  firebaseUser: FirebaseUser;
-}
-
 export interface AuthContextValue {
   status: AuthStatus;
-  user: AuthUser | null;
-  /** Legacy alias — some callers still read `session` truthiness. */
-  session: { user: AuthUser } | null;
+  user: User | null;
+  session: Session | null;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
   signUp: (email: string, password: string, name?: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
@@ -49,131 +27,106 @@ export interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function friendlyError(err: unknown): string | undefined {
+function friendlyError(err: AuthError | Error | null | undefined): string | undefined {
   if (!err) return undefined;
-  const anyErr = err as { code?: string; message?: string };
-  const code = anyErr.code ?? "";
-  const msg = (anyErr.message ?? "").toLowerCase();
-  switch (code) {
-    case "auth/invalid-credential":
-    case "auth/wrong-password":
-    case "auth/user-not-found":
-      return "Wrong email or password.";
-    case "auth/invalid-email":
-      return "That email doesn't look right.";
-    case "auth/email-already-in-use":
-      return "An account with this email already exists.";
-    case "auth/weak-password":
-      return "Please choose a stronger password (min 6 characters).";
-    case "auth/too-many-requests":
-      return "Too many attempts. Please wait a minute and try again.";
-    case "auth/popup-closed-by-user":
-    case "auth/cancelled-popup-request":
-      return "Sign-in was cancelled.";
-    case "auth/popup-blocked":
-      return "Your browser blocked the sign-in popup. Allow popups and try again.";
-    case "auth/network-request-failed":
-      return "Network problem. Check your connection.";
-    case "auth/requires-recent-login":
-      return "Please sign in again to change your password.";
-    default:
-      if (msg.includes("network")) return "Network problem. Check your connection.";
-      return anyErr.message || "Something went wrong.";
+  const msg = err.message?.toLowerCase() ?? "";
+  if (msg.includes("invalid login")) return "Wrong email or password.";
+  if (msg.includes("email not confirmed")) return "Please confirm your email first.";
+  if (msg.includes("already registered") || msg.includes("already exists")) {
+    return "An account with this email already exists.";
   }
-}
-
-function toAuthUser(u: FirebaseUser): AuthUser {
-  return {
-    id: u.uid,
-    uid: u.uid,
-    email: u.email,
-    displayName: u.displayName,
-    photoURL: u.photoURL,
-    firebaseUser: u,
-  };
+  if (msg.includes("password") && msg.includes("weak"))
+    return "Please choose a stronger password.";
+  if (msg.includes("password") && msg.includes("short"))
+    return "Password must be at least 6 characters.";
+  if (msg.includes("network") || msg.includes("fetch"))
+    return "Network problem. Check your connection.";
+  if (msg.includes("rate limit"))
+    return "Too many attempts. Please wait a minute and try again.";
+  if (msg.includes("pwned") || msg.includes("compromised"))
+    return "This password has appeared in data breaches. Choose another.";
+  return err.message;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (fbUser) => {
-      if (fbUser) {
-        setUser(toAuthUser(fbUser));
-        setStatus("authenticated");
-      } else {
-        setUser(null);
-        setStatus("unauthenticated");
-      }
+    let mounted = true;
+    // Register listener BEFORE reading session per Supabase best practice.
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (!mounted) return;
+      setSession(s);
+      setStatus(s ? "authenticated" : "unauthenticated");
     });
-    return () => unsub();
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      setSession(data.session);
+      setStatus(data.session ? "authenticated" : "unauthenticated");
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      return {};
-    } catch (e) {
-      return { error: friendlyError(e) };
-    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: friendlyError(error) };
   }, []);
 
   const signUp = useCallback(async (email: string, password: string, name?: string) => {
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      if (name && name.trim()) {
-        await updateProfile(cred.user, { displayName: name.trim() }).catch(() => {});
-      }
-      return {};
-    } catch (e) {
-      return { error: friendlyError(e) };
-    }
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo:
+          typeof window !== "undefined" ? window.location.origin : undefined,
+        data: name ? { name } : undefined,
+      },
+    });
+    return { error: friendlyError(error) };
   }, []);
 
   const signOut = useCallback(async () => {
-    await fbSignOut(auth);
+    await supabase.auth.signOut();
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
     try {
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: "select_account" });
-      await signInWithPopup(auth, provider);
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri:
+          typeof window !== "undefined" ? window.location.origin : undefined,
+      });
+      if (result.error) {
+        return { error: friendlyError(result.error as Error) };
+      }
       return {};
     } catch (e) {
-      return { error: friendlyError(e) };
+      return { error: friendlyError(e as Error) };
     }
   }, []);
 
   const resetPassword = useCallback(async (email: string) => {
-    try {
-      const url =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/reset-password`
-          : undefined;
-      await sendPasswordResetEmail(auth, email, url ? { url } : undefined);
-      return {};
-    } catch (e) {
-      return { error: friendlyError(e) };
-    }
+    const redirectTo =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/reset-password`
+        : undefined;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    return { error: friendlyError(error) };
   }, []);
 
   const updatePassword = useCallback(async (password: string) => {
-    try {
-      if (!auth.currentUser) return { error: "You need to be signed in." };
-      await fbUpdatePassword(auth.currentUser, password);
-      return {};
-    } catch (e) {
-      return { error: friendlyError(e) };
-    }
+    const { error } = await supabase.auth.updateUser({ password });
+    return { error: friendlyError(error) };
   }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
-      user,
-      session: user ? { user } : null,
+      user: session?.user ?? null,
+      session,
       signIn,
       signUp,
       signOut,
@@ -181,7 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       resetPassword,
       updatePassword,
     }),
-    [status, user, signIn, signUp, signOut, signInWithGoogle, resetPassword, updatePassword],
+    [status, session, signIn, signUp, signOut, signInWithGoogle, resetPassword, updatePassword],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

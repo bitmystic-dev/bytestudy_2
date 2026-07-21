@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Lock, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
-import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
-import { auth } from "@/integrations/firebase/client";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/reset-password")({
@@ -17,14 +17,8 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
-
-  const oobCode = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return new URLSearchParams(window.location.search).get("oobCode");
-  }, []);
-
+  const { updatePassword } = useAuth();
   const [ready, setReady] = useState(false);
-  const [verifyError, setVerifyError] = useState<string | undefined>();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,37 +26,28 @@ function ResetPasswordPage() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (!oobCode) {
-      setVerifyError("This reset link is missing its code. Request a new one.");
-      return;
-    }
-    verifyPasswordResetCode(auth, oobCode)
-      .then(() => setReady(true))
-      .catch(() => setVerifyError("This reset link is invalid or has expired."));
-  }, [oobCode]);
+    // When the user clicks the reset link, Supabase sets a PASSWORD_RECOVERY session.
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
+    });
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) setReady(true);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
-  const canSubmit =
-    ready && oobCode && password.length >= 6 && password === confirm && !loading;
+  const canSubmit = ready && password.length >= 6 && password === confirm && !loading;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit || !oobCode) return;
+    if (!canSubmit) return;
     setError(undefined);
     setLoading(true);
-    try {
-      await confirmPasswordReset(auth, oobCode, password);
-      setDone(true);
-      setTimeout(() => navigate({ to: "/auth", replace: true }), 1500);
-    } catch (err) {
-      const anyErr = err as { code?: string; message?: string };
-      if (anyErr.code === "auth/weak-password") {
-        setError("Please choose a stronger password.");
-      } else {
-        setError(anyErr.message ?? "Couldn't update password. Try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
+    const { error } = await updatePassword(password);
+    setLoading(false);
+    if (error) return setError(error);
+    setDone(true);
+    setTimeout(() => navigate({ to: "/", replace: true }), 1500);
   };
 
   return (
@@ -76,18 +61,12 @@ function ResetPasswordPage() {
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {done
-            ? "Redirecting you to sign in…"
+            ? "Redirecting you in a moment…"
             : "Choose a password you can remember. Minimum 6 characters."}
         </p>
       </div>
 
-      {verifyError && !done && (
-        <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          {verifyError}
-        </div>
-      )}
-
-      {!done && !verifyError && (
+      {!done && (
         <form onSubmit={onSubmit} className="space-y-3">
           <input
             type="password"
@@ -114,7 +93,7 @@ function ResetPasswordPage() {
 
           {!ready && (
             <p className="text-center text-xs text-muted-foreground">
-              Verifying reset link…
+              Waiting for the reset link to authenticate…
             </p>
           )}
           {error && (

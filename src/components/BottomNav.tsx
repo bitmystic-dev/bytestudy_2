@@ -25,7 +25,7 @@ export function BottomNav() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-[480px] justify-center pb-[max(env(safe-area-inset-bottom),0.5rem)]">
       <nav
-        className="glass-nav pointer-events-auto mx-3 flex flex-1 items-stretch justify-between rounded-full px-1.5 py-1.5 shadow-[0_20px_60px_-25px_rgba(0,0,0,0.7)]"
+        className="glass-nav pointer-events-auto mx-3 flex flex-1 items-stretch justify-between rounded-full px-1.5 py-1.5"
         aria-label="Primary"
       >
         {items.map(({ to, label, icon: Icon }) => {

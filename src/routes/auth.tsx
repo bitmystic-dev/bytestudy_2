@@ -34,7 +34,7 @@ function AuthPage() {
 
   const canSubmit = (() => {
     if (mode === "forgot") return /.+@.+\..+/.test(email) && !loading;
-    if (mode === "signup") return /.+@.+\..+/.test(email) && password.length >= 6 && !loading;
+    if (mode === "signup") return /.+@.+\..+/.test(email) && password.length >= 1 && !loading;
     return /.+@.+\..+/.test(email) && password.length >= 1 && !loading;
   })();
 
@@ -146,7 +146,7 @@ function AuthPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder={mode === "signup" ? "Choose a password (min 6)" : "Password"}
+              placeholder={mode === "signup" ? "Choose a password" : "Password"}
               autoComplete={mode === "signup" ? "new-password" : "current-password"}
               minLength={mode === "signup" ? 6 : undefined}
               required

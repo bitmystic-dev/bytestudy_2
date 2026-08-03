@@ -102,7 +102,7 @@ function AuthPage() {
         <button
           onClick={onGoogle}
           disabled={loading}
-          className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-full bg-white text-[15px] font-semibold text-black transition-all active:scale-[0.99] disabled:opacity-60"
+          className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-full bg-elevated-strong text-[15px] font-semibold text-foreground ring-1 ring-hairline transition-all active:scale-[0.99] disabled:opacity-60"
         >
           <GoogleGlyph />
           Continue with Google

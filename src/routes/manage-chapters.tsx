@@ -619,7 +619,7 @@ function ConfirmSheet({
             className={cn(
               "h-11 flex-1 rounded-full text-sm font-semibold",
               destructive
-                ? "bg-rose-500/90 text-white"
+                ? "bg-destructive text-destructive-foreground"
                 : "bg-primary text-primary-foreground",
             )}
           >

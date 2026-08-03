@@ -13,9 +13,9 @@ import { BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SUBJECT_BAR: Record<SubjectId, string> = {
-  physics: "bg-indigo-400",
-  chemistry: "bg-emerald-400",
-  mathematics: "bg-amber-400",
+  physics: "bg-physics",
+  chemistry: "bg-chemistry",
+  mathematics: "bg-mathematics",
 };
 
 export const Route = createFileRoute("/analytics")({

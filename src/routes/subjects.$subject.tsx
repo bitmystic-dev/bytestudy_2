@@ -47,21 +47,21 @@ const CHECKPOINT_ICON = {
 
 // Subject-specific checkpoint tint (bg + text) for the icon tile.
 const CHECKPOINT_TINT: Record<SubjectId, string> = {
-  physics: "bg-indigo-500/15 text-indigo-300 ring-indigo-400/20",
-  chemistry: "bg-emerald-500/15 text-emerald-300 ring-emerald-400/20",
-  mathematics: "bg-amber-500/15 text-amber-300 ring-amber-400/20",
+  physics: "bg-physics/15 text-physics ring-physics/25",
+  chemistry: "bg-chemistry/15 text-chemistry ring-chemistry/25",
+  mathematics: "bg-mathematics/15 text-mathematics ring-mathematics/25",
 };
 
 const CHECKBOX_ACTIVE: Record<SubjectId, string> = {
-  physics: "bg-indigo-400 border-indigo-300 text-slate-900",
-  chemistry: "bg-emerald-400 border-emerald-300 text-slate-900",
-  mathematics: "bg-amber-400 border-amber-300 text-slate-900",
+  physics: "bg-physics border-physics text-on-subject",
+  chemistry: "bg-chemistry border-chemistry text-on-subject",
+  mathematics: "bg-mathematics border-mathematics text-on-subject",
 };
 
 const PROGRESS_BAR: Record<SubjectId, string> = {
-  physics: "bg-indigo-400",
-  chemistry: "bg-emerald-400",
-  mathematics: "bg-amber-400",
+  physics: "bg-physics",
+  chemistry: "bg-chemistry",
+  mathematics: "bg-mathematics",
 };
 
 export const Route = createFileRoute("/subjects/$subject")({
@@ -203,7 +203,7 @@ function SubjectPage() {
                       <div className="truncate text-[15px] font-medium">{name}</div>
                       {c.important && (
                         <Star
-                          className="h-3.5 w-3.5 shrink-0 fill-amber-300 text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]"
+                          className="h-3.5 w-3.5 shrink-0 fill-warning text-warning"
                           aria-label="Important chapter"
                         />
                       )}

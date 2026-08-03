@@ -13,9 +13,9 @@ import { BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SUBJECT_BAR: Record<SubjectId, string> = {
-  physics: "bg-indigo-400",
-  chemistry: "bg-emerald-400",
-  mathematics: "bg-amber-400",
+  physics: "bg-physics",
+  chemistry: "bg-chemistry",
+  mathematics: "bg-mathematics",
 };
 
 export const Route = createFileRoute("/analytics")({
@@ -181,7 +181,7 @@ function AnalyticsPage() {
                 <span className={cn("font-medium", meta.accent)}>{meta.label}</span>
                 <span className="text-muted-foreground">{formatDuration(sec)}</span>
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
+              <div className="h-1.5 overflow-hidden rounded-full bg-elevated">
                 <div
                   className={cn("h-full rounded-full transition-all", SUBJECT_BAR[s])}
                   style={{ width: `${pct}%` }}
@@ -225,7 +225,7 @@ function AnalyticsPage() {
                 title={`${c.key} · ${formatDuration(c.sec)}`}
                 className={cn(
                   "aspect-square w-full rounded-[3px] transition-colors",
-                  level === 0 && "bg-white/[0.04]",
+                  level === 0 && "bg-elevated",
                   level === 1 && "bg-primary/25",
                   level === 2 && "bg-primary/45",
                   level === 3 && "bg-primary/70",

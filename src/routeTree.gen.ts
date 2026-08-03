@@ -17,6 +17,7 @@ import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ManageChaptersRouteImport } from './routes/manage-chapters'
 import { Route as FocusRouteImport } from './routes/focus'
+import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AiRouteImport } from './routes/ai'
@@ -64,6 +65,11 @@ const FocusRoute = FocusRouteImport.update({
   path: '/focus',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChangePasswordRoute = ChangePasswordRouteImport.update({
+  id: '/change-password',
+  path: '/change-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/change-password': typeof ChangePasswordRoute
   '/focus': typeof FocusRoute
   '/manage-chapters': typeof ManageChaptersRoute
   '/onboarding': typeof OnboardingRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/change-password': typeof ChangePasswordRoute
   '/focus': typeof FocusRoute
   '/manage-chapters': typeof ManageChaptersRoute
   '/onboarding': typeof OnboardingRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/change-password': typeof ChangePasswordRoute
   '/focus': typeof FocusRoute
   '/manage-chapters': typeof ManageChaptersRoute
   '/onboarding': typeof OnboardingRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/ai'
     | '/analytics'
     | '/auth'
+    | '/change-password'
     | '/focus'
     | '/manage-chapters'
     | '/onboarding'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/ai'
     | '/analytics'
     | '/auth'
+    | '/change-password'
     | '/focus'
     | '/manage-chapters'
     | '/onboarding'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/ai'
     | '/analytics'
     | '/auth'
+    | '/change-password'
     | '/focus'
     | '/manage-chapters'
     | '/onboarding'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   AiRoute: typeof AiRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
+  ChangePasswordRoute: typeof ChangePasswordRoute
   FocusRoute: typeof FocusRoute
   ManageChaptersRoute: typeof ManageChaptersRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FocusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/change-password': {
+      id: '/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof ChangePasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -321,6 +341,7 @@ const rootRouteChildren: RootRouteChildren = {
   AiRoute: AiRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
+  ChangePasswordRoute: ChangePasswordRoute,
   FocusRoute: FocusRoute,
   ManageChaptersRoute: ManageChaptersRoute,
   OnboardingRoute: OnboardingRoute,

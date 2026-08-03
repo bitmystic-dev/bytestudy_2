@@ -69,7 +69,7 @@ function ProfilePage() {
         </div>
         <button
           onClick={() => setEditing(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-muted-foreground active:scale-95"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-elevated text-muted-foreground active:scale-95"
           aria-label="Edit"
         >
           <Pencil className="h-4 w-4" />
@@ -77,7 +77,7 @@ function ProfilePage() {
       </header>
 
       <SectionHeader title="Study" />
-      <div className="card-surface divide-y divide-white/5">
+      <div className="card-surface divide-y divide-hairline">
         <Row label="Daily goal" value={`${Math.floor(profile.dailyGoalMinutes / 60)}h ${profile.dailyGoalMinutes % 60}m`} />
         <Row label="Wake time" value={profile.wakeTime} />
         <Row label="Sleep time" value={profile.sleepTime} />
@@ -95,9 +95,9 @@ function ProfilePage() {
       <div className="card-surface">
         <Link
           to="/manage-chapters"
-          className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]"
+          className="flex items-center gap-3 px-4 py-3.5 active:bg-elevated"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
             <BookOpen className="h-4 w-4" />
           </div>
           <div className="flex-1">
@@ -109,16 +109,16 @@ function ProfilePage() {
       </div>
 
       <SectionHeader title="Study tools" />
-      <div className="card-surface divide-y divide-white/5">
-        <Link to="/analytics" className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+      <div className="card-surface divide-y divide-hairline">
+        <Link to="/analytics" className="flex items-center gap-3 px-4 py-3.5 active:bg-elevated">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
             <BarChart3 className="h-4 w-4" />
           </div>
           <div className="flex-1 text-sm font-medium">Analytics</div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
-        <Link to="/tests" className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+        <Link to="/tests" className="flex items-center gap-3 px-4 py-3.5 active:bg-elevated">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
             <Calendar className="h-4 w-4" />
           </div>
           <div className="flex-1 text-sm font-medium">Test schedule</div>
@@ -127,9 +127,9 @@ function ProfilePage() {
       </div>
 
       <SectionHeader title="App" />
-      <div className="card-surface divide-y divide-white/5">
+      <div className="card-surface divide-y divide-hairline">
         <div className="flex items-center gap-3 px-4 py-3.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-300">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success/10 text-success">
             <Cloud className="h-4 w-4" />
           </div>
           <div className="flex-1">
@@ -138,7 +138,7 @@ function ProfilePage() {
           </div>
         </div>
         <div className="flex items-center gap-3 px-4 py-3.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
             <Info className="h-4 w-4" />
           </div>
           <div className="flex-1">
@@ -151,7 +151,7 @@ function ProfilePage() {
       <div className="mt-6 space-y-2">
         <button
           onClick={handleSignOut}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white/[0.04] py-3.5 text-sm font-medium ring-1 ring-white/10 active:scale-[0.99]"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-elevated py-3.5 text-sm font-medium ring-1 ring-hairline active:scale-[0.99]"
         >
           <LogOut className="h-4 w-4" /> Sign out
         </button>
@@ -202,9 +202,9 @@ function EditProfileSheet({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10">
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+      <div className="absolute inset-0 bg-overlay backdrop-blur-sm" onClick={onClose} />
+      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-hairline">
+        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-elevated-strong" />
         <h2 className="mb-4 text-lg font-semibold tracking-tight">Edit profile</h2>
         <div className="space-y-3">
           <Field label="Name">
@@ -222,7 +222,7 @@ function EditProfileSheet({
                   onClick={() => update("classLevel", v)}
                   className={cn(
                     "flex-1 rounded-lg py-2 text-xs font-medium capitalize",
-                    draft.classLevel === v ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground",
+                    draft.classLevel === v ? "bg-primary/20 text-primary" : "bg-elevated text-muted-foreground",
                   )}
                 >
                   {v === "dropper" ? "Dropper" : `Class ${v}`}
@@ -271,7 +271,7 @@ function EditProfileSheet({
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block rounded-2xl bg-white/[0.04] px-4 py-2.5 ring-1 ring-white/10">
+    <label className="block rounded-2xl bg-elevated px-4 py-2.5 ring-1 ring-hairline">
       <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</div>
       <div className="mt-1">{children}</div>
     </label>

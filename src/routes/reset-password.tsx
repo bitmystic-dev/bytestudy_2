@@ -77,7 +77,7 @@ function ResetPasswordPage() {
             minLength={6}
             required
             disabled={!ready}
-            className="w-full rounded-2xl bg-white/[0.04] px-5 py-4 text-[15px] outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50 disabled:opacity-50"
+            className="w-full rounded-2xl bg-elevated px-5 py-4 text-[15px] outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50 disabled:opacity-50"
           />
           <input
             type="password"
@@ -88,7 +88,7 @@ function ResetPasswordPage() {
             minLength={6}
             required
             disabled={!ready}
-            className="w-full rounded-2xl bg-white/[0.04] px-5 py-4 text-[15px] outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50 disabled:opacity-50"
+            className="w-full rounded-2xl bg-elevated px-5 py-4 text-[15px] outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50 disabled:opacity-50"
           />
 
           {!ready && (
@@ -107,7 +107,7 @@ function ResetPasswordPage() {
             disabled={!canSubmit}
             className={cn(
               "flex h-12 w-full items-center justify-center gap-2 rounded-full text-[15px] font-semibold transition-all active:scale-[0.99]",
-              canSubmit ? "bg-primary text-primary-foreground" : "bg-white/5 text-muted-foreground",
+              canSubmit ? "bg-primary text-primary-foreground" : "bg-elevated text-muted-foreground",
             )}
           >
             {loading ? (

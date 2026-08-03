@@ -15,6 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { useProfile } from "@/hooks/useCloud";
+import { ThemeProvider, themeBootstrapScript, DEFAULT_PREFS } from "@/lib/theme";
 
 const PUBLIC_ROUTES = new Set(["/auth", "/reset-password"]);
 
@@ -100,9 +101,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html
+      lang="en"
+      data-theme={DEFAULT_PREFS.theme}
+      data-accent={DEFAULT_PREFS.accent}
+      data-radius={DEFAULT_PREFS.radius}
+      style={{ colorScheme: DEFAULT_PREFS.mode === "dark" ? "dark" : "light" }}
+    >
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
       <body>
         {children}
@@ -169,9 +177,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AuthRouter />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AuthRouter />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

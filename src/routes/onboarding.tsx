@@ -112,7 +112,7 @@ function OnboardingPage() {
             key={i}
             className={cn(
               "h-1 flex-1 rounded-full transition-all",
-              i <= step ? "bg-primary" : "bg-white/10",
+              i <= step ? "bg-primary" : "bg-elevated-strong",
             )}
           />
         ))}
@@ -126,7 +126,7 @@ function OnboardingPage() {
               value={draft.name}
               onChange={(e) => update("name", e.target.value)}
               placeholder="Your name"
-              className="mt-2 w-full rounded-2xl bg-white/5 px-5 py-4 text-lg font-medium outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+              className="mt-2 w-full rounded-2xl bg-elevated px-5 py-4 text-lg font-medium outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50"
             />
           </Step>
         )}
@@ -142,7 +142,7 @@ function OnboardingPage() {
                     "flex items-center justify-between rounded-2xl border px-5 py-4 text-left text-[15px] transition-all",
                     draft.classLevel === v
                       ? "border-primary/60 bg-primary/10"
-                      : "border-white/10 bg-white/[0.03]",
+                      : "border-hairline bg-elevated",
                   )}
                 >
                   <span className="font-medium">
@@ -165,7 +165,7 @@ function OnboardingPage() {
               min={2024}
               max={2035}
               onChange={(e) => update("targetYear", Number(e.target.value))}
-              className="mt-2 w-full rounded-2xl bg-white/5 px-5 py-4 text-lg font-medium outline-none ring-1 ring-white/10 focus:ring-primary/50"
+              className="mt-2 w-full rounded-2xl bg-elevated px-5 py-4 text-lg font-medium outline-none ring-1 ring-hairline focus:ring-primary/50"
             />
           </Step>
         )}
@@ -176,7 +176,7 @@ function OnboardingPage() {
               value={draft.coaching}
               onChange={(e) => update("coaching", e.target.value)}
               placeholder="e.g. Allen, FIITJEE, Self-study"
-              className="mt-2 w-full rounded-2xl bg-white/5 px-5 py-4 text-[15px] outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+              className="mt-2 w-full rounded-2xl bg-elevated px-5 py-4 text-[15px] outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50"
             />
           </Step>
         )}
@@ -214,7 +214,7 @@ function OnboardingPage() {
             <div className="mt-2 space-y-3">
               <TimeField icon={Sun} label="Wake time" value={draft.wakeTime} onChange={(v) => update("wakeTime", v)} />
               <TimeField icon={Moon} label="Sleep time" value={draft.sleepTime} onChange={(v) => update("sleepTime", v)} />
-              <div className="rounded-2xl bg-white/[0.03] p-4 ring-1 ring-white/10">
+              <div className="rounded-2xl bg-elevated p-4 ring-1 ring-hairline">
                 <div className="mb-2 text-xs font-medium text-muted-foreground">Weekly off day</div>
                 <div className="flex gap-1.5">
                   {days.map((d, i) => (
@@ -225,7 +225,7 @@ function OnboardingPage() {
                         "flex-1 rounded-lg py-2 text-xs font-medium transition-colors",
                         draft.weeklyOffDay === i
                           ? "bg-primary/20 text-primary"
-                          : "bg-white/5 text-muted-foreground",
+                          : "bg-elevated text-muted-foreground",
                       )}
                     >
                       {d}
@@ -242,7 +242,7 @@ function OnboardingPage() {
         {step > 0 && (
           <button
             onClick={back}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-white/5 ring-1 ring-white/10 active:scale-95"
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-elevated ring-1 ring-hairline active:scale-95"
             aria-label="Back"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -255,7 +255,7 @@ function OnboardingPage() {
             "flex h-14 flex-1 items-center justify-center gap-2 rounded-full text-[15px] font-semibold transition-all active:scale-[0.98]",
             canContinue
               ? "bg-primary text-primary-foreground"
-              : "bg-white/5 text-muted-foreground",
+              : "bg-elevated text-muted-foreground",
           )}
         >
           {step === totalSteps - 1 ? "Let's study" : "Continue"}
@@ -303,8 +303,8 @@ function TimeField({
   onChange: (v: string) => void;
 }) {
   return (
-    <label className="flex items-center gap-3 rounded-2xl bg-white/[0.03] p-4 ring-1 ring-white/10">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+    <label className="flex items-center gap-3 rounded-2xl bg-elevated p-4 ring-1 ring-hairline">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
         <Icon className="h-5 w-5" />
       </div>
       <div className="flex-1">

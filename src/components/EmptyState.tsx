@@ -15,7 +15,7 @@ export function EmptyState({
   return (
     <div className="card-surface flex flex-col items-center px-6 py-10 text-center">
       {Icon && (
-        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 text-muted-foreground">
+        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-elevated text-muted-foreground">
           <Icon className="h-6 w-6" />
         </div>
       )}

@@ -85,7 +85,7 @@ function TestsPage() {
       <header className="mb-5 flex items-center gap-3">
         <Link
           to="/settings"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-elevated"
           aria-label="Back"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -110,7 +110,7 @@ function TestsPage() {
       {/* PDF upload card */}
       <button
         onClick={() => setPdfNotice(true)}
-        className="mb-5 flex w-full items-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-3.5 text-left transition-colors hover:bg-white/[0.05]"
+        className="mb-5 flex w-full items-center gap-3 rounded-2xl border border-dashed border-hairline bg-elevated px-4 py-3.5 text-left transition-colors hover:bg-elevated"
       >
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary">
           <Upload className="h-4 w-4" />
@@ -185,11 +185,11 @@ function TestsPage() {
       {pdfNotice && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-overlay backdrop-blur-sm"
             onClick={() => setPdfNotice(false)}
           />
-          <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10">
-            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+          <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-hairline">
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-elevated-strong" />
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" />
               <h2 className="text-lg font-semibold tracking-tight">
@@ -282,23 +282,23 @@ function TestCard({
 
   const badge =
     test.status === "completed" ? (
-      <span className="flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
+      <span className="flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5 text-[10px] font-medium text-success">
         <CheckCircle2 className="h-3 w-3" /> Done
       </span>
     ) : test.status === "missed" ? (
-      <span className="flex items-center gap-1 rounded-full bg-rose-500/15 px-2 py-0.5 text-[10px] font-medium text-rose-300">
+      <span className="flex items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 text-[10px] font-medium text-destructive">
         <AlertTriangle className="h-3 w-3" /> Missed
       </span>
     ) : days < 0 ? (
-      <span className="flex items-center gap-1 rounded-full bg-rose-500/15 px-2 py-0.5 text-[10px] font-medium text-rose-300">
+      <span className="flex items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 text-[10px] font-medium text-destructive">
         <Clock className="h-3 w-3" /> Overdue
       </span>
     ) : days <= 3 ? (
-      <span className="flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium text-amber-300">
+      <span className="flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[10px] font-medium text-warning">
         <Clock className="h-3 w-3" /> In {days}d
       </span>
     ) : (
-      <span className="flex items-center gap-1 rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+      <span className="flex items-center gap-1 rounded-full bg-elevated px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
         <Calendar className="h-3 w-3" /> In {days}d
       </span>
     );
@@ -347,7 +347,7 @@ function TestCard({
           <button
             onClick={onEdit}
             aria-label="Edit"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-muted-foreground"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-muted-foreground"
           >
             <Pencil className="h-3.5 w-3.5" />
           </button>
@@ -355,7 +355,7 @@ function TestCard({
             <button
               onClick={onComplete}
               aria-label="Mark done"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-success/15 text-success"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
             </button>
@@ -424,12 +424,12 @@ function TestSheet({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-overlay backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative mx-auto flex max-h-[90vh] w-full max-w-[480px] flex-col rounded-t-3xl bg-[var(--surface)] pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10 animate-in slide-in-from-bottom">
+      <div className="relative mx-auto flex max-h-[90vh] w-full max-w-[480px] flex-col rounded-t-3xl bg-[var(--surface)] pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-hairline animate-in slide-in-from-bottom">
         <div className="px-5 pt-3">
-          <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+          <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-elevated-strong" />
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold tracking-tight">
               {test ? "Edit test" : "New test"}
@@ -449,7 +449,7 @@ function TestSheet({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Test name (e.g. Minor Test 3)"
-            className="w-full rounded-2xl bg-white/[0.04] px-4 py-3.5 text-[15px] outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+            className="w-full rounded-2xl bg-elevated px-4 py-3.5 text-[15px] outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50"
           />
 
           <div className="grid grid-cols-2 gap-3">
@@ -461,7 +461,7 @@ function TestSheet({
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full rounded-lg bg-white/[0.04] px-3 py-2 text-xs outline-none ring-1 ring-white/10"
+                className="w-full rounded-lg bg-elevated px-3 py-2 text-xs outline-none ring-1 ring-hairline"
               />
             </div>
             <div>
@@ -472,7 +472,7 @@ function TestSheet({
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full rounded-lg bg-white/[0.04] px-3 py-2 text-xs outline-none ring-1 ring-white/10"
+                className="w-full rounded-lg bg-elevated px-3 py-2 text-xs outline-none ring-1 ring-hairline"
               />
             </div>
           </div>
@@ -493,7 +493,7 @@ function TestSheet({
                       "flex items-center justify-center gap-1 rounded-xl border px-2 py-2.5 text-[11px] font-medium transition-all",
                       on
                         ? cn(SUBJECT_META[s].soft, "border-current")
-                        : "border-white/10 bg-white/[0.03] text-muted-foreground",
+                        : "border-hairline bg-elevated text-muted-foreground",
                     )}
                   >
                     {SUBJECT_META[s].label}
@@ -512,7 +512,7 @@ function TestSheet({
               onChange={(e) => setSyllabus(e.target.value)}
               rows={3}
               placeholder="e.g. Kinematics, Laws of Motion, Rotational Motion"
-              className="w-full resize-none rounded-2xl bg-white/[0.04] px-4 py-3 text-sm outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+              className="w-full resize-none rounded-2xl bg-elevated px-4 py-3 text-sm outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50"
             />
           </div>
 
@@ -532,7 +532,7 @@ function TestSheet({
                         "rounded-lg py-2 text-[11px] font-medium capitalize",
                         status === s
                           ? "bg-primary/20 text-primary"
-                          : "bg-white/5 text-muted-foreground",
+                          : "bg-elevated text-muted-foreground",
                       )}
                     >
                       {s}
@@ -554,7 +554,7 @@ function TestSheet({
                   value={score}
                   onChange={(e) => setScore(e.target.value)}
                   placeholder="e.g. 240"
-                  className="w-full rounded-lg bg-white/[0.04] px-3 py-2 text-xs outline-none ring-1 ring-white/10"
+                  className="w-full rounded-lg bg-elevated px-3 py-2 text-xs outline-none ring-1 ring-hairline"
                 />
               </div>
               <div>
@@ -566,7 +566,7 @@ function TestSheet({
                   value={maxScore}
                   onChange={(e) => setMaxScore(e.target.value)}
                   placeholder="e.g. 300"
-                  className="w-full rounded-lg bg-white/[0.04] px-3 py-2 text-xs outline-none ring-1 ring-white/10"
+                  className="w-full rounded-lg bg-elevated px-3 py-2 text-xs outline-none ring-1 ring-hairline"
                 />
               </div>
             </div>
@@ -577,11 +577,11 @@ function TestSheet({
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
             placeholder="Notes (optional)"
-            className="w-full resize-none rounded-2xl bg-white/[0.04] px-4 py-3 text-sm outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+            className="w-full resize-none rounded-2xl bg-elevated px-4 py-3 text-sm outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50"
           />
         </div>
 
-        <div className="border-t border-white/5 px-5 pt-4">
+        <div className="border-t border-hairline px-5 pt-4">
           <div className="flex items-center gap-2">
             {onDelete && (
               <button
@@ -599,7 +599,7 @@ function TestSheet({
                 "flex h-12 flex-1 items-center justify-center rounded-full text-[15px] font-semibold transition-all",
                 canSave
                   ? "bg-primary text-primary-foreground"
-                  : "bg-white/5 text-muted-foreground",
+                  : "bg-elevated text-muted-foreground",
               )}
             >
               {test ? "Save changes" : "Create test"}

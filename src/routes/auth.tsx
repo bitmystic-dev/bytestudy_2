@@ -186,7 +186,7 @@ function AuthPage() {
           </div>
         )}
         {info && (
-          <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+          <div className="rounded-2xl border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">
             {info}
           </div>
         )}

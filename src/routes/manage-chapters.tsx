@@ -243,7 +243,7 @@ function ManageChaptersPage() {
           <h1 className="text-xl font-semibold tracking-tight">Manage chapters</h1>
           <p className="text-[11px] text-muted-foreground">
             Changes sync to your account.{" "}
-            {saveFlash === "saved" && <span className="text-emerald-300">Saved</span>}
+            {saveFlash === "saved" && <span className="text-success">Saved</span>}
           </p>
         </div>
         <button
@@ -468,7 +468,7 @@ function ManageChaptersPage() {
                         onClick={() =>
                           setConfirmDelete({ item, label: ref.defaultName })
                         }
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-rose-300"
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-destructive"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-3.5 w-3.5" />

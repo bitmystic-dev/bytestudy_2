@@ -129,7 +129,7 @@ function ProfilePage() {
       <SectionHeader title="App" />
       <div className="card-surface divide-y divide-hairline">
         <div className="flex items-center gap-3 px-4 py-3.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-300">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success/10 text-success">
             <Cloud className="h-4 w-4" />
           </div>
           <div className="flex-1">

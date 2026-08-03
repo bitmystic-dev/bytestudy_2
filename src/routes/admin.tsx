@@ -193,7 +193,7 @@ function AllenIntegration() {
   return (
     <div className="card-surface overflow-hidden">
       <div className="flex items-start gap-3 border-b border-hairline p-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-300 ring-1 ring-amber-400/20">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-warning/15 text-warning ring-1 ring-warning/20">
           <KeyRound className="h-4 w-4" />
         </div>
         <div className="min-w-0 flex-1">
@@ -205,7 +205,7 @@ function AllenIntegration() {
         <div
           className={cn(
             "flex h-6 items-center rounded-full px-2.5 text-[10px] font-medium",
-            creds ? "bg-emerald-500/15 text-emerald-300" : "bg-elevated text-muted-foreground",
+            creds ? "bg-success/15 text-success" : "bg-elevated text-muted-foreground",
           )}
         >
           {creds ? "Connected" : "Not connected"}
@@ -270,7 +270,7 @@ function AllenIntegration() {
                 "flex h-11 items-center justify-center gap-1.5 rounded-2xl text-[13px] font-semibold transition-colors",
                 busy
                   ? "bg-elevated text-muted-foreground"
-                  : "bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-400/20 active:scale-[0.99]",
+                  : "bg-success/15 text-success ring-1 ring-success/20 active:scale-[0.99]",
               )}
             >
               <RefreshCw className={cn("h-4 w-4", busy === "sync" && "animate-spin")} />
@@ -292,8 +292,8 @@ function AllenIntegration() {
             className={cn(
               "flex items-start gap-2 rounded-2xl border p-3 text-[12.5px]",
               toast.kind === "ok"
-                ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
-                : "border-rose-400/20 bg-rose-500/10 text-rose-200",
+                ? "border-success/20 bg-success/10 text-success"
+                : "border-destructive/20 bg-destructive/10 text-destructive",
             )}
           >
             {toast.kind === "ok" ? (

@@ -217,7 +217,7 @@ function HomePage() {
               <span className="text-sm font-medium text-muted-foreground">days</span>
             </span>
           }
-          icon={<Flame className="h-4 w-4 text-amber-300" />}
+          icon={<Flame className="h-4 w-4 text-warning" />}
         />
         <StatCard
           label="Goal"

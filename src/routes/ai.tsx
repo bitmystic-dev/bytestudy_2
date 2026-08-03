@@ -669,7 +669,7 @@ function Chat({
         )}
 
         {error && (
-          <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-[13px] text-rose-200">
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-[13px] text-destructive">
             {error}
           </div>
         )}

@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 
 const priorityStyles = {
   low: "text-muted-foreground",
-  medium: "text-amber-300",
-  high: "text-rose-300",
+  medium: "text-warning",
+  high: "text-destructive",
 };
 
 export function MissionCard({
@@ -37,7 +37,7 @@ export function MissionCard({
         className="mt-0.5 shrink-0 rounded-full p-0.5 active:scale-90"
       >
         {mission.completed ? (
-          <CheckCircle2 className="h-6 w-6 text-emerald-400" />
+          <CheckCircle2 className="h-6 w-6 text-success" />
         ) : (
           <Circle className="h-6 w-6 text-muted-foreground" />
         )}

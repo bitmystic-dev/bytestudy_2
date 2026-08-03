@@ -282,19 +282,19 @@ function TestCard({
 
   const badge =
     test.status === "completed" ? (
-      <span className="flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
+      <span className="flex items-center gap-1 rounded-full bg-success/15 px-2 py-0.5 text-[10px] font-medium text-success">
         <CheckCircle2 className="h-3 w-3" /> Done
       </span>
     ) : test.status === "missed" ? (
-      <span className="flex items-center gap-1 rounded-full bg-rose-500/15 px-2 py-0.5 text-[10px] font-medium text-rose-300">
+      <span className="flex items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 text-[10px] font-medium text-destructive">
         <AlertTriangle className="h-3 w-3" /> Missed
       </span>
     ) : days < 0 ? (
-      <span className="flex items-center gap-1 rounded-full bg-rose-500/15 px-2 py-0.5 text-[10px] font-medium text-rose-300">
+      <span className="flex items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 text-[10px] font-medium text-destructive">
         <Clock className="h-3 w-3" /> Overdue
       </span>
     ) : days <= 3 ? (
-      <span className="flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium text-amber-300">
+      <span className="flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[10px] font-medium text-warning">
         <Clock className="h-3 w-3" /> In {days}d
       </span>
     ) : (
@@ -355,7 +355,7 @@ function TestCard({
             <button
               onClick={onComplete}
               aria-label="Mark done"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-300"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-success/15 text-success"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
             </button>

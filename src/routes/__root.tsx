@@ -106,6 +106,7 @@ function RootShell({ children }: { children: ReactNode }) {
       data-theme={DEFAULT_PREFS.theme}
       data-accent={DEFAULT_PREFS.accent}
       data-radius={DEFAULT_PREFS.radius}
+      style={{ colorScheme: DEFAULT_PREFS.mode === "dark" ? "dark" : "light" }}
     >
       <head>
         <HeadContent />

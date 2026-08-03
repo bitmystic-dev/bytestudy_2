@@ -177,7 +177,7 @@ function HomePage() {
           onClick={() => navigate({ to: "/planner" })}
           className="card-surface flex items-center gap-3 p-4 text-left transition-transform active:scale-[0.98]"
         >
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-foreground">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-elevated-strong text-foreground">
             <Plus className="h-5 w-5" />
           </div>
           <div className="min-w-0">

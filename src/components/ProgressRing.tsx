@@ -33,7 +33,7 @@ export function ProgressRing({
           r={r}
           fill="none"
           strokeWidth={stroke}
-          className={cn("stroke-white/10", trackClassName)}
+          className={cn("stroke-hairline", trackClassName)}
         />
         <circle
           cx={size / 2}

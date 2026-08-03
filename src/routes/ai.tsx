@@ -225,7 +225,7 @@ function AiPage() {
           {personalization.completedAt && !editing && (
             <button
               onClick={() => setEditing(true)}
-              className="rounded-full bg-white/5 px-3 py-1.5 text-[11px] font-medium text-muted-foreground active:scale-95"
+              className="rounded-full bg-elevated px-3 py-1.5 text-[11px] font-medium text-muted-foreground active:scale-95"
               aria-label="Edit preferences"
             >
               Edit
@@ -237,7 +237,7 @@ function AiPage() {
                 if (!confirm("Clear this conversation?")) return;
                 setMessages([]);
               }}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-muted-foreground"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-muted-foreground"
               aria-label="Clear chat"
             >
               <RotateCcw className="h-4 w-4" />
@@ -323,7 +323,7 @@ function Welcome({ onBegin, onSkip }: { onBegin: () => void; onSkip: () => void 
         </button>
         <button
           onClick={onSkip}
-          className="h-12 w-full rounded-full bg-white/[0.04] text-[14px] font-medium text-muted-foreground ring-1 ring-white/10 active:scale-[0.99]"
+          className="h-12 w-full rounded-full bg-elevated text-[14px] font-medium text-muted-foreground ring-1 ring-hairline active:scale-[0.99]"
         >
           Skip for Now
         </button>
@@ -417,12 +417,12 @@ function PersonalizeFlow({
       <div className="mb-2 flex items-center gap-3">
         <button
           onClick={back}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-muted-foreground active:scale-95"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-muted-foreground active:scale-95"
           aria-label="Back"
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-elevated">
           <div
             className="h-full rounded-full bg-primary transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -431,7 +431,7 @@ function PersonalizeFlow({
         {isEdit && (
           <button
             onClick={onCancel}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-muted-foreground active:scale-95"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-muted-foreground active:scale-95"
             aria-label="Close"
           >
             <X className="h-4 w-4" />
@@ -462,7 +462,7 @@ function PersonalizeFlow({
                 "group flex w-full items-center gap-3 rounded-2xl border px-4 py-4 text-left text-[15px] font-medium transition-all active:scale-[0.99]",
                 selected
                   ? "border-primary/50 bg-primary/[0.1] text-foreground"
-                  : "border-white/10 bg-white/[0.03] text-foreground hover:border-primary/30 hover:bg-primary/[0.05]",
+                  : "border-hairline bg-elevated text-foreground hover:border-primary/30 hover:bg-primary/[0.05]",
               )}
             >
               <span className="flex-1">{opt}</span>
@@ -472,7 +472,7 @@ function PersonalizeFlow({
                     "flex h-5 w-5 items-center justify-center rounded-md border transition-colors",
                     selected
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "border-white/20",
+                      : "border-hairline",
                   )}
                 >
                   {selected && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
@@ -515,7 +515,7 @@ function PersonalizeFlow({
             "mt-6 h-12 w-full rounded-full text-[15px] font-semibold transition-colors",
             canContinueMulti
               ? "bg-primary text-primary-foreground"
-              : "bg-white/[0.05] text-muted-foreground",
+              : "bg-elevated text-muted-foreground",
           )}
         >
           Continue
@@ -534,7 +534,7 @@ function PersonalizeFlow({
             "mt-3 h-12 w-full rounded-full text-[15px] font-semibold transition-colors",
             otherText.trim()
               ? "bg-primary text-primary-foreground"
-              : "bg-white/[0.05] text-muted-foreground",
+              : "bg-elevated text-muted-foreground",
           )}
         >
           Save & continue
@@ -681,7 +681,7 @@ function Chat({
             <button
               key={s}
               onClick={() => submit(s)}
-              className="shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-2 text-[12px] font-medium text-muted-foreground transition-colors active:text-foreground hover:border-primary/40 hover:text-primary"
+              className="shrink-0 rounded-full border border-hairline bg-elevated px-3.5 py-2 text-[12px] font-medium text-muted-foreground transition-colors active:text-foreground hover:border-primary/40 hover:text-primary"
             >
               {s}
             </button>
@@ -696,7 +696,7 @@ function Chat({
         }}
         className="mt-2 flex items-end gap-2 px-5 pt-2"
       >
-        <div className="flex flex-1 items-end rounded-2xl bg-white/[0.05] px-4 py-2.5 ring-1 ring-white/10 focus-within:ring-primary/40">
+        <div className="flex flex-1 items-end rounded-2xl bg-elevated px-4 py-2.5 ring-1 ring-hairline focus-within:ring-primary/40">
           <MessageCircle className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
           <textarea
             value={input}
@@ -719,7 +719,7 @@ function Chat({
             "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl transition-all active:scale-95",
             input.trim() && !sending
               ? "bg-primary text-primary-foreground"
-              : "bg-white/5 text-muted-foreground",
+              : "bg-elevated text-muted-foreground",
           )}
           aria-label="Send"
         >

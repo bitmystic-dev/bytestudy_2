@@ -234,7 +234,7 @@ function ManageChaptersPage() {
       <header className="mb-4 flex items-center gap-3">
         <Link
           to="/settings"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-elevated"
           aria-label="Back"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -250,7 +250,7 @@ function ManageChaptersPage() {
           onClick={() => setReorder((v) => !v)}
           className={cn(
             "flex h-10 items-center gap-1.5 rounded-full px-3 text-xs font-medium",
-            reorder ? "bg-primary text-primary-foreground" : "bg-white/5 text-muted-foreground",
+            reorder ? "bg-primary text-primary-foreground" : "bg-elevated text-muted-foreground",
           )}
         >
           <ListTree className="h-4 w-4" />
@@ -268,7 +268,7 @@ function ManageChaptersPage() {
               "rounded-xl border px-3 py-2.5 text-xs font-medium transition-all",
               activeSubject === s
                 ? cn("border-current", SUBJECT_META[s].soft, SUBJECT_META[s].accent)
-                : "border-white/10 bg-white/[0.03] text-muted-foreground",
+                : "border-hairline bg-elevated text-muted-foreground",
             )}
           >
             {SUBJECT_META[s].label}
@@ -287,7 +287,7 @@ function ManageChaptersPage() {
                 "flex-1 rounded-xl px-3 py-2 text-xs font-medium ring-1",
                 activeClass === c
                   ? "bg-primary/15 text-primary ring-primary/40"
-                  : "bg-white/[0.03] text-muted-foreground ring-white/10",
+                  : "bg-elevated text-muted-foreground ring-hairline",
               )}
             >
               Class {c}
@@ -297,7 +297,7 @@ function ManageChaptersPage() {
       )}
 
       {/* Search */}
-      <label className="mb-3 flex items-center gap-2 rounded-2xl bg-white/[0.04] px-4 py-3 ring-1 ring-white/10">
+      <label className="mb-3 flex items-center gap-2 rounded-2xl bg-elevated px-4 py-3 ring-1 ring-hairline">
         <Search className="h-4 w-4 text-muted-foreground" />
         <input
           value={q}
@@ -320,7 +320,7 @@ function ManageChaptersPage() {
         </button>
         <button
           onClick={resetSubject}
-          className="flex h-9 items-center gap-1.5 rounded-full bg-white/5 px-3 text-xs font-medium text-muted-foreground"
+          className="flex h-9 items-center gap-1.5 rounded-full bg-elevated px-3 text-xs font-medium text-muted-foreground"
         >
           <RotateCcw className="h-3.5 w-3.5" /> Reset
         </button>
@@ -382,7 +382,7 @@ function ManageChaptersPage() {
                         setRenameKey(null);
                       }
                     }}
-                    className="min-w-0 flex-1 rounded-md bg-white/5 px-2 py-1.5 text-[14px] outline-none ring-1 ring-primary/40"
+                    className="min-w-0 flex-1 rounded-md bg-elevated px-2 py-1.5 text-[14px] outline-none ring-1 ring-primary/40"
                   />
                 ) : (
                   <div className="min-w-0 flex-1">
@@ -393,7 +393,7 @@ function ManageChaptersPage() {
                       {ref.isCustom ? (
                         <span className={cn("rounded-sm px-1.5 py-0.5", soft)}>Custom</span>
                       ) : isRenamed ? (
-                        <span className="rounded-sm bg-white/5 px-1.5 py-0.5">
+                        <span className="rounded-sm bg-elevated px-1.5 py-0.5">
                           Renamed · was “{defaultName}”
                         </span>
                       ) : null}
@@ -428,7 +428,7 @@ function ManageChaptersPage() {
                       <button
                         onClick={() => move(idx, -1)}
                         disabled={idx === 0}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-muted-foreground disabled:opacity-30"
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-muted-foreground disabled:opacity-30"
                         aria-label="Move up"
                       >
                         <ArrowUp className="h-4 w-4" />
@@ -436,7 +436,7 @@ function ManageChaptersPage() {
                       <button
                         onClick={() => move(idx, 1)}
                         disabled={idx === items.length - 1}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-muted-foreground disabled:opacity-30"
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-muted-foreground disabled:opacity-30"
                         aria-label="Move down"
                       >
                         <ArrowDown className="h-4 w-4" />
@@ -449,7 +449,7 @@ function ManageChaptersPage() {
                           setRenameKey(ref.key);
                           setRenameValue(ref.defaultName);
                         }}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-muted-foreground"
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-muted-foreground"
                         aria-label="Rename"
                       >
                         <Pencil className="h-3.5 w-3.5" />
@@ -457,7 +457,7 @@ function ManageChaptersPage() {
                       {item.k === "d" && isRenamed && (
                         <button
                           onClick={() => restoreDefaultName(item)}
-                          className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-muted-foreground"
+                          className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-muted-foreground"
                           aria-label="Restore default name"
                           title="Restore default name"
                         >
@@ -468,7 +468,7 @@ function ManageChaptersPage() {
                         onClick={() =>
                           setConfirmDelete({ item, label: ref.defaultName })
                         }
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-rose-300"
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-elevated text-rose-300"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -492,14 +492,14 @@ function ManageChaptersPage() {
             {hiddenDefaults.map((d) => (
               <li
                 key={d.i}
-                className="flex items-center gap-2 rounded-2xl bg-white/[0.03] px-3 py-2.5 ring-1 ring-white/5"
+                className="flex items-center gap-2 rounded-2xl bg-elevated px-3 py-2.5 ring-1 ring-hairline"
               >
                 <div className="min-w-0 flex-1 truncate text-[13px] text-muted-foreground">
                   {d.name}
                 </div>
                 <button
                   onClick={() => restoreDefault(d.i)}
-                  className="flex h-8 items-center gap-1 rounded-full bg-white/5 px-3 text-[11px] font-medium text-foreground"
+                  className="flex h-8 items-center gap-1 rounded-full bg-elevated px-3 text-[11px] font-medium text-foreground"
                 >
                   <RotateCcw className="h-3 w-3" /> Restore
                 </button>
@@ -552,9 +552,9 @@ function AddChapterSheet({
   const [name, setName] = useState("");
   return (
     <div className="fixed inset-0 z-50 flex items-end">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10">
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+      <div className="absolute inset-0 bg-overlay backdrop-blur-sm" onClick={onClose} />
+      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-hairline">
+        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-elevated-strong" />
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold tracking-tight">
             New {subjectLabel.toLowerCase()} chapter
@@ -571,7 +571,7 @@ function AddChapterSheet({
             if (e.key === "Enter" && name.trim()) onAdd(name);
           }}
           placeholder="Chapter name"
-          className="w-full rounded-2xl bg-white/[0.04] px-4 py-3.5 text-[15px] outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+          className="w-full rounded-2xl bg-elevated px-4 py-3.5 text-[15px] outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50"
         />
         <button
           disabled={!name.trim()}
@@ -602,15 +602,15 @@ function ConfirmSheet({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10">
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+      <div className="absolute inset-0 bg-overlay backdrop-blur-sm" onClick={onClose} />
+      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-hairline">
+        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-elevated-strong" />
         <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
         {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
         <div className="mt-5 flex gap-2">
           <button
             onClick={onClose}
-            className="h-11 flex-1 rounded-full bg-white/5 text-sm font-medium text-foreground"
+            className="h-11 flex-1 rounded-full bg-elevated text-sm font-medium text-foreground"
           >
             Cancel
           </button>

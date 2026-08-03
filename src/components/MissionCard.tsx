@@ -57,7 +57,7 @@ export function MissionCard({
             {meta.label}
           </span>
           {chapterName && (
-            <span className="truncate rounded-full bg-white/5 px-2 py-0.5 text-muted-foreground">
+            <span className="truncate rounded-full bg-elevated px-2 py-0.5 text-muted-foreground">
               {chapterName}
             </span>
           )}

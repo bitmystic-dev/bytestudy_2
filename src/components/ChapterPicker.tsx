@@ -74,10 +74,10 @@ export function ChapterPicker({
         type="button"
         onClick={() => setOpen(true)}
         className={cn(
-          "flex w-full items-center gap-3 rounded-2xl bg-white/[0.04] px-4 py-3.5 text-left text-[14px] outline-none ring-1 transition-colors",
+          "flex w-full items-center gap-3 rounded-2xl bg-elevated px-4 py-3.5 text-left text-[14px] outline-none ring-1 transition-colors",
           selectedRef
             ? "ring-primary/40 text-foreground"
-            : "ring-white/10 text-muted-foreground hover:ring-white/20",
+            : "ring-hairline text-muted-foreground hover:ring-hairline",
         )}
       >
         <BookOpen className="h-4 w-4 shrink-0 opacity-70" />
@@ -92,7 +92,7 @@ export function ChapterPicker({
               onChange(undefined);
             }}
             aria-label="Clear"
-            className="rounded-full p-1 text-muted-foreground hover:bg-white/5"
+            className="rounded-full p-1 text-muted-foreground hover:bg-elevated"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -102,12 +102,12 @@ export function ChapterPicker({
       {open && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-overlay backdrop-blur-sm"
             onClick={close}
           />
-          <div className="relative mx-auto flex max-h-[80vh] w-full max-w-[480px] flex-col rounded-t-3xl bg-[var(--surface)] pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10 animate-in slide-in-from-bottom">
+          <div className="relative mx-auto flex max-h-[80vh] w-full max-w-[480px] flex-col rounded-t-3xl bg-[var(--surface)] pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-hairline animate-in slide-in-from-bottom">
             <div className="px-5 pt-3">
-              <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-white/15" />
+              <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-elevated-strong" />
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-lg font-semibold tracking-tight">
                   Select chapter
@@ -120,7 +120,7 @@ export function ChapterPicker({
                   <X className="h-5 w-5" />
                 </button>
               </div>
-              <label className="flex items-center gap-2 rounded-2xl bg-white/[0.04] px-4 py-3 ring-1 ring-white/10">
+              <label className="flex items-center gap-2 rounded-2xl bg-elevated px-4 py-3 ring-1 ring-hairline">
                 <Search className="h-4 w-4 text-muted-foreground" />
                 <input
                   autoFocus
@@ -146,7 +146,7 @@ export function ChapterPicker({
                     "mb-2 flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left ring-1 transition-colors",
                     !value
                       ? "bg-primary/10 ring-primary/40"
-                      : "bg-white/[0.03] ring-white/10 hover:ring-white/20",
+                      : "bg-elevated ring-hairline hover:ring-hairline",
                   )}
                 >
                   <RadioDot selected={!value} />
@@ -174,7 +174,7 @@ export function ChapterPicker({
                             "flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left ring-1 transition-colors",
                             selected
                               ? "bg-primary/10 ring-primary/40"
-                              : "bg-white/[0.03] ring-white/10 hover:ring-white/20",
+                              : "bg-elevated ring-hairline hover:ring-hairline",
                           )}
                         >
                           <RadioDot selected={selected} />
@@ -189,7 +189,7 @@ export function ChapterPicker({
                             )}
                           </div>
                           {c.isCustom && (
-                            <span className="rounded-md bg-white/5 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+                            <span className="rounded-md bg-elevated px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
                               Custom
                             </span>
                           )}
@@ -214,7 +214,7 @@ function RadioDot({ selected }: { selected: boolean }) {
         "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all",
         selected
           ? "border-primary bg-primary/20"
-          : "border-white/25 bg-transparent",
+          : "border-hairline bg-transparent",
       )}
       aria-hidden="true"
     >

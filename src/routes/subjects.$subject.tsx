@@ -144,7 +144,7 @@ function SubjectPage() {
       <header className="mb-5 flex items-center gap-3">
         <Link
           to="/"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-elevated"
           aria-label="Back"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -162,7 +162,7 @@ function SubjectPage() {
         </ProgressRing>
       </header>
 
-      <label className="flex items-center gap-2 rounded-2xl bg-white/[0.04] px-4 py-3 ring-1 ring-white/10">
+      <label className="flex items-center gap-2 rounded-2xl bg-elevated px-4 py-3 ring-1 ring-hairline">
         <Search className="h-4 w-4 text-muted-foreground" />
         <input
           value={q}
@@ -216,7 +216,7 @@ function SubjectPage() {
                             "flex h-4 w-4 items-center justify-center rounded text-[9px] font-bold ring-1",
                             cp[x.id]
                               ? CHECKBOX_ACTIVE[subject as SubjectId]
-                              : "bg-white/5 text-muted-foreground ring-white/10",
+                              : "bg-elevated text-muted-foreground ring-hairline",
                           )}
                           title={x.label}
                         >
@@ -237,8 +237,8 @@ function SubjectPage() {
                 </button>
 
                 {isOpen && (
-                  <div className="border-t border-white/5 px-4 pb-4 pt-2">
-                    <ul className="divide-y divide-white/5">
+                  <div className="border-t border-hairline px-4 pb-4 pt-2">
+                    <ul className="divide-y divide-hairline">
                       {CHECKPOINTS.map((x) => {
                         const Icon = CHECKPOINT_ICON[x.icon];
                         const checked = !!cp[x.id];
@@ -272,7 +272,7 @@ function SubjectPage() {
                                   "flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 transition-colors",
                                   checked
                                     ? CHECKBOX_ACTIVE[subject as SubjectId]
-                                    : "border-white/15 bg-transparent",
+                                    : "border-hairline bg-transparent",
                                 )}
                               >
                                 {checked && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
@@ -284,7 +284,7 @@ function SubjectPage() {
                     </ul>
 
                     <div className="mt-3 flex items-center gap-3">
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/5">
+                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-elevated">
                         <div
                           className={cn("h-full transition-all", PROGRESS_BAR[subject as SubjectId])}
                           style={{ width: `${pct}%` }}
@@ -298,7 +298,7 @@ function SubjectPage() {
                         onClick={() => patch(c.key, { pinned: !m.pinned })}
                         className={cn(
                           "flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-medium",
-                          m.pinned ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground",
+                          m.pinned ? "bg-primary/20 text-primary" : "bg-elevated text-muted-foreground",
                         )}
                       >
                         <Pin className={cn("h-3 w-3", m.pinned && "fill-current")} />
@@ -308,7 +308,7 @@ function SubjectPage() {
                         onClick={() => patch(c.key, { bookmarked: !m.bookmarked })}
                         className={cn(
                           "flex h-8 items-center gap-1.5 rounded-full px-3 text-[11px] font-medium",
-                          m.bookmarked ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground",
+                          m.bookmarked ? "bg-primary/20 text-primary" : "bg-elevated text-muted-foreground",
                         )}
                       >
                         <Bookmark className={cn("h-3 w-3", m.bookmarked && "fill-current")} />
@@ -316,7 +316,7 @@ function SubjectPage() {
                       </button>
                       <button
                         onClick={() => setEditing(c)}
-                        className="ml-auto flex h-8 items-center gap-1.5 rounded-full bg-white/5 px-3 text-[11px] font-medium text-muted-foreground"
+                        className="ml-auto flex h-8 items-center gap-1.5 rounded-full bg-elevated px-3 text-[11px] font-medium text-muted-foreground"
                       >
                         <Pencil className="h-3 w-3" />
                         Rename
@@ -367,9 +367,9 @@ function ChapterSheet({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative mx-auto max-h-[85dvh] w-full max-w-[480px] overflow-y-auto rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10">
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+      <div className="absolute inset-0 bg-overlay backdrop-blur-sm" onClick={onClose} />
+      <div className="relative mx-auto max-h-[85dvh] w-full max-w-[480px] overflow-y-auto rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-hairline">
+        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-elevated-strong" />
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold tracking-tight">Chapter details</h2>
           <button onClick={onClose} aria-label="Close" className="rounded-full p-1.5 text-muted-foreground">
@@ -378,7 +378,7 @@ function ChapterSheet({
         </div>
 
         <div className="space-y-3">
-          <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/10">
+          <div className="rounded-2xl bg-elevated p-4 ring-1 ring-hairline">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                 Chapter name
@@ -407,7 +407,7 @@ function ChapterSheet({
             </p>
           </div>
 
-          <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/10">
+          <div className="rounded-2xl bg-elevated p-4 ring-1 ring-hairline">
             <div className="mb-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Notes
             </div>

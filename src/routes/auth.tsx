@@ -111,9 +111,9 @@ function AuthPage() {
 
       {mode !== "forgot" && (
         <div className="mb-4 flex items-center gap-3 text-[11px] uppercase tracking-widest text-muted-foreground">
-          <div className="h-px flex-1 bg-white/10" />
+          <div className="h-px flex-1 bg-elevated-strong" />
           or
-          <div className="h-px flex-1 bg-white/10" />
+          <div className="h-px flex-1 bg-elevated-strong" />
         </div>
       )}
 
@@ -196,7 +196,7 @@ function AuthPage() {
           disabled={!canSubmit}
           className={cn(
             "flex h-12 w-full items-center justify-center gap-2 rounded-full text-[15px] font-semibold transition-all active:scale-[0.99]",
-            canSubmit ? "bg-primary text-primary-foreground" : "bg-white/5 text-muted-foreground",
+            canSubmit ? "bg-primary text-primary-foreground" : "bg-elevated text-muted-foreground",
           )}
         >
           {loading ? (
@@ -258,7 +258,7 @@ function AuthPage() {
 
 function Field({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <label className="flex items-center gap-3 rounded-2xl bg-white/[0.04] px-4 py-3.5 ring-1 ring-white/10 focus-within:ring-primary/50">
+    <label className="flex items-center gap-3 rounded-2xl bg-elevated px-4 py-3.5 ring-1 ring-hairline focus-within:ring-primary/50">
       <span className="text-muted-foreground">{icon}</span>
       {children}
     </label>

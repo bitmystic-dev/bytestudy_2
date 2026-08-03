@@ -109,7 +109,7 @@ function PlannerPage() {
       </header>
 
       {/* Search */}
-      <label className="flex items-center gap-2 rounded-2xl bg-white/[0.04] px-4 py-3 ring-1 ring-white/10">
+      <label className="flex items-center gap-2 rounded-2xl bg-elevated px-4 py-3 ring-1 ring-hairline">
         <Search className="h-4 w-4 text-muted-foreground" />
         <input
           value={q}
@@ -135,7 +135,7 @@ function PlannerPage() {
                 "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all",
                 filter === f.id
                   ? "border-primary/50 bg-primary/15 text-primary"
-                  : "border-white/10 bg-white/[0.03] text-muted-foreground",
+                  : "border-hairline bg-elevated text-muted-foreground",
               )}
             >
               {f.label}
@@ -296,9 +296,9 @@ function MissionSheet({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-white/10 animate-in slide-in-from-bottom">
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-white/15" />
+      <div className="absolute inset-0 bg-overlay backdrop-blur-sm" onClick={onClose} />
+      <div className="relative mx-auto w-full max-w-[480px] rounded-t-3xl bg-[var(--surface)] p-5 pb-[max(env(safe-area-inset-bottom),1rem)] ring-1 ring-hairline animate-in slide-in-from-bottom">
+        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-elevated-strong" />
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold tracking-tight">
             {mission ? "Edit mission" : "New mission"}
@@ -314,7 +314,7 @@ function MissionSheet({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Mission title"
-            className="w-full rounded-2xl bg-white/[0.04] px-4 py-3.5 text-[15px] outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+            className="w-full rounded-2xl bg-elevated px-4 py-3.5 text-[15px] outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50"
           />
 
           <div>
@@ -331,7 +331,7 @@ function MissionSheet({
                     "rounded-xl border px-3 py-2.5 text-xs font-medium transition-all",
                     subject === s
                       ? "border-primary/50 bg-primary/15 text-primary"
-                      : "border-white/10 bg-white/[0.03] text-muted-foreground",
+                      : "border-hairline bg-elevated text-muted-foreground",
                   )}
                 >
                   {SUBJECT_META[s].label}
@@ -366,7 +366,7 @@ function MissionSheet({
                     onClick={() => setPriority(p)}
                     className={cn(
                       "flex-1 rounded-lg py-2 text-[11px] font-medium capitalize",
-                      priority === p ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground",
+                      priority === p ? "bg-primary/20 text-primary" : "bg-elevated text-muted-foreground",
                     )}
                   >
                     {p}
@@ -380,7 +380,7 @@ function MissionSheet({
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full rounded-lg bg-white/[0.04] px-3 py-2 text-xs outline-none ring-1 ring-white/10"
+                className="w-full rounded-lg bg-elevated px-3 py-2 text-xs outline-none ring-1 ring-hairline"
               />
             </div>
           </div>
@@ -390,7 +390,7 @@ function MissionSheet({
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Notes (optional)"
             rows={2}
-            className="w-full resize-none rounded-2xl bg-white/[0.04] px-4 py-3 text-sm outline-none ring-1 ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+            className="w-full resize-none rounded-2xl bg-elevated px-4 py-3 text-sm outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50"
           />
         </div>
 
@@ -409,7 +409,7 @@ function MissionSheet({
             onClick={save}
             className={cn(
               "flex h-12 flex-1 items-center justify-center rounded-full text-[15px] font-semibold transition-all",
-              canSave ? "bg-primary text-primary-foreground" : "bg-white/5 text-muted-foreground",
+              canSave ? "bg-primary text-primary-foreground" : "bg-elevated text-muted-foreground",
             )}
           >
             {mission ? "Save changes" : "Create mission"}

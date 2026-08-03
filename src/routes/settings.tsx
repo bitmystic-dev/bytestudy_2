@@ -19,7 +19,7 @@ function SettingsPage() {
       <header className="mb-6 flex items-center gap-3">
         <Link
           to="/profile"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-elevated"
           aria-label="Back"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -28,10 +28,10 @@ function SettingsPage() {
       </header>
 
       <SectionHeader title="Chapters" />
-      <div className="card-surface divide-y divide-white/5">
+      <div className="card-surface divide-y divide-hairline">
         <Link
           to="/manage-chapters"
-          className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]"
+          className="flex items-center gap-3 px-4 py-3.5 active:bg-elevated"
         >
           <Tile icon={ListTree} label="Manage chapters" hint="Rename, add, delete, reorder" />
           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -39,10 +39,10 @@ function SettingsPage() {
       </div>
 
       <SectionHeader title="Tests" />
-      <div className="card-surface divide-y divide-white/5">
+      <div className="card-surface divide-y divide-hairline">
         <Link
           to="/tests"
-          className="flex items-center gap-3 px-4 py-3.5 active:bg-white/[0.03]"
+          className="flex items-center gap-3 px-4 py-3.5 active:bg-elevated"
         >
           <Tile icon={Calendar} label="Test schedule" hint="Track upcoming tests & results" />
           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -51,7 +51,7 @@ function SettingsPage() {
 
 
       <SectionHeader title="Data" />
-      <div className="card-surface divide-y divide-white/5">
+      <div className="card-surface divide-y divide-hairline">
         <DisabledTile icon={Bell} label="Notifications" hint="Coming soon" />
         <DisabledTile icon={Upload} label="Backup" hint="Coming soon" />
         <DisabledTile icon={Download} label="Import" hint="Coming soon" />
@@ -59,7 +59,7 @@ function SettingsPage() {
       </div>
 
       <SectionHeader title="About" />
-      <div className="card-surface divide-y divide-white/5">
+      <div className="card-surface divide-y divide-hairline">
         <DisabledTile icon={Shield} label="Privacy" hint="Coming soon" />
         <div className="flex items-center gap-3 px-4 py-3.5">
           <Tile icon={Info} label="Version" hint="BytePrep 0.1.0" />
@@ -80,7 +80,7 @@ function Tile({
 }) {
   return (
     <>
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0 flex-1">
@@ -102,7 +102,7 @@ function DisabledTile({
 }) {
   return (
     <div className="flex items-center gap-3 px-4 py-3.5 opacity-50">
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0 flex-1">

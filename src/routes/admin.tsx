@@ -57,7 +57,7 @@ function AdminPage() {
       <header className="mb-6 flex items-center gap-3">
         <Link
           to="/profile"
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-muted-foreground active:scale-95"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-muted-foreground active:scale-95"
           aria-label="Back"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -81,7 +81,7 @@ function AdminPage() {
 
       <SectionHeader title="More admin tools" subtitle="Coming soon" />
       <div className="card-surface flex items-center gap-3 p-4 opacity-70">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-muted-foreground">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
           <KeyRound className="h-4 w-4" />
         </div>
         <div className="flex-1">
@@ -192,7 +192,7 @@ function AllenIntegration() {
 
   return (
     <div className="card-surface overflow-hidden">
-      <div className="flex items-start gap-3 border-b border-white/5 p-4">
+      <div className="flex items-start gap-3 border-b border-hairline p-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-300 ring-1 ring-amber-400/20">
           <KeyRound className="h-4 w-4" />
         </div>
@@ -205,7 +205,7 @@ function AllenIntegration() {
         <div
           className={cn(
             "flex h-6 items-center rounded-full px-2.5 text-[10px] font-medium",
-            creds ? "bg-emerald-500/15 text-emerald-300" : "bg-white/5 text-muted-foreground",
+            creds ? "bg-emerald-500/15 text-emerald-300" : "bg-elevated text-muted-foreground",
           )}
         >
           {creds ? "Connected" : "Not connected"}
@@ -239,7 +239,7 @@ function AllenIntegration() {
             className={cn(
               "flex h-11 items-center justify-center gap-1.5 rounded-2xl text-[13px] font-semibold transition-colors",
               saving || !formId.trim() || !password.trim()
-                ? "bg-white/5 text-muted-foreground"
+                ? "bg-elevated text-muted-foreground"
                 : "bg-primary text-primary-foreground active:scale-[0.99]",
             )}
           >
@@ -250,10 +250,10 @@ function AllenIntegration() {
             onClick={doTest}
             disabled={!creds || busy !== null}
             className={cn(
-              "flex h-11 items-center justify-center gap-1.5 rounded-2xl text-[13px] font-semibold ring-1 ring-white/10 transition-colors",
+              "flex h-11 items-center justify-center gap-1.5 rounded-2xl text-[13px] font-semibold ring-1 ring-hairline transition-colors",
               !creds || busy
-                ? "bg-white/[0.03] text-muted-foreground"
-                : "bg-white/[0.06] text-foreground active:scale-[0.99]",
+                ? "bg-elevated text-muted-foreground"
+                : "bg-elevated text-foreground active:scale-[0.99]",
             )}
           >
             <CheckCircle2 className="h-4 w-4" />
@@ -269,7 +269,7 @@ function AllenIntegration() {
               className={cn(
                 "flex h-11 items-center justify-center gap-1.5 rounded-2xl text-[13px] font-semibold transition-colors",
                 busy
-                  ? "bg-white/5 text-muted-foreground"
+                  ? "bg-elevated text-muted-foreground"
                   : "bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-400/20 active:scale-[0.99]",
               )}
             >
@@ -305,7 +305,7 @@ function AllenIntegration() {
           </div>
         )}
 
-        <div className="mt-1 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-3 text-[11.5px] leading-relaxed text-muted-foreground">
+        <div className="mt-1 rounded-2xl border border-hairline bg-elevated p-3 text-[11.5px] leading-relaxed text-muted-foreground">
           <div className="font-medium text-foreground">How this works</div>
           <p className="mt-1">
             BytePrep tries to authenticate with ALLEN using the credentials you save
@@ -338,7 +338,7 @@ function FormField({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block rounded-2xl bg-white/[0.04] px-4 py-2.5 ring-1 ring-white/10 focus-within:ring-primary/40">
+    <label className="block rounded-2xl bg-elevated px-4 py-2.5 ring-1 ring-hairline focus-within:ring-primary/40">
       <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
         {label}
       </div>

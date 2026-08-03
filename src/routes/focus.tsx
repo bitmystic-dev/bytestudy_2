@@ -153,7 +153,7 @@ function FocusPage() {
         <div className="mt-6 flex items-center gap-3">
           <button
             onClick={reset}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-muted-foreground active:scale-95"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-elevated text-muted-foreground active:scale-95"
             aria-label="Reset"
           >
             <RotateCcw className="h-4 w-4" />
@@ -167,7 +167,7 @@ function FocusPage() {
           </button>
           <button
             onClick={stop}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-muted-foreground active:scale-95"
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-elevated text-muted-foreground active:scale-95"
             aria-label="Stop"
           >
             <Square className="h-4 w-4 fill-current" />
@@ -187,7 +187,7 @@ function FocusPage() {
               "rounded-2xl border px-3 py-3 text-left transition-all disabled:opacity-50",
               preset.label === p.label
                 ? "border-primary/50 bg-primary/10"
-                : "border-white/10 bg-white/[0.03]",
+                : "border-hairline bg-elevated",
             )}
           >
             <div className="text-sm font-semibold">{p.label}</div>
@@ -197,7 +197,7 @@ function FocusPage() {
       </div>
 
       {/* Custom */}
-      <div className="mt-3 flex items-center gap-3 rounded-2xl bg-white/[0.03] p-3 ring-1 ring-white/10">
+      <div className="mt-3 flex items-center gap-3 rounded-2xl bg-elevated p-3 ring-1 ring-hairline">
         <span className="text-xs text-muted-foreground">Custom</span>
         <input
           type="number"
@@ -206,7 +206,7 @@ function FocusPage() {
           value={customMin}
           disabled={running}
           onChange={(e) => applyCustom(Number(e.target.value))}
-          className="w-16 rounded-lg bg-white/5 px-2 py-1.5 text-center text-sm tabular-nums outline-none ring-1 ring-white/10 disabled:opacity-50"
+          className="w-16 rounded-lg bg-elevated px-2 py-1.5 text-center text-sm tabular-nums outline-none ring-1 ring-hairline disabled:opacity-50"
         />
         <span className="text-xs text-muted-foreground">min</span>
       </div>
@@ -218,7 +218,7 @@ function FocusPage() {
           onClick={() => setSubject(undefined)}
           className={cn(
             "rounded-xl border px-2 py-2.5 text-[11px] font-medium transition-all",
-            !subject ? "border-primary/50 bg-primary/15 text-primary" : "border-white/10 bg-white/[0.03] text-muted-foreground",
+            !subject ? "border-primary/50 bg-primary/15 text-primary" : "border-hairline bg-elevated text-muted-foreground",
           )}
         >
           None
@@ -231,7 +231,7 @@ function FocusPage() {
               "rounded-xl border px-2 py-2.5 text-[11px] font-medium transition-all",
               subject === s
                 ? cn("border-primary/50", SUBJECT_META[s].soft)
-                : "border-white/10 bg-white/[0.03] text-muted-foreground",
+                : "border-hairline bg-elevated text-muted-foreground",
             )}
           >
             {SUBJECT_META[s].label.slice(0, 4)}
@@ -250,7 +250,7 @@ function FocusPage() {
               <div
                 className={cn(
                   "flex h-10 w-10 items-center justify-center rounded-xl",
-                  s.subject ? SUBJECT_META[s.subject].soft : "bg-white/5 text-muted-foreground",
+                  s.subject ? SUBJECT_META[s.subject].soft : "bg-elevated text-muted-foreground",
                 )}
               >
                 <TimerIcon className="h-4 w-4" />

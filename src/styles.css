@@ -8,12 +8,12 @@
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: calc(var(--radius) - 2px);
+  --radius-xl: var(--radius);
+  --radius-2xl: calc(var(--radius) + 4px);
+  --radius-3xl: calc(var(--radius) + 8px);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -31,18 +31,133 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+
+  /* Elevation / separation tokens (replace former white-alpha literals) */
+  --color-elevated: var(--elevated);
+  --color-elevated-strong: var(--elevated-strong);
+  --color-hairline: var(--hairline);
+  --color-overlay: var(--overlay);
 }
 
-/* Dark-only design tokens. No light theme. */
-:root,
-.dark {
+/* ---------------------------------------------------------------
+   Shape + depth tokens (radius slider)
+---------------------------------------------------------------- */
+:root {
   --radius: 1rem;
+  --blur-strength: 20px;
+}
+[data-radius="compact"] {
+  --radius: 0.625rem;
+}
+[data-radius="soft"] {
+  --radius: 1rem;
+}
+[data-radius="round"] {
+  --radius: 1.5rem;
+}
 
+/* ===============================================================
+   CALM — light (default)
+=============================================================== */
+[data-theme="calm"] {
+  --background: oklch(0.966 0.004 250);
+  --foreground: oklch(0.24 0.012 262);
+
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.982 0.003 250);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.012 262);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.012 262);
+
+  --secondary: oklch(0.945 0.005 252);
+  --secondary-foreground: oklch(0.3 0.012 262);
+
+  --muted: oklch(0.952 0.004 252);
+  --muted-foreground: oklch(0.55 0.016 256);
+
+  --accent: oklch(0.94 0.008 255);
+  --accent-foreground: oklch(0.28 0.012 262);
+
+  --destructive: oklch(0.6 0.13 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.62 0.1 155);
+  --warning: oklch(0.72 0.11 75);
+
+  --border: oklch(0.912 0.005 252);
+  --input: oklch(0.952 0.004 252);
+  --ring: var(--primary);
+
+  --elevated: oklch(0.958 0.004 252);
+  --elevated-strong: oklch(0.925 0.006 252);
+  --hairline: oklch(0.915 0.005 252);
+  --overlay: oklch(0.3 0.02 262 / 0.32);
+
+  --app-bg: var(--background);
+  --card-bg: oklch(1 0 0);
+  --card-border: oklch(0.918 0.005 252);
+  --card-shadow: 0 8px 24px -18px oklch(0.3 0.03 262 / 0.5);
+  --nav-bg: oklch(1 0 0 / 0.78);
+  --blur-strength: 18px;
+}
+
+/* CALM — dark */
+[data-theme="calm"].dark {
+  --background: oklch(0.195 0.008 262);
+  --foreground: oklch(0.962 0.003 260);
+
+  --surface: oklch(0.235 0.008 262);
+  --surface-2: oklch(0.265 0.009 262);
+
+  --card: oklch(0.238 0.008 262);
+  --card-foreground: oklch(0.962 0.003 260);
+  --popover: oklch(0.238 0.008 262);
+  --popover-foreground: oklch(0.962 0.003 260);
+
+  --secondary: oklch(0.29 0.009 262);
+  --secondary-foreground: oklch(0.95 0.003 260);
+
+  --muted: oklch(0.268 0.008 262);
+  --muted-foreground: oklch(0.7 0.012 260);
+
+  --accent: oklch(0.3 0.01 262);
+  --accent-foreground: oklch(0.95 0.003 260);
+
+  --destructive: oklch(0.62 0.14 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --success: oklch(0.7 0.1 155);
+  --warning: oklch(0.78 0.1 75);
+
+  --border: oklch(0.315 0.008 262);
+  --input: oklch(0.278 0.008 262);
+  --ring: var(--primary);
+
+  --elevated: oklch(0.262 0.008 262);
+  --elevated-strong: oklch(0.312 0.01 262);
+  --hairline: oklch(0.318 0.008 262);
+  --overlay: oklch(0.12 0.01 262 / 0.62);
+
+  --app-bg: var(--background);
+  --card-bg: oklch(0.238 0.008 262);
+  --card-border: oklch(0.305 0.008 262);
+  --card-shadow: 0 10px 28px -22px oklch(0 0 0 / 0.8);
+  --nav-bg: oklch(0.238 0.008 262 / 0.82);
+  --blur-strength: 18px;
+}
+
+/* ===============================================================
+   CLASSIC — preserves the original BytePrep look (dark-first)
+=============================================================== */
+[data-theme="classic"],
+[data-theme="classic"].dark {
   --background: oklch(0.16 0.015 260);
   --foreground: oklch(0.97 0.005 260);
 
@@ -53,9 +168,6 @@
   --card-foreground: oklch(0.97 0.005 260);
   --popover: oklch(0.205 0.018 260);
   --popover-foreground: oklch(0.97 0.005 260);
-
-  --primary: oklch(0.78 0.14 275);
-  --primary-foreground: oklch(0.15 0.02 260);
 
   --secondary: oklch(0.28 0.02 260);
   --secondary-foreground: oklch(0.97 0.005 260);
@@ -68,10 +180,120 @@
 
   --destructive: oklch(0.65 0.19 25);
   --destructive-foreground: oklch(0.98 0.005 260);
+  --success: oklch(0.72 0.16 155);
+  --warning: oklch(0.8 0.15 75);
 
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 10%);
   --ring: oklch(0.7 0.12 275);
+
+  --elevated: oklch(1 0 0 / 5%);
+  --elevated-strong: oklch(1 0 0 / 11%);
+  --hairline: oklch(1 0 0 / 10%);
+  --overlay: oklch(0 0 0 / 0.6);
+
+  --app-bg:
+    radial-gradient(1200px 600px at 50% -10%, oklch(0.32 0.08 275 / 0.35), transparent 60%),
+    radial-gradient(800px 500px at 90% 110%, oklch(0.32 0.08 200 / 0.18), transparent 60%),
+    oklch(0.16 0.015 260);
+  --card-bg: linear-gradient(180deg, oklch(0.235 0.02 260 / 0.9), oklch(0.2 0.018 260 / 0.9));
+  --card-border: oklch(1 0 0 / 6%);
+  --card-shadow:
+    0 1px 0 oklch(1 0 0 / 4%) inset,
+    0 10px 30px -20px oklch(0 0 0 / 0.6);
+  --nav-bg: oklch(0.2 0.018 260 / 0.72);
+  --blur-strength: 20px;
+}
+
+/* CLASSIC — light companion (not part of the original design) */
+[data-theme="classic"]:not(.dark) {
+  --background: oklch(0.97 0.006 260);
+  --foreground: oklch(0.2 0.02 260);
+
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.965 0.006 260);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.02 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.02 260);
+
+  --secondary: oklch(0.93 0.008 260);
+  --secondary-foreground: oklch(0.25 0.02 260);
+
+  --muted: oklch(0.94 0.008 260);
+  --muted-foreground: oklch(0.5 0.02 260);
+
+  --accent: oklch(0.92 0.02 275);
+  --accent-foreground: oklch(0.25 0.02 260);
+
+  --border: oklch(0 0 0 / 10%);
+  --input: oklch(0 0 0 / 8%);
+
+  --elevated: oklch(0 0 0 / 4%);
+  --elevated-strong: oklch(0 0 0 / 9%);
+  --hairline: oklch(0 0 0 / 10%);
+  --overlay: oklch(0.2 0.02 260 / 0.4);
+
+  --app-bg:
+    radial-gradient(1200px 600px at 50% -10%, oklch(0.75 0.08 275 / 0.28), transparent 60%),
+    oklch(0.97 0.006 260);
+  --card-bg: linear-gradient(180deg, oklch(1 0 0), oklch(0.985 0.004 260));
+  --card-border: oklch(0 0 0 / 7%);
+  --card-shadow: 0 10px 30px -22px oklch(0.2 0.02 260 / 0.5);
+  --nav-bg: oklch(1 0 0 / 0.78);
+}
+
+/* ===============================================================
+   Accent hues — drive --primary at runtime
+=============================================================== */
+[data-accent="violet"] {
+  --primary: oklch(0.56 0.15 285);
+  --primary-foreground: oklch(0.99 0 0);
+}
+.dark[data-accent="violet"] {
+  --primary: oklch(0.78 0.14 275);
+  --primary-foreground: oklch(0.18 0.02 262);
+}
+[data-accent="blue"] {
+  --primary: oklch(0.56 0.12 250);
+  --primary-foreground: oklch(0.99 0 0);
+}
+.dark[data-accent="blue"] {
+  --primary: oklch(0.76 0.1 248);
+  --primary-foreground: oklch(0.18 0.02 262);
+}
+[data-accent="teal"] {
+  --primary: oklch(0.55 0.09 200);
+  --primary-foreground: oklch(0.99 0 0);
+}
+.dark[data-accent="teal"] {
+  --primary: oklch(0.77 0.08 198);
+  --primary-foreground: oklch(0.18 0.02 262);
+}
+[data-accent="green"] {
+  --primary: oklch(0.55 0.1 155);
+  --primary-foreground: oklch(0.99 0 0);
+}
+.dark[data-accent="green"] {
+  --primary: oklch(0.76 0.09 155);
+  --primary-foreground: oklch(0.18 0.02 262);
+}
+[data-accent="amber"] {
+  --primary: oklch(0.62 0.11 75);
+  --primary-foreground: oklch(0.99 0 0);
+}
+.dark[data-accent="amber"] {
+  --primary: oklch(0.8 0.1 78);
+  --primary-foreground: oklch(0.18 0.02 262);
+}
+[data-accent="rose"] {
+  --primary: oklch(0.58 0.13 15);
+  --primary-foreground: oklch(0.99 0 0);
+}
+.dark[data-accent="rose"] {
+  --primary: oklch(0.76 0.11 15);
+  --primary-foreground: oklch(0.18 0.02 262);
 }
 
 html,
@@ -86,11 +308,7 @@ body {
 }
 
 body {
-  /* Subtle ambient background */
-  background:
-    radial-gradient(1200px 600px at 50% -10%, oklch(0.32 0.08 275 / 0.35), transparent 60%),
-    radial-gradient(800px 500px at 90% 110%, oklch(0.32 0.08 200 / 0.18), transparent 60%),
-    var(--color-background);
+  background: var(--app-bg);
 }
 
 @layer base {
@@ -98,24 +316,35 @@ body {
     border-color: var(--color-border);
   }
   ::selection {
-    background: oklch(0.7 0.12 275 / 0.35);
+    background: color-mix(in oklab, var(--primary) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
 @utility card-surface {
-  background: linear-gradient(180deg, oklch(0.235 0.02 260 / 0.9), oklch(0.2 0.018 260 / 0.9));
-  border: 1px solid oklch(1 0 0 / 6%);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-2xl);
-  box-shadow:
-    0 1px 0 oklch(1 0 0 / 4%) inset,
-    0 10px 30px -20px oklch(0 0 0 / 0.6);
+  box-shadow: var(--card-shadow);
 }
 
 @utility glass-nav {
-  background: oklch(0.2 0.018 260 / 0.72);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid oklch(1 0 0 / 8%);
+  background: var(--nav-bg);
+  backdrop-filter: blur(var(--blur-strength)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(140%);
+  border: 1px solid var(--card-border);
 }
 
 @utility safe-top {

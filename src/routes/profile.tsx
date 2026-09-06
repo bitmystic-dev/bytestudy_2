@@ -140,7 +140,7 @@ function ProfilePage() {
           </div>
           <div className="flex-1">
             <div className="text-sm font-medium">Version</div>
-            <div className="text-[11px] text-muted-foreground">BytePrep 0.1.0</div>
+            <div className="text-[11px] text-muted-foreground">ByteStudy 0.1.0</div>
           </div>
         </div>
       </div>

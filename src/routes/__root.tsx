@@ -12,7 +12,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { useProfile } from "@/hooks/useCloud";
 import { ThemeProvider, themeBootstrapScript, DEFAULT_PREFS } from "@/lib/theme";
@@ -39,7 +38,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    console.error(error);
   }, [error]);
 
   return (
@@ -71,13 +70,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover",
       },
       { name: "theme-color", content: "#1a1c22" },
-      { title: "BytePrep — Calm study companion for JEE" },
+      { title: "ByteStudy — Calm study companion for JEE" },
       {
         name: "description",
         content:
           "A distraction-free study tracker built for JEE aspirants. Plan chapters, run focus sessions, and watch real progress compound.",
       },
-      { property: "og:title", content: "BytePrep" },
+      { property: "og:title", content: "ByteStudy" },
       { property: "og:description", content: "Calm study companion for JEE aspirants." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

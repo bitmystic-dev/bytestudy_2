@@ -17,8 +17,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "Welcome — BytePrep" },
-      { name: "description", content: "Set up your BytePrep study profile." },
+      { title: "Welcome — ByteStudy" },
+      { name: "description", content: "Set up your ByteStudy study profile." },
+      { property: "og:title", content: "Welcome — ByteStudy" },
+      { property: "og:description", content: "Set up your ByteStudy study profile." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: OnboardingPage,

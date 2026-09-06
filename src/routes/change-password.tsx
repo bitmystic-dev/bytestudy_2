@@ -7,11 +7,15 @@ import { useAuth } from "@/lib/auth-context";
 export const Route = createFileRoute("/change-password")({
   head: () => ({
     meta: [
-      { title: "Change password — BytePrep" },
+      { title: "Change password — ByteStudy" },
       {
         name: "description",
-        content: "Update the password you use to sign in to BytePrep.",
+        content: "Update the password you use to sign in to ByteStudy.",
       },
+      { property: "og:title", content: "Change password — ByteStudy" },
+      { property: "og:description", content: "Update the password you use to sign in to ByteStudy." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -21,8 +21,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — BytePrep" },
-      { name: "description", content: "Your BytePrep profile and study preferences." },
+      { title: "Profile — ByteStudy" },
+      { name: "description", content: "Your ByteStudy profile and study preferences." },
+      { property: "og:title", content: "Profile — ByteStudy" },
+      { property: "og:description", content: "Your ByteStudy profile and study preferences." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ProfilePage,
@@ -43,8 +47,8 @@ function ProfilePage() {
 
   const handleErase = async () => {
     if (!user) return;
-    if (!confirm("Erase ALL your BytePrep data (missions, sessions, chapters, profile)? This cannot be undone.")) return;
-    await eraseAllUserData(user.id);
+    if (!confirm("Erase ALL your ByteStudy data (missions, sessions, chapters, profile)? This cannot be undone.")) return;
+    await eraseAllUserData(user.uid);
     navigate({ to: "/onboarding", replace: true });
     // Force reload so hooks re-fetch cleanly.
     setTimeout(() => window.location.reload(), 200);
@@ -117,13 +121,6 @@ function ProfilePage() {
           <div className="flex-1 text-sm font-medium">Analytics</div>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
-        <Link to="/tests" className="flex items-center gap-3 px-4 py-3.5 active:bg-elevated">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-elevated text-muted-foreground">
-            <Calendar className="h-4 w-4" />
-          </div>
-          <div className="flex-1 text-sm font-medium">Test schedule</div>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-        </Link>
       </div>
 
       <SectionHeader title="App" />
@@ -143,7 +140,7 @@ function ProfilePage() {
           </div>
           <div className="flex-1">
             <div className="text-sm font-medium">Version</div>
-            <div className="text-[11px] text-muted-foreground">BytePrep 0.1.0</div>
+            <div className="text-[11px] text-muted-foreground">ByteStudy 0.1.0</div>
           </div>
         </div>
       </div>

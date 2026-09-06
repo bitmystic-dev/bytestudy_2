@@ -17,8 +17,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/planner")({
   head: () => ({
     meta: [
-      { title: "Planner — BytePrep" },
-      { name: "description", content: "Plan chapters, set priorities, and track missions." },
+      { title: "Planner — ByteStudy" },
+      { name: "description", content: "Plan chapters, set priorities, and track missions in ByteStudy." },
+      { property: "og:title", content: "Planner — ByteStudy" },
+      { property: "og:description", content: "Plan chapters, set priorities, and track missions in ByteStudy." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: PlannerPage,

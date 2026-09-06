@@ -1,15 +1,20 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Lock, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Reset password — BytePrep" },
-      { name: "description", content: "Set a new password for your BytePrep account." },
+      { title: "Reset password — ByteStudy" },
+      { name: "description", content: "Set a new password for your ByteStudy account." },
+      { property: "og:title", content: "Reset password — ByteStudy" },
+      { property: "og:description", content: "Set a new password for your ByteStudy account." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ResetPasswordPage,
@@ -26,17 +31,10 @@ function ResetPasswordPage() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    // When the user clicks the reset link, Supabase sets a PASSWORD_RECOVERY session.
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
-    });
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
+    return onAuthStateChanged(auth, (user) => setReady(Boolean(user)));
   }, []);
 
-  const canSubmit = ready && password.length >= 6 && password === confirm && !loading;
+  const canSubmit = ready && password.length > 0 && password === confirm && !loading;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +60,7 @@ function ResetPasswordPage() {
         <p className="mt-2 text-sm text-muted-foreground">
           {done
             ? "Redirecting you in a moment…"
-            : "Choose a password you can remember. Minimum 6 characters."}
+             : "Choose a password you can remember."}
         </p>
       </div>
 
@@ -74,7 +72,6 @@ function ResetPasswordPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="New password"
             autoComplete="new-password"
-            minLength={6}
             required
             disabled={!ready}
             className="w-full rounded-2xl bg-elevated px-5 py-4 text-[15px] outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50 disabled:opacity-50"
@@ -85,7 +82,6 @@ function ResetPasswordPage() {
             onChange={(e) => setConfirm(e.target.value)}
             placeholder="Confirm new password"
             autoComplete="new-password"
-            minLength={6}
             required
             disabled={!ready}
             className="w-full rounded-2xl bg-elevated px-5 py-4 text-[15px] outline-none ring-1 ring-hairline placeholder:text-muted-foreground focus:ring-primary/50 disabled:opacity-50"

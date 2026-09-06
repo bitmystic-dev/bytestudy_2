@@ -14,11 +14,6 @@ export interface Profile {
   sleepTime: string; // "23:00"
   weeklyOffDay: number; // 0-6, Sun=0
   createdAt: number;
-  /** Free-text description of how the user's institute conducts tests.
-   *  Used by AI recommendations. */
-  instituteTestsPattern: string;
-  /** Server-controlled. True only for admin accounts. Never editable by the user. */
-  adminRights: boolean;
 }
 
 // ============================================================

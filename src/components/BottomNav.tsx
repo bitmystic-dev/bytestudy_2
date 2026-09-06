@@ -1,26 +1,18 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, ListTodo, Timer, Sparkles, User, ShieldCheck } from "lucide-react";
+import { Home, ListTodo, Timer, Library, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useProfile } from "@/hooks/useCloud";
 
 const BASE_ITEMS = [
   { to: "/", label: "Home", icon: Home },
   { to: "/planner", label: "Planner", icon: ListTodo },
   { to: "/focus", label: "Focus", icon: Timer },
-  { to: "/ai", label: "AI", icon: Sparkles },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/library", label: "Library", icon: Library },
+  { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 export function BottomNav() {
   const { pathname } = useLocation();
-  const [profile] = useProfile();
-  const isAdmin = !!profile?.adminRights;
-  const items = isAdmin
-    ? ([
-        ...BASE_ITEMS,
-        { to: "/admin" as const, label: "Admin", icon: ShieldCheck },
-      ] as const)
-    : BASE_ITEMS;
+  const items = BASE_ITEMS;
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-[480px] justify-center pb-[max(env(safe-area-inset-bottom),0.5rem)]">

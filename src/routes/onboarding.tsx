@@ -17,8 +17,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "Welcome — BytePrep" },
-      { name: "description", content: "Set up your BytePrep study profile." },
+      { title: "Welcome — ByteStudy" },
+      { name: "description", content: "Set up your ByteStudy study profile." },
+      { property: "og:title", content: "Welcome — ByteStudy" },
+      { property: "og:description", content: "Set up your ByteStudy study profile." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: OnboardingPage,
@@ -35,7 +39,6 @@ interface Draft {
   wakeTime: string;
   sleepTime: string;
   weeklyOffDay: number;
-  instituteTestsPattern: string;
 }
 
 const emptyDraft: Draft = {
@@ -47,7 +50,6 @@ const emptyDraft: Draft = {
   wakeTime: "06:30",
   sleepTime: "23:00",
   weeklyOffDay: 0,
-  instituteTestsPattern: "",
 };
 
 
@@ -95,8 +97,6 @@ function OnboardingPage() {
       sleepTime: draft.sleepTime,
       weeklyOffDay: draft.weeklyOffDay,
       createdAt: Date.now(),
-      instituteTestsPattern: draft.instituteTestsPattern.trim(),
-      adminRights: false, // server trigger will override for the admin email
     };
     setProfile(profile);
     navigate({ to: "/", replace: true });

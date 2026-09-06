@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TestsRouteImport } from './routes/tests'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -20,16 +19,9 @@ import { Route as FocusRouteImport } from './routes/focus'
 import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
-import { Route as AiRouteImport } from './routes/ai'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SubjectsSubjectRouteImport } from './routes/subjects.$subject'
 
-const TestsRoute = TestsRouteImport.update({
-  id: '/tests',
-  path: '/tests',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -80,16 +72,6 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AiRoute = AiRouteImport.update({
-  id: '/ai',
-  path: '/ai',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -103,8 +85,6 @@ const SubjectsSubjectRoute = SubjectsSubjectRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
@@ -115,13 +95,10 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
-  '/tests': typeof TestsRoute
   '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
@@ -132,14 +109,11 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
-  '/tests': typeof TestsRoute
   '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/ai': typeof AiRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
@@ -150,15 +124,12 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
-  '/tests': typeof TestsRoute
   '/subjects/$subject': typeof SubjectsSubjectRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
-    | '/ai'
     | '/analytics'
     | '/auth'
     | '/change-password'
@@ -169,13 +140,10 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/settings'
-    | '/tests'
     | '/subjects/$subject'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
-    | '/ai'
     | '/analytics'
     | '/auth'
     | '/change-password'
@@ -186,13 +154,10 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/settings'
-    | '/tests'
     | '/subjects/$subject'
   id:
     | '__root__'
     | '/'
-    | '/admin'
-    | '/ai'
     | '/analytics'
     | '/auth'
     | '/change-password'
@@ -203,14 +168,11 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/settings'
-    | '/tests'
     | '/subjects/$subject'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
-  AiRoute: typeof AiRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
   ChangePasswordRoute: typeof ChangePasswordRoute
@@ -221,19 +183,11 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
-  TestsRoute: typeof TestsRoute
   SubjectsSubjectRoute: typeof SubjectsSubjectRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tests': {
-      id: '/tests'
-      path: '/tests'
-      fullPath: '/tests'
-      preLoaderRoute: typeof TestsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -304,20 +258,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ai': {
-      id: '/ai'
-      path: '/ai'
-      fullPath: '/ai'
-      preLoaderRoute: typeof AiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -337,8 +277,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
-  AiRoute: AiRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
   ChangePasswordRoute: ChangePasswordRoute,
@@ -349,7 +287,6 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
-  TestsRoute: TestsRoute,
   SubjectsSubjectRoute: SubjectsSubjectRoute,
 }
 export const routeTree = rootRouteImport

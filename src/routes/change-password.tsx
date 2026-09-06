@@ -2,16 +2,20 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronLeft, KeyRound, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/change-password")({
   head: () => ({
     meta: [
-      { title: "Change password — BytePrep" },
+      { title: "Change password — ByteStudy" },
       {
         name: "description",
-        content: "Update the password you use to sign in to BytePrep.",
+        content: "Update the password you use to sign in to ByteStudy.",
       },
+      { property: "og:title", content: "Change password — ByteStudy" },
+      { property: "og:description", content: "Update the password you use to sign in to ByteStudy." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -20,6 +24,7 @@ export const Route = createFileRoute("/change-password")({
 
 function ChangePasswordPage() {
   const navigate = useNavigate();
+  const { updatePassword } = useAuth();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false);
@@ -34,10 +39,10 @@ function ChangePasswordPage() {
     if (!canSubmit) return;
     setSaving(true);
     setError(null);
-    const { error: err } = await supabase.auth.updateUser({ password });
+    const { error: err } = await updatePassword(password);
     setSaving(false);
     if (err) {
-      setError(err.message);
+      setError(err);
       return;
     }
     setDone(true);

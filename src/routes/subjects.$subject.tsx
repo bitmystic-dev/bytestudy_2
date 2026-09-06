@@ -71,8 +71,12 @@ export const Route = createFileRoute("/subjects/$subject")({
   },
   head: ({ params }) => ({
     meta: [
-      { title: `${SUBJECT_META[params.subject].label} — BytePrep` },
+      { title: `${SUBJECT_META[params.subject].label} — ByteStudy` },
       { name: "description", content: `${SUBJECT_META[params.subject].label} chapters and progress.` },
+      { property: "og:title", content: `${SUBJECT_META[params.subject].label} — ByteStudy` },
+      { property: "og:description", content: `${SUBJECT_META[params.subject].label} chapters and progress.` },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: SubjectPage,

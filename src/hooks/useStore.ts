@@ -1,5 +1,10 @@
 import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
-import { storage } from "@/lib/storage";
+const storage = {
+  subscribe: (listener: () => void) => () => { void listener; },
+  get: <T,>(_key: string, fallback: T) => fallback,
+  set: <T,>(_key: string, _value: T) => undefined,
+  remove: (_key: string) => undefined,
+};
 
 // Cache parsed snapshots per key so useSyncExternalStore gets a stable reference
 // between reads when the underlying JSON string hasn't changed.

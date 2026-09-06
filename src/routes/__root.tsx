@@ -17,7 +17,7 @@ import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { useProfile } from "@/hooks/useCloud";
 import { ThemeProvider, themeBootstrapScript, DEFAULT_PREFS } from "@/lib/theme";
 
-const PUBLIC_ROUTES = new Set(["/auth", "/reset-password"]);
+const PUBLIC_ROUTES = new Set(["/", "/auth", "/reset-password"]);
 
 function NotFoundComponent() {
   return (
@@ -132,7 +132,7 @@ function AuthRouter() {
     if (status === "loading") return;
 
     if (status === "unauthenticated") {
-      if (!isPublic) navigate({ to: "/auth", replace: true });
+      if (!isPublic) navigate({ to: "/", replace: true });
       return;
     }
 
@@ -165,7 +165,7 @@ function SplashScreen() {
       <div className="flex flex-col items-center gap-3">
         <div className="h-2 w-2 animate-pulse rounded-full bg-primary" />
         <span className="text-[11px] uppercase tracking-widest text-muted-foreground">
-          BytePrep
+          ByteStudy
         </span>
       </div>
     </div>

@@ -35,8 +35,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — BytePrep" },
-      { name: "description", content: "BytePrep app settings." },
+      { title: "Settings — ByteStudy" },
+      { name: "description", content: "Manage your ByteStudy appearance, account, and chapters." },
+      { property: "og:title", content: "Settings — ByteStudy" },
+      { property: "og:description", content: "Manage your ByteStudy appearance, account, and chapters." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: SettingsPage,
@@ -44,7 +48,7 @@ export const Route = createFileRoute("/settings")({
 
 const THEME_LABELS: Record<ThemeName, { label: string; hint: string }> = {
   calm: { label: "Calm", hint: "Light, airy, widget-style" },
-  classic: { label: "Classic", hint: "The original dark BytePrep" },
+      { label: "Classic", hint: "The original dark ByteStudy" },
 };
 
 const MODE_ICONS: Record<ThemeMode, typeof Sun> = {
@@ -205,17 +209,6 @@ function SettingsPage() {
         </Link>
       </div>
 
-      <SectionHeader title="Tests" />
-      <div className="card-surface divide-y divide-hairline">
-        <Link
-          to="/tests"
-          className="flex items-center gap-3 px-4 py-3.5 active:bg-elevated"
-        >
-          <Tile icon={Calendar} label="Test schedule" hint="Track upcoming tests & results" />
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-        </Link>
-      </div>
-
       <SectionHeader title="Data" />
       <div className="card-surface divide-y divide-hairline">
         <DisabledTile icon={Bell} label="Notifications" hint="Coming soon" />
@@ -228,7 +221,7 @@ function SettingsPage() {
       <div className="card-surface divide-y divide-hairline">
         <DisabledTile icon={Shield} label="Privacy" hint="Coming soon" />
         <div className="flex items-center gap-3 px-4 py-3.5">
-          <Tile icon={Info} label="Version" hint="BytePrep 0.1.0" />
+           <Tile icon={Info} label="Version" hint="ByteStudy 0.1.0" />
         </div>
       </div>
     </AppShell>

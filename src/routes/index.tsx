@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Play, Sparkles, Plus, Flame } from "lucide-react";
+import { Play, Sparkles, Plus, Flame, BookOpen, Timer, Target, ArrowRight } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { ProgressRing } from "@/components/ProgressRing";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -12,18 +12,25 @@ import type { FocusSession, Mission, SubjectId } from "@/lib/types";
 import { chapterDisplayName, getChapterMeta, getChaptersForProfile } from "@/lib/chapters";
 import { dayKey, formatDuration, greetingFor } from "@/lib/format";
 import { useMemo } from "react";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Home — BytePrep" },
-      { name: "description", content: "Your calm study dashboard for JEE preparation." },
+      { title: "ByteStudy — Calm JEE preparation" },
+      { name: "description", content: "Track JEE chapters, focus sessions, missions, and study materials in one calm workspace." },
+      { property: "og:title", content: "ByteStudy — Calm JEE preparation" },
+      { property: "og:description", content: "A calm workspace for JEE chapters, focus sessions, missions, and study materials." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: HomePage,
 });
 
 function HomePage() {
+  const { status } = useAuth();
+  if (status === "unauthenticated") return <LandingPage />;
   const navigate = useNavigate();
   const [profile] = useProfile();
   const [metaMap] = useChapterMeta();
@@ -243,6 +250,36 @@ function HomePage() {
       </button>
     </AppShell>
   );
+}
+
+function LandingPage() {
+  return (
+    <div className="mx-auto min-h-dvh max-w-[480px] px-6 pb-10 pt-8">
+      <header className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm font-semibold tracking-tight">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">B</span>
+          ByteStudy
+        </div>
+        <a href="/auth" className="text-sm font-medium text-primary">Sign in</a>
+      </header>
+      <main className="pt-20">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">JEE preparation, made calmer</p>
+        <h1 className="mt-4 text-5xl font-semibold leading-[1.02] tracking-tight">Study steadily.<br />See it compound.</h1>
+        <p className="mt-5 max-w-sm text-base leading-relaxed text-muted-foreground">ByteStudy brings your syllabus, focus time, missions, and study library into one quiet place.</p>
+        <a href="/auth?mode=signup" className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground">Create your account <ArrowRight className="h-4 w-4" /></a>
+        <div className="mt-16 grid grid-cols-2 gap-3">
+          <Feature icon={BookOpen} title="Track chapters" text="Know what to learn next." />
+          <Feature icon={Timer} title="Protect focus" text="Make time visible." />
+          <Feature icon={Target} title="Plan missions" text="Turn goals into steps." />
+          <Feature icon={Sparkles} title="Study library" text="Open your entitled material." />
+        </div>
+      </main>
+    </div>
+  );
+}
+
+function Feature({ icon: Icon, title, text }: { icon: typeof BookOpen; title: string; text: string }) {
+  return <div className="card-surface p-4"><Icon className="h-5 w-5 text-primary" /><div className="mt-8 text-sm font-semibold">{title}</div><div className="mt-1 text-xs leading-relaxed text-muted-foreground">{text}</div></div>;
 }
 
 function computeStreak(sessions: FocusSession[]): number {

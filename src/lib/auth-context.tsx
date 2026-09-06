@@ -43,8 +43,7 @@ function friendlyError(err: Error | null | undefined): string | undefined {
   if (msg.includes("already registered") || msg.includes("already exists") || msg.includes("already-in-use")) {
     return "An account with this email already exists.";
   }
-  if (msg.includes("password") && msg.includes("weak"))
-    return "Please choose a stronger password.";
+  if (msg.includes("password") && msg.includes("weak")) return "Password must be at least 6 characters.";
   if (msg.includes("password") && msg.includes("short")) return "Password must be at least 6 characters.";
   if (msg.includes("network") || msg.includes("fetch"))
     return "Network problem. Check your connection.";

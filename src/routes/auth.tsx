@@ -7,8 +7,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — BytePrep" },
-      { name: "description", content: "Sign in or create your BytePrep account." },
+      { title: "Sign in — ByteStudy" },
+      { name: "description", content: "Sign in or create your ByteStudy account." },
+      { property: "og:title", content: "Sign in — ByteStudy" },
+      { property: "og:description", content: "Sign in or create your ByteStudy account." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,

@@ -44,7 +44,7 @@ function ProfilePage() {
   const handleErase = async () => {
     if (!user) return;
     if (!confirm("Erase ALL your BytePrep data (missions, sessions, chapters, profile)? This cannot be undone.")) return;
-    await eraseAllUserData(user.id);
+    await eraseAllUserData(user.uid);
     navigate({ to: "/onboarding", replace: true });
     // Force reload so hooks re-fetch cleanly.
     setTimeout(() => window.location.reload(), 200);

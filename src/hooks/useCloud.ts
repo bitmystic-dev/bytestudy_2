@@ -76,7 +76,7 @@ export function useProfile(): [Profile | null, Setter<Profile | null>, boolean] 
   useEffect(() => {
     const listener = () => force((value) => value + 1);
     profileListeners.add(listener);
-    return () => profileListeners.delete(listener);
+    return () => { profileListeners.delete(listener); };
   }, []);
 
   useEffect(() => {

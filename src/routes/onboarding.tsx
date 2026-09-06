@@ -35,7 +35,6 @@ interface Draft {
   wakeTime: string;
   sleepTime: string;
   weeklyOffDay: number;
-  instituteTestsPattern: string;
 }
 
 const emptyDraft: Draft = {
@@ -47,7 +46,6 @@ const emptyDraft: Draft = {
   wakeTime: "06:30",
   sleepTime: "23:00",
   weeklyOffDay: 0,
-  instituteTestsPattern: "",
 };
 
 
@@ -95,8 +93,6 @@ function OnboardingPage() {
       sleepTime: draft.sleepTime,
       weeklyOffDay: draft.weeklyOffDay,
       createdAt: Date.now(),
-      instituteTestsPattern: draft.instituteTestsPattern.trim(),
-      adminRights: false, // server trigger will override for the admin email
     };
     setProfile(profile);
     navigate({ to: "/", replace: true });

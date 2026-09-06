@@ -88,7 +88,7 @@ function publishTime(value: LibraryModule["publishAt"]): number | null {
   if (typeof value === "object" && "toMillis" in value && typeof value.toMillis === "function") {
     return value.toMillis();
   }
-  const parsed = new Date(value).getTime();
+  const parsed = new Date(value as string).getTime();
   return Number.isNaN(parsed) ? null : parsed;
 }
 

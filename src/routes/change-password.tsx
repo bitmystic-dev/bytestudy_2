@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronLeft, KeyRound, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/change-password")({
   head: () => ({
@@ -20,6 +20,7 @@ export const Route = createFileRoute("/change-password")({
 
 function ChangePasswordPage() {
   const navigate = useNavigate();
+  const { updatePassword } = useAuth();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false);
@@ -34,10 +35,10 @@ function ChangePasswordPage() {
     if (!canSubmit) return;
     setSaving(true);
     setError(null);
-    const { error: err } = await supabase.auth.updateUser({ password });
+    const { error: err } = await updatePassword(password);
     setSaving(false);
     if (err) {
-      setError(err.message);
+      setError(err);
       return;
     }
     setDone(true);

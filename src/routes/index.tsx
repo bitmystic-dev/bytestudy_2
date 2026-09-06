@@ -233,21 +233,6 @@ function HomePage() {
         />
       </div>
 
-      {/* AI mentor entry */}
-      <button
-        onClick={() => navigate({ to: "/ai" })}
-        className="mt-5 flex w-full items-center gap-3 rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent p-4 text-left transition-transform active:scale-[0.99]"
-      >
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/20 text-primary ring-1 ring-primary/30">
-          <Sparkles className="h-5 w-5" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-sm font-semibold">Ask your JEE mentor</div>
-          <div className="text-xs text-muted-foreground">
-            Personal strategies, doubts, motivation
-          </div>
-        </div>
-      </button>
     </AppShell>
   );
 }

@@ -9,8 +9,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Reset password — BytePrep" },
-      { name: "description", content: "Set a new password for your BytePrep account." },
+      { title: "Reset password — ByteStudy" },
+      { name: "description", content: "Set a new password for your ByteStudy account." },
+      { property: "og:title", content: "Reset password — ByteStudy" },
+      { property: "og:description", content: "Set a new password for your ByteStudy account." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ResetPasswordPage,

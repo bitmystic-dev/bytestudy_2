@@ -21,8 +21,12 @@ const SUBJECT_BAR: Record<SubjectId, string> = {
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
-      { title: "Analytics — BytePrep" },
+      { title: "Analytics — ByteStudy" },
       { name: "description", content: "See how your study time compounds over time." },
+      { property: "og:title", content: "Analytics — ByteStudy" },
+      { property: "og:description", content: "See how your study time compounds over time." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AnalyticsPage,

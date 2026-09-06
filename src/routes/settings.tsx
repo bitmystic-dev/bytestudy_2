@@ -48,7 +48,7 @@ export const Route = createFileRoute("/settings")({
 
 const THEME_LABELS: Record<ThemeName, { label: string; hint: string }> = {
   calm: { label: "Calm", hint: "Light, airy, widget-style" },
-      { label: "Classic", hint: "The original dark ByteStudy" },
+  classic: { label: "Classic", hint: "The original dark ByteStudy" },
 };
 
 const MODE_ICONS: Record<ThemeMode, typeof Sun> = {

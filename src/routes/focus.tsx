@@ -14,8 +14,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/focus")({
   head: () => ({
     meta: [
-      { title: "Focus — BytePrep" },
-      { name: "description", content: "A distraction-free timer for deep work." },
+      { title: "Focus — ByteStudy" },
+      { name: "description", content: "A distraction-free timer for deep work in ByteStudy." },
+      { property: "og:title", content: "Focus — ByteStudy" },
+      { property: "og:description", content: "A distraction-free timer for deep work in ByteStudy." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: FocusPage,

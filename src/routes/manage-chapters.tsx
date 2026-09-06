@@ -32,8 +32,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/manage-chapters")({
   head: () => ({
     meta: [
-      { title: "Manage Chapters — BytePrep" },
+      { title: "Manage Chapters — ByteStudy" },
       { name: "description", content: "Rename, add, delete, and reorder your chapters." },
+      { property: "og:title", content: "Manage Chapters — ByteStudy" },
+      { property: "og:description", content: "Rename, add, delete, and reorder your chapters." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ManageChaptersPage,
